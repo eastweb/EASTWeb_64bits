@@ -25,6 +25,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -58,6 +59,9 @@ import version2.prototype.Scheduler.SchedulerData;
 import version2.prototype.Scheduler.SchedulerStatus;
 import java.awt.Font;
 import java.awt.event.WindowFocusListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.WindowStateListener;
 
 public class MainWindow {
     private JFrame frame;
@@ -122,17 +126,8 @@ public class MainWindow {
         UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 
         frame = new JFrame();
-        frame.addWindowFocusListener(new WindowFocusListener() {
-            @Override
-            public void windowGainedFocus(WindowEvent arg0) {
-                populateProjectList(); // Refresh the projects list every time the window gained focus
-            }
-            @Override
-            public void windowLostFocus(WindowEvent arg0) {
-            }
-        });
         frame.setBounds(100, 100, 1175, 730);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.getContentPane().setLayout(null);
         frame.setResizable(false);
@@ -147,6 +142,12 @@ public class MainWindow {
                     EASTWebManager.StopAndShutdown();
                     frame.dispose();
                 }
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+                populateProjectList(); // Refresh the projects list every time the window gained focus
+                System.out.println("Window Activated Event");
             }
         }));
 
@@ -413,11 +414,27 @@ public class MainWindow {
 
         for(ProjectInfoFile project : projects) {
             projectList.addItem(project.GetProjectName());
+            System.out.println(project.GetProjectName());
         }
 
         for(String project: runningProjects){
             projectList.removeItem(project);
         }
+    }
+
+    /**
+     * Function to refresh the projects list
+     * @author roberto.villegas
+     */
+    private void refreshProjectList(){
+        frame.getContentPane().remove(projectList);
+        projectList = new JComboBox<String>();
+        projectList.setBounds(175, 105, 300, 25);
+        frame.getContentPane().add(projectList);
+        populateProjectList();
+        frame.revalidate();
+        frame.repaint();
+        return;
     }
 
     // open manual
