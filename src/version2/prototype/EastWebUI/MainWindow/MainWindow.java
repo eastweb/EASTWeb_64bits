@@ -25,7 +25,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -58,10 +57,6 @@ import version2.prototype.ProjectInfoMetaData.ProjectInfoFile;
 import version2.prototype.Scheduler.SchedulerData;
 import version2.prototype.Scheduler.SchedulerStatus;
 import java.awt.Font;
-import java.awt.event.WindowFocusListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.WindowStateListener;
 
 public class MainWindow {
     private JFrame frame;
@@ -147,7 +142,6 @@ public class MainWindow {
             @Override
             public void windowActivated(WindowEvent e) {
                 populateProjectList(); // Refresh the projects list every time the window gained focus
-                System.out.println("Window Activated Event");
             }
         }));
 
@@ -414,27 +408,11 @@ public class MainWindow {
 
         for(ProjectInfoFile project : projects) {
             projectList.addItem(project.GetProjectName());
-            System.out.println(project.GetProjectName());
         }
 
         for(String project: runningProjects){
             projectList.removeItem(project);
         }
-    }
-
-    /**
-     * Function to refresh the projects list
-     * @author roberto.villegas
-     */
-    private void refreshProjectList(){
-        frame.getContentPane().remove(projectList);
-        projectList = new JComboBox<String>();
-        projectList.setBounds(175, 105, 300, 25);
-        frame.getContentPane().add(projectList);
-        populateProjectList();
-        frame.revalidate();
-        frame.repaint();
-        return;
     }
 
     // open manual
