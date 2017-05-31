@@ -233,7 +233,7 @@ public class MainWindow {
         mnFile.addSeparator();
 
         // wrapper for manage intermediate files
-        fileManagementSubMenu = new JMenu("Manage Intermidiate Files");
+        fileManagementSubMenu = new JMenu("Manage Intermediate Files");
         fileManagementSubMenu.setMnemonic(KeyEvent.VK_S);
 
         // opens folder where intermediate file lives

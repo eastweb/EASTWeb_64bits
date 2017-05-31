@@ -349,7 +349,7 @@ public class ProjectInformationPage {
         coolingTextField.setBounds(150, 200, 100, 30);
         panel.add(coolingTextField);
         coolingTextField.setColumns(10);
-        JLabel lblCelcius = new JLabel("Celcius");
+        JLabel lblCelcius = new JLabel("Celsius");
         lblCelcius.setBounds(275, 210, 50, 15);
         panel.add(lblCelcius);
 
@@ -361,9 +361,9 @@ public class ProjectInformationPage {
         heatingTextField.setBounds(150, 260, 100, 30);
         panel.add(heatingTextField);
         heatingTextField.setColumns(10);
-        JLabel label = new JLabel("Celcius");
-        label.setBounds(275, 270, 50, 15);
-        panel.add(label);
+        JLabel lblCelsius = new JLabel("Celsius");
+        lblCelsius.setBounds(275, 270, 50, 15);
+        panel.add(lblCelsius);
 
         JLabel lblClipping = new JLabel("Clipping:");
         lblClipping.setBounds(10, 330, 130, 15);
