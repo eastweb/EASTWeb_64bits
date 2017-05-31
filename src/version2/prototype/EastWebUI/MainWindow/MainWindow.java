@@ -57,6 +57,7 @@ import version2.prototype.ProjectInfoMetaData.ProjectInfoFile;
 import version2.prototype.Scheduler.SchedulerData;
 import version2.prototype.Scheduler.SchedulerStatus;
 import java.awt.Font;
+import java.awt.event.WindowFocusListener;
 
 public class MainWindow {
     private JFrame frame;
@@ -121,6 +122,15 @@ public class MainWindow {
         UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 
         frame = new JFrame();
+        frame.addWindowFocusListener(new WindowFocusListener() {
+            @Override
+            public void windowGainedFocus(WindowEvent arg0) {
+                populateProjectList(); // Refresh the projects list every time the window gained focus
+            }
+            @Override
+            public void windowLostFocus(WindowEvent arg0) {
+            }
+        });
         frame.setBounds(100, 100, 1175, 730);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         frame.setLocationRelativeTo(null);
