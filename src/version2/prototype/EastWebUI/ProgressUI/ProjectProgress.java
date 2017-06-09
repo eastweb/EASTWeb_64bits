@@ -45,8 +45,6 @@ public class ProjectProgress {
                 try {
                     @SuppressWarnings("unused")
                     ProjectProgress window = new ProjectProgress("Test Progress window");
-
-
                 } catch (Exception e) {
                     ErrorLog.add(Config.getInstance(), "ProjectProgress.main problem with running a ProjectProgress window.", e);
                 }
@@ -121,6 +119,10 @@ public class ProjectProgress {
         summaryProgressBar.setStringPainted(true);
         summaryProgressBar.setBounds(225, 115, 525, 25);
         panel.add(summaryProgressBar);
+
+
+        System.out.println("MAX: " + downloadProgressBar.getMaximum());
+        System.out.println("MIN: " + downloadProgressBar.getMinimum());
     }
 
     private void CreateLogView() {
@@ -228,7 +230,7 @@ public class ProjectProgress {
 
                         System.out.print(processWorkerInfo);
                     }
-                    //                    frame.repaint();
+                    frame.repaint();
                 } else {
                     EASTWebManager.RemoveGUIUpdateHandler(updateHandler);
                 }
