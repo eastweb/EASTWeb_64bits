@@ -104,7 +104,7 @@ public class ProjectProgress {
         processProgressBar.setBounds(225, 55, 525, 25);
         panel.add(processProgressBar);
 
-        JLabel lblIndiciesProgress = new JLabel("Indicies Progress:");
+        JLabel lblIndiciesProgress = new JLabel("Indices Progress:");
         lblIndiciesProgress.setBounds(10, 85, 150, 25);
         panel.add(lblIndiciesProgress);
         indiciesProgressBar = new JProgressBar();
@@ -120,9 +120,8 @@ public class ProjectProgress {
         summaryProgressBar.setBounds(225, 115, 525, 25);
         panel.add(summaryProgressBar);
 
-
-        System.out.println("MAX: " + downloadProgressBar.getMaximum());
-        System.out.println("MIN: " + downloadProgressBar.getMinimum());
+        //System.out.println("MAX: " + downloadProgressBar.getMaximum());
+        //System.out.println("MIN: " + downloadProgressBar.getMinimum());
     }
 
     private void CreateLogView() {
@@ -147,7 +146,7 @@ public class ProjectProgress {
 
         public ProgressValue(int current, double total){
             this.current = current;
-            this.total = total;
+            this.total = 100.0;
         }
 
         public int PercentTotal(){
@@ -155,7 +154,11 @@ public class ProjectProgress {
         }
 
         public String Description(){
-            return String.format("%d / %d",  current, (int)total);
+            return String.format("%d%% / %d%%",  current, (int)total);
+        }
+
+        public String Description(double scale){
+            return String.format("%d%% / %d%%",  (int)(scale*current), (int)total);
         }
     }
 
@@ -188,20 +191,21 @@ public class ProjectProgress {
                         itemLog.clear();
                     } else {
                         ProgressValue downloadValue = GetAverageDownload(status.GetDownloadProgressesByData());
-                        downloadProgressBar.setValue(downloadValue.PercentTotal());   // Truncates the double (so value always equates to double rounded down)
+                        downloadProgressBar.setValue(downloadValue.current);//.PercentTotal());   // Truncates the double (so value always equates to double rounded down)
                         downloadProgressBar.setString(downloadValue.Description());
 
+                        double scale = downloadValue.current/100.0;
                         ProgressValue processValue = GetAverage(status.GetProcessorProgresses());
-                        processProgressBar.setValue(processValue.PercentTotal());
-                        processProgressBar.setString(processValue.Description());
+                        processProgressBar.setValue((int)(scale*processValue.current));//.PercentTotal());
+                        processProgressBar.setString(processValue.Description(scale));
 
                         ProgressValue indicesValue = GetAverage(status.GetIndicesProgresses());
-                        indiciesProgressBar.setValue(indicesValue.PercentTotal());
-                        indiciesProgressBar.setString(indicesValue.Description());
+                        indiciesProgressBar.setValue((int)(scale*indicesValue.current));//.PercentTotal());
+                        indiciesProgressBar.setString(indicesValue.Description(scale));
 
                         ProgressValue summaryValue = GetAverageSummary(status.GetSummaryProgresses());
-                        summaryProgressBar.setValue(summaryValue.PercentTotal());
-                        summaryProgressBar.setString(summaryValue.Description());
+                        summaryProgressBar.setValue((int)(scale*summaryValue.current));//.PercentTotal());
+                        summaryProgressBar.setString(summaryValue.Description(scale));
 
                         itemLog.clear();
                         for(String log : status.ReadAllRemainingLogEntries())
@@ -245,7 +249,7 @@ public class ProjectProgress {
                 total += TotalProgress.get(pluginIt.next());
             }
 
-            return new ProgressValue(TotalProgress.size(), total);
+            return new ProgressValue((int)total, total);
         }
 
         private ProgressValue GetAverageSummary(TreeMap<String, TreeMap<Integer, Double>> TotalProgress){
@@ -265,7 +269,7 @@ public class ProjectProgress {
                 }
             }
 
-            return new ProgressValue(count, total);
+            return new ProgressValue((int)total, total);
         }
 
         private ProgressValue GetAverageDownload(TreeMap<String, TreeMap<String, Double>> TotalProgress){
@@ -283,7 +287,7 @@ public class ProjectProgress {
                 }
             }
 
-            return new ProgressValue(count, total);
+            return new ProgressValue((int)total, total);
         }
     }
 }

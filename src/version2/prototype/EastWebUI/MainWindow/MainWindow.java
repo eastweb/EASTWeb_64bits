@@ -139,10 +139,10 @@ public class MainWindow {
                 }
             }
 
-            @Override
+            /*@Override
             public void windowActivated(WindowEvent e) {
                 populateProjectList(); // Refresh the projects list every time the window gained focus
-            }
+            }*/
         }));
 
         runningProjects = new ArrayList<String>();
@@ -842,21 +842,21 @@ public class MainWindow {
 
             if(status == null) {
                 setBackground(Color.GRAY);
-                setForeground(Color.GRAY);
+                setForeground(Color.BLACK);
                 setToolTipText("Project is not running.");
             } else if(status.State != TaskState.STOPPED) {
                 if(status.ProjectUpToDate) {
                     setBackground(Color.GREEN);
-                    setForeground(Color.GREEN);
+                    setForeground(Color.BLACK);
                     setToolTipText("Project is up to date.");
                 } else {
                     setBackground(Color.YELLOW);
-                    setForeground(Color.YELLOW);
+                    setForeground(Color.BLACK);
                     setToolTipText("Project is processing.");
                 }
             } else {
                 setBackground(Color.GRAY);
-                setForeground(Color.GRAY);
+                setForeground(Color.BLACK);
                 setToolTipText("Project is not running.");
             }
 
@@ -879,21 +879,21 @@ public class MainWindow {
 
                 if(status == null) {
                     button.setBackground(Color.GRAY);
-                    button.setForeground(Color.GRAY);
+                    button.setForeground(Color.BLACK);
                     button.setToolTipText("Project is not running.");
                 } else if(status.State != TaskState.STOPPED) {
                     if(status.ProjectUpToDate) {
                         button.setBackground(Color.GREEN);
-                        button.setForeground(Color.GREEN);
+                        button.setForeground(Color.BLACK);
                         button.setToolTipText("Project is up to date.");
                     } else {
                         button.setBackground(Color.YELLOW);
-                        button.setForeground(Color.YELLOW);
+                        button.setForeground(Color.BLACK);
                         button.setToolTipText("Project is processing.");
                     }
                 } else {
                     button.setBackground(Color.GRAY);
-                    button.setForeground(Color.GRAY);
+                    button.setForeground(Color.BLACK);
                     button.setToolTipText("Project is not running.");
                 }
 
@@ -939,21 +939,21 @@ public class MainWindow {
 
             if(status == null) {
                 button.setBackground(Color.GRAY);
-                button.setForeground(Color.GRAY);
+                button.setForeground(Color.BLACK);
                 button.setToolTipText("Project is not running.");
             } else if(status.State != TaskState.STOPPED) {
                 if(status.ProjectUpToDate) {
                     button.setBackground(Color.GREEN);
-                    button.setForeground(Color.GREEN);
+                    button.setForeground(Color.BLACK);
                     button.setToolTipText("Project is up to date.");
                 } else {
                     button.setBackground(Color.YELLOW);
-                    button.setForeground(Color.YELLOW);
+                    button.setForeground(Color.BLACK);
                     button.setToolTipText("Project is processing.");
                 }
             } else {
                 button.setBackground(Color.GRAY);
-                button.setForeground(Color.GRAY);
+                button.setForeground(Color.BLACK);
                 button.setToolTipText("Project is not running.");
             }
             frame.repaint();
@@ -991,21 +991,21 @@ public class MainWindow {
 
                 if(status == null) {
                     button.setBackground(Color.GRAY);
-                    button.setForeground(Color.GRAY);
+                    button.setForeground(Color.BLACK);
                     button.setToolTipText("Project is not running.");
                 } else if(status.State != TaskState.STOPPED) {
                     if(status.ProjectUpToDate) {
                         button.setBackground(Color.GREEN);
-                        button.setForeground(Color.GREEN);
+                        button.setForeground(Color.BLACK);
                         button.setToolTipText("Project is up to date.");
                     } else {
                         button.setBackground(Color.YELLOW);
-                        button.setForeground(Color.YELLOW);
+                        button.setForeground(Color.BLACK);
                         button.setToolTipText("Project is processing.");
                     }
                 } else {
                     button.setBackground(Color.GRAY);
-                    button.setForeground(Color.GRAY);
+                    button.setForeground(Color.BLACK);
                     button.setToolTipText("Project is not running.");
                 }
 
