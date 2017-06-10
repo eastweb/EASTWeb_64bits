@@ -13,7 +13,7 @@ import org.gdal.gdalconst.gdalconstConstants;
 import version2.prototype.util.GdalUtils;
 
 /**
- * Indicies Framework;
+ * Indices Framework;
  * User will have to use this framework for each indices
  * @author sufi
  *

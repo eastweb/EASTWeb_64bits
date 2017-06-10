@@ -291,7 +291,7 @@ import version2.prototype.ZonalSummary;
                     qc = null;
                 }
 
-                values = GetNodeListValuesIgnoreIfEmpty(plugin.getElementsByTagName("Indicies"), "Missing indicies for plugin '" + name + "'.");
+                values = GetNodeListValuesIgnoreIfEmpty(plugin.getElementsByTagName("Indices"), "Missing indices for plugin '" + name + "'.");
                 if(values.size() > 0) {
                     inidicies = values;
                 } else {

@@ -530,10 +530,10 @@ public class QueryUI {
     private void queryProject() {
         ProjectInfoFile project = ProjectInfoCollection.GetProject(Config.getInstance(), String.valueOf(projectListComboBox.getSelectedItem()));
         Map<Integer, EASTWebQuery> ewQuery = new HashMap<Integer, EASTWebQuery>();
-        String[] indicies = new String[includeIndicesListModel.toArray().length];
+        String[] indices = new String[includeIndicesListModel.toArray().length];
 
         for(int i=0; i < includeIndicesListModel.toArray().length; i++){
-            indicies[i] = includeIndicesListModel.get(i);
+            indices[i] = includeIndicesListModel.get(i);
         }
 
         for(ProjectInfoSummary summary : project.GetSummaries()) {
@@ -554,7 +554,7 @@ public class QueryUI {
                         (yearTextField.getText().equals("") ? null : Integer.parseInt(yearTextField.getText())),
                         String.valueOf(dayComboBox.getSelectedItem()),
                         (dayTextField.getText().equals("") ? null : Integer.parseInt(dayTextField.getText())),
-                        indicies,
+                        indices,
                         new Integer[]{summary.GetID()}));
             } catch (NumberFormatException e) {
                 ErrorLog.add(Config.getInstance(), "QueryUI.CreateSQLView problem with getting csv result files.", e);

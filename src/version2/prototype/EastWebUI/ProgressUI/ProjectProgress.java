@@ -28,7 +28,7 @@ public class ProjectProgress {
     private JList<String> logList;
     private JProgressBar downloadProgressBar;
     private JProgressBar processProgressBar;
-    private JProgressBar indiciesProgressBar;
+    private JProgressBar indicesProgressBar;
     private JProgressBar summaryProgressBar;
 
     private DefaultListModel<String> itemLog;
@@ -104,13 +104,13 @@ public class ProjectProgress {
         processProgressBar.setBounds(225, 55, 525, 25);
         panel.add(processProgressBar);
 
-        JLabel lblIndiciesProgress = new JLabel("Indices Progress:");
-        lblIndiciesProgress.setBounds(10, 85, 150, 25);
-        panel.add(lblIndiciesProgress);
-        indiciesProgressBar = new JProgressBar();
-        indiciesProgressBar.setStringPainted(true);
-        indiciesProgressBar.setBounds(225, 85, 525, 25);
-        panel.add(indiciesProgressBar);
+        JLabel lblIndicesProgress = new JLabel("Indices Progress:");
+        lblIndicesProgress.setBounds(10, 85, 150, 25);
+        panel.add(lblIndicesProgress);
+        indicesProgressBar = new JProgressBar();
+        indicesProgressBar.setStringPainted(true);
+        indicesProgressBar.setBounds(225, 85, 525, 25);
+        panel.add(indicesProgressBar);
 
         JLabel lblSummaryProgress = new JLabel("Summary Progress:");
         lblSummaryProgress.setBounds(10, 115, 150, 25);
@@ -182,8 +182,8 @@ public class ProjectProgress {
                         processProgressBar.setValue(0);
                         processProgressBar.setString("Error in Status");
 
-                        indiciesProgressBar.setValue(0);
-                        indiciesProgressBar.setString("Error in Status");
+                        indicesProgressBar.setValue(0);
+                        indicesProgressBar.setString("Error in Status");
 
                         summaryProgressBar.setValue(0);
                         summaryProgressBar.setString("Error in Status");
@@ -191,17 +191,17 @@ public class ProjectProgress {
                         itemLog.clear();
                     } else {
                         ProgressValue downloadValue = GetAverageDownload(status.GetDownloadProgressesByData());
-                        downloadProgressBar.setValue(downloadValue.current);//.PercentTotal());   // Truncates the double (so value always equates to double rounded down)
+                        downloadProgressBar.setValue(downloadValue.current);  // Truncates the double (so value always equates to double rounded down)
                         downloadProgressBar.setString(downloadValue.Description());
 
                         double scale = downloadValue.current/100.0;
                         ProgressValue processValue = GetAverage(status.GetProcessorProgresses());
-                        processProgressBar.setValue((int)(scale*processValue.current));//.PercentTotal());
+                        processProgressBar.setValue((int)(scale*processValue.current));
                         processProgressBar.setString(processValue.Description(scale));
 
                         ProgressValue indicesValue = GetAverage(status.GetIndicesProgresses());
-                        indiciesProgressBar.setValue((int)(scale*indicesValue.current));//.PercentTotal());
-                        indiciesProgressBar.setString(indicesValue.Description(scale));
+                        indicesProgressBar.setValue((int)(scale*indicesValue.current));
+                        indicesProgressBar.setString(indicesValue.Description(scale));
 
                         ProgressValue summaryValue = GetAverageSummary(status.GetSummaryProgresses());
                         summaryProgressBar.setValue((int)(scale*summaryValue.current));//.PercentTotal());

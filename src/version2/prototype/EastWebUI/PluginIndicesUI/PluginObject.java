@@ -1,4 +1,4 @@
-package version2.prototype.EastWebUI.PluginIndiciesUI;
+package version2.prototype.EastWebUI.PluginIndicesUI;
 
 import java.util.ArrayList;
 

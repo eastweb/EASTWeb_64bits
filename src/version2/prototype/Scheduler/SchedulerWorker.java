@@ -49,7 +49,7 @@ public class SchedulerWorker implements Callable<ProcessWorkerReturn> {
 
         double download;
         double processor;
-        double indicies;
+        double indices;
         double summary;
 
         ProcessWorkerReturn theReturn = null;
@@ -76,11 +76,11 @@ public class SchedulerWorker implements Callable<ProcessWorkerReturn> {
 
             download = statusContainer.downloadProgressesByData.lastEntry().getValue().lastEntry().getValue();
             processor = statusContainer.processorProgresses.lastEntry().getValue();
-            indicies = statusContainer.indicesProgresses.lastEntry().getValue();
+            indices = statusContainer.indicesProgresses.lastEntry().getValue();
             summary = statusContainer.summaryProgresses.lastEntry().getValue().lastEntry().getValue();
 
 
-            if(download >= 100 && processor >= 100 && indicies >= 100 && summary >= 100)
+            if(download >= 100 && processor >= 100 && indices >= 100 && summary >= 100)
             {
                 if(worker.verifyResults() == false)
                 {

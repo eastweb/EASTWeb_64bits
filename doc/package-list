@@ -2,7 +2,7 @@ com.toedter.calendar
 com.toedter.components
 version2.prototype
 version2.prototype.EastWebUI.MainWindow
-version2.prototype.EastWebUI.PluginIndiciesUI
+version2.prototype.EastWebUI.PluginIndicesUI
 version2.prototype.EastWebUI.ProgressUI
 version2.prototype.EastWebUI.ProjectInformationUI
 version2.prototype.EastWebUI.SummaryUI

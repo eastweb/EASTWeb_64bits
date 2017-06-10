@@ -1,10 +1,10 @@
-package version2.prototype.EastWebUI.PluginIndiciesUI;
+package version2.prototype.EastWebUI.PluginIndicesUI;
 
 import java.util.ArrayList;
 import java.util.EventObject;
 
 @SuppressWarnings("serial")
-public class IndiciesEventObject extends EventObject {
+public class IndicesEventObject extends EventObject {
     private String plugin;
     private ArrayList<String> globalModisTiles;
 
@@ -13,7 +13,7 @@ public class IndiciesEventObject extends EventObject {
      * @param source
      * @param plugin
      */
-    public IndiciesEventObject(Object source, String plugin, ArrayList<String> globalModisTiles) {
+    public IndicesEventObject(Object source, String plugin, ArrayList<String> globalModisTiles) {
         super(source);
         this.plugin = plugin;
         this.globalModisTiles = new ArrayList<String>();

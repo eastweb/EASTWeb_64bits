@@ -41,9 +41,9 @@ import version2.prototype.ErrorLog;
 import version2.prototype.EastWebUI.DocumentBuilderInstance;
 import version2.prototype.EastWebUI.MainWindow.MainWindowEvent;
 import version2.prototype.EastWebUI.MainWindow.MainWindowListener;
-import version2.prototype.EastWebUI.PluginIndiciesUI.AssociatePluginPage;
-import version2.prototype.EastWebUI.PluginIndiciesUI.IndiciesEventObject;
-import version2.prototype.EastWebUI.PluginIndiciesUI.IndiciesListener;
+import version2.prototype.EastWebUI.PluginIndicesUI.AssociatePluginPage;
+import version2.prototype.EastWebUI.PluginIndicesUI.IndicesEventObject;
+import version2.prototype.EastWebUI.PluginIndicesUI.IndicesListener;
 import version2.prototype.EastWebUI.SummaryUI.AssociateSummaryPage;
 import version2.prototype.EastWebUI.SummaryUI.SummaryEventObject;
 import version2.prototype.EastWebUI.SummaryUI.SummaryListener;
@@ -210,7 +210,7 @@ public class ProjectInformationPage {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 try {
-                    new AssociatePluginPage(new indiciesListenerImplementation(), globalModisTiles);
+                    new AssociatePluginPage(new indicesListenerImplementation(), globalModisTiles);
                 } catch (Exception e) {
                     ErrorLog.add(Config.getInstance(), "ProjectInformationPage.PopulatePluginList problem with creating new AssociatePluginPage.", e);
                 }
@@ -510,9 +510,9 @@ public class ProjectInformationPage {
                         }
                         else
                         {
-                            Element indicies = doc.createElement("Indicies");
-                            indicies.appendChild(doc.createTextNode(array[i].toString()));
-                            plugin.appendChild(indicies);
+                            Element indices = doc.createElement("Indices");
+                            indices.appendChild(doc.createTextNode(array[i].toString()));
+                            plugin.appendChild(indices);
                         }
                     }
 
@@ -825,10 +825,10 @@ public class ProjectInformationPage {
     }
 
     // communication between plugin window (associatePluginPage.java) and this window
-    class indiciesListenerImplementation implements IndiciesListener{
+    class indicesListenerImplementation implements IndicesListener{
 
         @Override
-        public void AddPlugin(IndiciesEventObject e) {
+        public void AddPlugin(IndicesEventObject e) {
             listOfAddedPluginModel.addElement(e.getPlugin());
 
             // check if the tiles was change

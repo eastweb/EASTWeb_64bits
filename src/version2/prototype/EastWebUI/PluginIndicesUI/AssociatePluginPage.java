@@ -1,4 +1,4 @@
-package version2.prototype.EastWebUI.PluginIndiciesUI;
+package version2.prototype.EastWebUI.PluginIndicesUI;
 
 import java.awt.EventQueue;
 
@@ -31,10 +31,10 @@ import java.awt.Font;
 
 public class AssociatePluginPage {
     public JFrame frame;
-    private IndiciesEvent indiciesEvent;
+    private IndicesEvent indicesEvent;
     private PluginMetaDataCollection pluginMetaDataCollection;
     private JComboBox<String> pluginComboBox ;
-    private JComboBox<String> indiciesComboBox;
+    private JComboBox<String> indicesComboBox;
     private JComboBox<String> qcComboBox;
     private JButton addNewModisButton;
     private JButton deleteSelectedModisButton;
@@ -43,7 +43,7 @@ public class AssociatePluginPage {
     private DefaultListModel<String> modisListModel;
 
     @SuppressWarnings("rawtypes")
-    private DefaultListModel indiciesListModel;
+    private DefaultListModel indicesListModel;
 
     /**
      * Launch application for debug.
@@ -66,15 +66,15 @@ public class AssociatePluginPage {
      * Create the application.
      * @throws Exception
      */
-    public AssociatePluginPage(IndiciesListener l, ArrayList<String> globalModisTiles) throws Exception {
+    public AssociatePluginPage(IndicesListener l, ArrayList<String> globalModisTiles) throws Exception {
         this.globalModisTiles = new ArrayList<String>();
 
         for(String tile :globalModisTiles) {
             this.globalModisTiles.add(tile);
         }
 
-        indiciesEvent = new IndiciesEvent();
-        indiciesEvent.addListener(l);
+        indicesEvent = new IndicesEvent();
+        indicesEvent.addListener(l);
         initialize();
         frame.setVisible(true);
     }
@@ -114,13 +114,13 @@ public class AssociatePluginPage {
         frame.getContentPane().add(pluginPanel);
 
         // list of indices to be added
-        indiciesListModel = new DefaultListModel();
+        indicesListModel = new DefaultListModel();
 
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBounds(10, 110, 320, 215);
         pluginPanel.add(scrollPane);
-        final JList<DefaultListModel> listOfInndicies = new JList<DefaultListModel>(indiciesListModel);
-        scrollPane.setViewportView(listOfInndicies);
+        final JList<DefaultListModel> listOfInndices = new JList<DefaultListModel>(indicesListModel);
+        scrollPane.setViewportView(listOfInndices);
 
         JLabel qcLabel = new JLabel("Quality Control");
         qcLabel.setBounds(10, 45, 80, 15);
@@ -130,12 +130,12 @@ public class AssociatePluginPage {
         pluginPanel.add(qcComboBox);
 
         // set indices UI
-        JLabel indiciesLabel = new JLabel("Indices");
-        indiciesLabel.setBounds(10, 75, 80, 15);
-        pluginPanel.add(indiciesLabel);
-        indiciesComboBox = new JComboBox<String>();
-        indiciesComboBox.setBounds(95, 75, 150, 25);
-        pluginPanel.add(indiciesComboBox);
+        JLabel indicesLabel = new JLabel("Indices");
+        indicesLabel.setBounds(10, 75, 80, 15);
+        pluginPanel.add(indicesLabel);
+        indicesComboBox = new JComboBox<String>();
+        indicesComboBox.setBounds(95, 75, 150, 25);
+        pluginPanel.add(indicesComboBox);
 
         // set plug-in data
         JLabel pluginLabel = new JLabel("Plugin");
@@ -155,10 +155,10 @@ public class AssociatePluginPage {
         // add plugin to list
         final JButton btnSave = new JButton("Save");
         btnSave.setBounds(10, 330, 90, 25);
-        btnSave.setEnabled(!indiciesListModel.isEmpty());
+        btnSave.setEnabled(!indicesListModel.isEmpty());
         btnSave.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent arg0) { saveAction(listOfInndicies);}
+            public void actionPerformed(ActionEvent arg0) { saveAction(listOfInndices);}
         });
         pluginPanel.add(btnSave);
 
@@ -183,16 +183,16 @@ public class AssociatePluginPage {
         pluginPanel.add(btnAddIndices);
 
         // delete selected indices
-        JButton btnDeleteIndicies = new JButton("");
-        btnDeleteIndicies.setBounds(290, 75, 35, 25);
-        btnDeleteIndicies.setToolTipText("delete selected indices");
-        btnDeleteIndicies.setIcon(new ImageIcon(AssociatePluginPage.class.getResource("/version2/prototype/Images/ChangeQueryType_deletequery_274.png")));
-        btnDeleteIndicies.addActionListener(new ActionListener() {
+        JButton btnDeleteIndices = new JButton("");
+        btnDeleteIndices.setBounds(290, 75, 35, 25);
+        btnDeleteIndices.setToolTipText("delete selected indices");
+        btnDeleteIndices.setIcon(new ImageIcon(AssociatePluginPage.class.getResource("/version2/prototype/Images/ChangeQueryType_deletequery_274.png")));
+        btnDeleteIndices.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent arg0) { deleteIndicesAction(listOfInndicies, btnSave); }
+            public void actionPerformed(ActionEvent arg0) { deleteIndicesAction(listOfInndices, btnSave); }
         });
 
-        pluginPanel.add(btnDeleteIndicies);
+        pluginPanel.add(btnDeleteIndices);
     }
 
     // generate format from list model to string
@@ -252,10 +252,10 @@ public class AssociatePluginPage {
 
     // save plug-in back to the project information
     @SuppressWarnings("rawtypes")
-    private void saveAction(final JList<DefaultListModel> listOfInndicies) {
+    private void saveAction(final JList<DefaultListModel> listOfInndices) {
         String formatString = String.format("<html>Plugin: %s;<br>Indices: %s</span> %s <br>Quality: %s;</span></html>",
                 String.valueOf(pluginComboBox.getSelectedItem()),
-                getIndicesFormat(listOfInndicies.getModel()),
+                getIndicesFormat(listOfInndices.getModel()),
                 getModisTilesFormat(modisListModel),
                 String.valueOf(qcComboBox.getSelectedItem()));
 
@@ -266,41 +266,41 @@ public class AssociatePluginPage {
             }
         }
 
-        indiciesEvent.fire(formatString, globalModisTiles);
+        indicesEvent.fire(formatString, globalModisTiles);
         frame.dispose();
     }
 
     // add indices
     @SuppressWarnings("unchecked")
     private void addIndicesAction(final JButton btnSave) {
-        if(indiciesComboBox.getSelectedItem() == null) {
+        if(indicesComboBox.getSelectedItem() == null) {
             return ;
         }
 
-        indiciesListModel.addElement(String.valueOf(indiciesComboBox.getSelectedItem()));
-        indiciesComboBox.removeItem(indiciesComboBox.getSelectedItem());
-        btnSave.setEnabled(!indiciesListModel.isEmpty());
+        indicesListModel.addElement(String.valueOf(indicesComboBox.getSelectedItem()));
+        indicesComboBox.removeItem(indicesComboBox.getSelectedItem());
+        btnSave.setEnabled(!indicesListModel.isEmpty());
     }
 
     // delete selected indices
     @SuppressWarnings("rawtypes")
-    private void deleteIndicesAction(final JList<DefaultListModel> listOfInndicies, final JButton btnSave) {
-        indiciesComboBox.addItem(indiciesListModel.getElementAt(listOfInndicies.getSelectedIndex()).toString());
+    private void deleteIndicesAction(final JList<DefaultListModel> listOfInndices, final JButton btnSave) {
+        indicesComboBox.addItem(indicesListModel.getElementAt(listOfInndices.getSelectedIndex()).toString());
 
-        DefaultListModel<DefaultListModel> model = (DefaultListModel<DefaultListModel>) listOfInndicies.getModel();
-        model.getElementAt(listOfInndicies.getSelectedIndex());
-        int selectedIndex = listOfInndicies.getSelectedIndex();
+        DefaultListModel<DefaultListModel> model = (DefaultListModel<DefaultListModel>) listOfInndices.getModel();
+        model.getElementAt(listOfInndices.getSelectedIndex());
+        int selectedIndex = listOfInndices.getSelectedIndex();
 
         if (selectedIndex != -1) {
             model.remove(selectedIndex);
         }
 
-        btnSave.setEnabled(!indiciesListModel.isEmpty());
+        btnSave.setEnabled(!indicesListModel.isEmpty());
     }
 
     // populate additional information UI for a plug-in
     private void setAdditionalInfomationUI() {
-        indiciesListModel.removeAllElements();
+        indicesListModel.removeAllElements();
         PluginMetaData plugin = pluginMetaDataCollection.pluginMetaDataMap.get(String.valueOf(pluginComboBox.getSelectedItem()));
 
         if(plugin.Title.toUpperCase().contains("MODIS")){
@@ -310,9 +310,9 @@ public class AssociatePluginPage {
             frame.setBounds(100, 100, 347, 400);
         }
 
-        indiciesComboBox.removeAllItems();
-        for(String indicies : plugin.Indices.indicesNames) {
-            indiciesComboBox.addItem(indicies);
+        indicesComboBox.removeAllItems();
+        for(String indices : plugin.Indices.indicesNames) {
+            indicesComboBox.addItem(indices);
         }
 
         qcComboBox.removeAllItems();
