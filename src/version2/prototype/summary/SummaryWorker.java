@@ -216,24 +216,20 @@ public class SummaryWorker extends ProcessWorker {
 
     @Override
     public boolean verifyResults() {
-
         String url = "jdbc:postgresql://localhost:" + configInstance.getPort() + "/" + configInstance.getDatabaseName();
-
         Connection con = null;
         boolean allGood = true;
         try {
             con = DriverManager.getConnection(url, configInstance.getDatabaseUsername(), configInstance.getDatabasePassword());
-
             for(ProjectInfoSummary summary: projectInfoFile.GetSummaries())
             {
-                if(!UpdateForMissingSummaries.findMissingSummaries(con, projectInfoFile.GetWorkingDir() + "\\projects", configInstance.getGlobalSchema(), 
+                if(!UpdateForMissingSummaries.findMissingSummaries(con, projectInfoFile.GetWorkingDir() + "\\projects", configInstance.getGlobalSchema(),
                         configInstance.getPort(), Schemas.getSchemaName(projectInfoFile.GetProjectName(), pluginInfo.GetName()),
                         projectInfoFile.GetProjectName(), projectInfoFile.GetStartDate(), "Summary " + summary.GetID(), pluginMetaData.DaysPerInputData, fileStores.get(summary.GetID()).compStrategy.maxNumberOfDaysInComposite(),
                         fileStores.get(summary.GetID()).compStrategy.getClass().getSimpleName(), pluginMetaData.CompositesContinueIntoNextYear)) {
                     allGood = false;
                 }
             }
-
             con.close();
         } catch (SQLException|NumberFormatException|ClassNotFoundException|FileNotFoundException e) {
             ErrorLog.add(process, "Problem identifying missing summaries", e);
@@ -246,9 +242,6 @@ public class SummaryWorker extends ProcessWorker {
                 }
             }
         }
-
         return allGood;
-
     }
-
 }
