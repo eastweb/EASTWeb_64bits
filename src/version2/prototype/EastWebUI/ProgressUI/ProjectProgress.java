@@ -119,9 +119,6 @@ public class ProjectProgress {
         summaryProgressBar.setStringPainted(true);
         summaryProgressBar.setBounds(225, 115, 525, 25);
         panel.add(summaryProgressBar);
-
-        //System.out.println("MAX: " + downloadProgressBar.getMaximum());
-        //System.out.println("MIN: " + downloadProgressBar.getMinimum());
     }
 
     private void CreateLogView() {
@@ -144,13 +141,9 @@ public class ProjectProgress {
         public int current;
         public double total;
 
-        public ProgressValue(int current, double total){
+        public ProgressValue(int current){
             this.current = current;
-            this.total = 100.0;
-        }
-
-        public int PercentTotal(){
-            return (int)(current/total*100);
+            total = 100.0;
         }
 
         public String Description(){
@@ -204,7 +197,7 @@ public class ProjectProgress {
                         indicesProgressBar.setString(indicesValue.Description(scale));
 
                         ProgressValue summaryValue = GetAverageSummary(status.GetSummaryProgresses());
-                        summaryProgressBar.setValue((int)(scale*summaryValue.current));//.PercentTotal());
+                        summaryProgressBar.setValue((int)(scale*summaryValue.current));
                         summaryProgressBar.setString(summaryValue.Description(scale));
 
                         itemLog.clear();
@@ -249,12 +242,11 @@ public class ProjectProgress {
                 total += TotalProgress.get(pluginIt.next());
             }
 
-            return new ProgressValue((int)total, total);
+            return new ProgressValue((int)total);
         }
 
         private ProgressValue GetAverageSummary(TreeMap<String, TreeMap<Integer, Double>> TotalProgress){
             double total = 0;
-            int count = 0;
             Iterator<String> pluginIt = TotalProgress.keySet().iterator();
             Iterator<Integer> summaryIt;
             TreeMap<Integer, Double> pluginTemp;
@@ -265,16 +257,14 @@ public class ProjectProgress {
 
                 while(summaryIt.hasNext()) {
                     total += pluginTemp.get(summaryIt.next());
-                    count++;
                 }
             }
 
-            return new ProgressValue((int)total, total);
+            return new ProgressValue((int)total);
         }
 
         private ProgressValue GetAverageDownload(TreeMap<String, TreeMap<String, Double>> TotalProgress){
             double total = 0;
-            int count = 0;
             Iterator<String> pluginIt = TotalProgress.keySet().iterator();
             TreeMap<String, Double> dataMap;
 
@@ -283,11 +273,9 @@ public class ProjectProgress {
 
                 for(Double value : dataMap.values()){
                     total += value;
-                    count++;
                 }
             }
-
-            return new ProgressValue((int)total, total);
+            return new ProgressValue((int)total);
         }
     }
 }
