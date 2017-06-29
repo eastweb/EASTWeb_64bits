@@ -3,6 +3,7 @@ package version2.prototype.summary.temporal.MergeStrategies;
 import java.io.File;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.util.Arrays;
 
 import org.gdal.gdal.Dataset;
 import org.gdal.gdal.gdal;
@@ -54,7 +55,7 @@ public class AvgGdalRasterFileMerge implements MergeStrategy {
             int index;
             double[] tempArray = new double[ySize * xSize];
             int[] pixelsPerPos = new int[tempArray.length];
-            for(int y=0; y < ySize; y++)
+            /*for(int y=0; y < ySize; y++)
             {
                 for(int x=0; x < xSize; x++)
                 {
@@ -62,7 +63,10 @@ public class AvgGdalRasterFileMerge implements MergeStrategy {
                     avgArray[index] = 0;
                     pixelsPerPos[index] = 0;
                 }
-            }
+            }*/
+            // Above lines can be replaced by the following lines - roberto.villegas
+            Arrays.fill(tempArray, 0.0);
+            Arrays.fill(pixelsPerPos, 0);
 
             // Sum up values from the rest of the files
             for(int i=1; i < rasterFiles.length; i++)

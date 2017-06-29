@@ -1,5 +1,6 @@
 package version2.prototype.EastWebUI.ProjectInformationUI;
 
+import java.awt.Dialog;
 import java.awt.EventQueue;
 import java.awt.Font;
 
@@ -89,6 +90,8 @@ public class ProjectInformationPage {
     private DefaultListModel<String> summaryListModel;
     private JTextField resolutionTextField;
 
+    private Object[] possibilities = {"Weekly", "Bi-weekly", "Monthly", "Yearly"};
+    private int BigDataMode = possibilities.length - 1; // By default the Big Data mode is Yearly
     /**
      * Launch the application.
      */
@@ -371,6 +374,51 @@ public class ProjectInformationPage {
         isClippingCheckBox = new JCheckBox("");
         isClippingCheckBox.setBounds(150, 330, 200, 15);
         panel.add(isClippingCheckBox);
+
+        JLabel lblBigDataMode = new JLabel("Big Data mode:");
+        lblBigDataMode.setBounds(10, 356, 130, 14);
+        panel.add(lblBigDataMode);
+
+        JCheckBox chckbxBigDataMode = new JCheckBox("");
+        chckbxBigDataMode.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    if(chckbxBigDataMode.isSelected()) {
+                        String s = (String)JOptionPane.showInputDialog(
+                                frame,
+                                "How do you want the data to be split:",
+                                "Advanced Configuration",
+                                JOptionPane.QUESTION_MESSAGE,
+                                null,
+                                possibilities,
+                                possibilities[BigDataMode]);
+
+                        //If a string was returned, say so.
+                        if ((s != null) && (s.length() > 0)) {
+                            for(int i = 0; i < possibilities.length;i++) {
+                                if(s.equals(possibilities[i])){
+                                    BigDataMode = i;
+                                    break;
+                                }
+                            }
+                        }
+
+                        //If you're here, the return value was null/empty.
+                        //setLabel("Come on, finish the sentence!");
+                        //new ProjectInformationAdvancedMode(BigDataMode,frame);
+                        //ProjectInformationAdvancedMode p = new ProjectInformationAdvancedMode(BigDataMode);
+                        //f7.setModalityExclusionType(Dialog.ModalExclusionType.APPLICATION_EXCLUDED);
+                        //p.setVisible(true);
+                        //JOptionPane.showMessageDialog(null, ""+p.GetBigDataMode());
+                    }
+                } catch (Exception ex) {
+                    ErrorLog.add(Config.getInstance(), "ProjectInformationPage.ProjectInformationAdvancedMode problem with configuring the Big Data mode.", ex);
+                }
+            }
+        });
+        chckbxBigDataMode.setBounds(150, 352, 200, 23);
+        panel.add(chckbxBigDataMode);
     }
 
     // populate project information UI

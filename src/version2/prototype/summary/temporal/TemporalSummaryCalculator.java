@@ -30,7 +30,7 @@ public class TemporalSummaryCalculator {
     protected final IndicesFileMetaData inputFile;
     protected int daysPerInputData;
     protected final TemporalSummaryRasterFileStore fileStore;
-    @SuppressWarnings("unused")
+
     protected final InterpolateStrategy intStrategy;
     protected final MergeStrategy mergeStrategy;
     protected final ProjectInfoSummary summary;

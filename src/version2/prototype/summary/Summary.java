@@ -73,5 +73,4 @@ public class Summary extends Process {
     public void process(ArrayList<DataFileMetaData> cachedFiles) {
         scheduler.StartNewProcessWorker(new SummaryWorker(configInstance, this, projectInfoFile, pluginInfo, pluginMetaData, cachedFiles, outputCache, fileStores));
     }
-
 }
