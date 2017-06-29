@@ -50,6 +50,10 @@ public class ProjectInfoCollection {
                 ProjectInfoFile metaData;
                 for(File fi : fl)
                 {
+                    if(fi.getName().contains("-SUB")) {
+                        continue;
+                    }
+                    //System.out.print(fi.getName());
                     try{
                         metaData = new ProjectInfoFile(configInstance, fi.getCanonicalPath());
                         if(metaData.error) {
@@ -70,6 +74,44 @@ public class ProjectInfoCollection {
         }
 
         return projectListClone;
+    }
+
+    public static ArrayList<ProjectInfoFile> GetAllSubProjectsFiles(Config configInstance, String ProjectName)
+    {
+        ArrayList<ProjectInfoFile> subprojectsList;
+        synchronized(projectsListLock)
+        {
+            boolean haveEndDate = true;
+            projects = new ArrayList<ProjectInfoFile>();
+            File fileDir = new File(System.getProperty("user.dir") + "\\projects\\");
+            File[] fl = getXMLFiles(fileDir);
+            if(fl.length > 0)
+            {
+                ProjectInfoFile metaData;
+                for(File fi : fl)
+                {
+                    //System.out.println(ProjectName.trim()+"-SUB");
+                    if(!fi.getName().replaceAll(" ", "_").contains(ProjectName.trim()+"-SUB")){
+                        continue;
+                    }
+                    //System.out.println(fi.getName());
+                    try{
+                        metaData = new ProjectInfoFile(configInstance, fi.getCanonicalPath(),haveEndDate);
+                        if(metaData.error) {
+                            ErrorLog.add(Config.getInstance(), "Parsing failure" + (metaData.GetErrorMessages().size() > 1 ? "s" : "") + " for file project meta data file '" + fi.getName() + "'. "
+                                    + metaData.GetErrorMessages().toString(),
+                                    new Exception("Parsing failure" + (metaData.GetErrorMessages().size() > 1 ? "s" : "") + " for file project meta data file '" + fi.getName() + "'."));
+                        } else {
+                            projects.add(metaData);
+                        }
+                    } catch(Exception e) {
+                        ErrorLog.add(Config.getInstance(), "Project meta data file, " + fi.getName() + " has an error in it.", e);
+                    }
+                }
+            }
+            subprojectsList = (ArrayList<ProjectInfoFile>) projects.clone();
+        }
+        return subprojectsList;
     }
 
     /**

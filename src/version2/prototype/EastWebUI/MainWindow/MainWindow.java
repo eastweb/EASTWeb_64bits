@@ -475,8 +475,12 @@ public class MainWindow {
     private void runProject() {
         String selectedProject = String.valueOf(projectList.getSelectedItem());
         ProjectInfoFile project = ProjectInfoCollection.GetProject(Config.getInstance(), selectedProject);
-
-        try {
+        ArrayList<ProjectInfoFile> subprojects = ProjectInfoCollection.GetAllSubProjectsFiles(Config.getInstance(), project.GetProjectName());
+        for(ProjectInfoFile p : subprojects){
+            System.out.println(p.GetStartDate().toString()+" --- "+p.GetEndDate().toString());
+            System.out.println(p.GetProjectName());
+        }
+        /*try {
             SchedulerData data = new SchedulerData(project, !chckbxIntermidiateFiles.isSelected());
             EASTWebManager.LoadNewScheduler(data, false);
             runningProjects.add(String.valueOf(projectList.getSelectedItem()));
@@ -491,7 +495,7 @@ public class MainWindow {
             ErrorLog.add(Config.getInstance(), "MainWindow.FileMenu problem with creating new file from Desktop.", e);
         } catch (Exception e) {
             ErrorLog.add(Config.getInstance(), "MainWindow.FileMenu problem with creating new file from Desktop.", e);
-        }
+        }*/
     }
 
     /**

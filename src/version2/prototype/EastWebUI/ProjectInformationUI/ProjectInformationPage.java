@@ -230,11 +230,9 @@ public class ProjectInformationPage {
                                 l = l.withSecondOfMinute(59);
                                 startDates.add(f.toString("EEE MMM dd HH:mm:ss zzz yyyy"));
                                 endDates.add(l.toString("EEE MMM dd HH:mm:ss zzz yyyy"));
-                                //System.out.println("Start: "+f.toString("EEE MMM dd HH:mm:ss zzz yyyy")+"\tEnd: "+l.toString("EEE MMM dd HH:mm:ss zzz yyyy"));
                                 f = l.plusDays(1);
                             }
                             CreateSubProjects(startDates,endDates);
-                            //CreateNewProject();
                             break;
                         }
                     } else {
@@ -941,22 +939,24 @@ public class ProjectInformationPage {
             if(ProjectInfoCollection.WriteProjectToFile(doc, this.projectName.getText())){
                 System.out.println("File saved!");
                 Element startDateSUB, endDateSUB;
-                projectInfo.appendChild(startDate);
+                projectInfo.removeChild(startDate);
+                projectInfo.removeChild(projectName);
 
                 for(int s=0; s < startDates.size(); s++){
                     startDateSUB = doc.createElement("StartDate");
                     endDateSUB = doc.createElement("EndDate");
+                    projectName = doc.createElement("ProjectName");
                     startDateSUB.appendChild(doc.createTextNode(startDates.get(s)));
                     endDateSUB.appendChild(doc.createTextNode(endDates.get(s)));
-                    if(s==0) {
-                        projectInfo.removeChild(startDate);
-                    }
+                    projectName.appendChild(doc.createTextNode(this.projectName.getText()+"-SUB"+s));
+                    projectInfo.appendChild(projectName);
                     projectInfo.appendChild(startDateSUB);
                     projectInfo.appendChild(endDateSUB);
                     if(ProjectInfoCollection.WriteProjectToFile(doc, this.projectName.getText()+"-SUB"+s)){
                         System.out.println("Subproject saved!");
                         projectInfo.removeChild(startDateSUB);
                         projectInfo.removeChild(endDateSUB);
+                        projectInfo.removeChild(projectName);
                     } else {
                         System.out.println("Error in saving");
                     }

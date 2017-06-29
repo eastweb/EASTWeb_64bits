@@ -94,6 +94,38 @@ import version2.prototype.ZonalSummary;
         // Get file data
         plugins = ReadPlugins();
         startDate = ReadStartDate();
+        endDate = LocalDate.now();
+        projectName = ReadProjectName();
+        workingDir = ReadWorkingDir();
+        maskingFile = ReadMaskingFile();
+        maskingResolution = ReadMaskingResolution();
+        masterShapeFile = ReadMasterShapeFile();
+        timeZone = ReadTimeZone();
+        clipping = ReadClipping();
+        projection = new Projection(ReadResamplingType(), ReadPixelSize());
+        freezingDate = ReadFreezingDate();
+        coolingDegree = ReadCoolingDegree();
+        heatingDate = ReadHeatingDate();
+        heatingDegree = ReadHeatingDegree();
+        summaries = ReadSummaries();
+    }
+
+    public ProjectInfoFile(Config configInstance, String xmlLocation, boolean HasEndDate) throws ParserConfigurationException, SAXException, IOException, ClassNotFoundException,
+    NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    {
+        this.configInstance = configInstance;
+        error = false;
+        errorMsg = new ArrayList<String>();
+        this.xmlLocation = xmlLocation;
+        domFactory = DocumentBuilderFactory.newInstance();
+        domFactory.setNamespaceAware(true);
+        builder = domFactory.newDocumentBuilder();
+        doc = builder.parse(xmlLocation);
+        doc.getDocumentElement().normalize();
+
+        // Get file data
+        plugins = ReadPlugins();
+        startDate = ReadStartDate();
         endDate = ReadEndDate();
         projectName = ReadProjectName();
         workingDir = ReadWorkingDir();
@@ -339,6 +371,8 @@ import version2.prototype.ZonalSummary;
             if(values.size() > 0) {
                 return LocalDate.parse(values.get(0), datesFormatter);
             }
+        } else {
+            return LocalDate.parse(LocalDate.now().toString(), datesFormatter);
         }
         return null;
     }
