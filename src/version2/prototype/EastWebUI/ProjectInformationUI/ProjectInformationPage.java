@@ -940,212 +940,31 @@ public class ProjectInformationPage {
 
             if(ProjectInfoCollection.WriteProjectToFile(doc, this.projectName.getText())){
                 System.out.println("File saved!");
-                Element startDateSUB = doc.createElement("StartDate");
-                Element endDateSUB = doc.createElement("EndDate");
-
+                Element startDateSUB, endDateSUB;
                 projectInfo.appendChild(startDate);
 
-                // end Date
-                //
                 for(int s=0; s < startDates.size(); s++){
+                    startDateSUB = doc.createElement("StartDate");
+                    endDateSUB = doc.createElement("EndDate");
                     startDateSUB.appendChild(doc.createTextNode(startDates.get(s)));
                     endDateSUB.appendChild(doc.createTextNode(endDates.get(s)));
                     if(s==0) {
-                        projectInfo.replaceChild(startDateSUB, startDate);
-                        projectInfo.appendChild(endDateSUB);
-                    } else {
-                        projectInfo.replaceChild(startDateSUB, startDateSUB);
-                        projectInfo.replaceChild(endDateSUB, endDateSUB);
+                        projectInfo.removeChild(startDate);
                     }
+                    projectInfo.appendChild(startDateSUB);
+                    projectInfo.appendChild(endDateSUB);
                     if(ProjectInfoCollection.WriteProjectToFile(doc, this.projectName.getText()+"-SUB"+s)){
                         System.out.println("Subproject saved!");
+                        projectInfo.removeChild(startDateSUB);
+                        projectInfo.removeChild(endDateSUB);
                     } else {
                         System.out.println("Error in saving");
                     }
                 }
-                mainWindowEvent.fire();
+                //mainWindowEvent.fire();
             }else{
                 System.out.println("Error in saving");
             }
-
-            /*Document doc[] = new Document[startDates.size()];
-            for(int s=0; s < startDates.size(); s++){
-                // root elements
-                doc[s] = DocumentBuilderInstance.Instance().GetDocument();
-                Element projectInfo = doc[s].createElement("ProjectInfo");
-                doc[s].appendChild(projectInfo);
-
-                // Plugin elements
-                Element plugins = doc[s].createElement("Plugins");
-                projectInfo.appendChild(plugins);
-
-                //list of plugin associate to project
-                for(Object item:listOfAddedPluginModel.toArray()){
-                    Element plugin = doc[s].createElement("Plugin");
-
-                    // set attribute to staff element
-                    Attr attr = doc[s].createAttribute("name");
-                    String noFormat = item.toString().replaceAll("<html>Plugin: ","");
-                    noFormat = noFormat.replaceAll("<br>Indices: ", "");
-                    noFormat = noFormat.replaceAll("<br>Quality: ","");
-                    noFormat = noFormat.replaceAll("<br>Modis Tiles: ","");
-                    noFormat = noFormat.replaceAll("</html>", "");
-                    noFormat = noFormat.replaceAll("</span>", "");
-                    noFormat = noFormat.replaceAll("<span>", "");
-
-                    String[] array = noFormat.split(";");
-
-                    attr.setValue(array[0].toString());
-                    plugin.setAttributeNode(attr);
-
-                    if(array.length < 3){
-                        // start Date
-                        Element qc = doc[s].createElement("QC");
-                        qc.appendChild(doc[s].createTextNode(array[1].toString()));
-                        plugin.appendChild(qc);
-                    }
-                    else{
-                        for(int i = 1; i < array.length -1; i++){
-
-                            if(isValueAModisTile(array, i))
-                            {
-                                Element modisTile = doc[s].createElement("ModisTile");
-                                modisTile.appendChild(doc[s].createTextNode(array[i].toString()));
-                                plugin.appendChild(modisTile);
-                            }
-                            else
-                            {
-                                Element indices = doc[s].createElement("Indices");
-                                indices.appendChild(doc[s].createTextNode(array[i].toString()));
-                                plugin.appendChild(indices);
-                            }
-                        }
-
-                        Element qc = doc[s].createElement("QC");
-                        qc.appendChild(doc[s].createTextNode(array[array.length - 1].toString()));
-                        plugin.appendChild(qc);
-                    }
-
-                    // add a new node for plugin element
-                    plugins.appendChild(plugin);
-                }
-
-                // start Date
-                Element startDate = doc[s].createElement("StartDate");
-                startDate.appendChild(doc[s].createTextNode(startDates.get(s)));
-                projectInfo.appendChild(startDate);
-
-                // end Date
-                Element endDate = doc[s].createElement("EndDate");
-                endDate.appendChild(doc[s].createTextNode(endDates.get(s)));
-                projectInfo.appendChild(endDate);
-
-                // project name
-                Element projectName = doc[s].createElement("ProjectName");
-                projectName.appendChild(doc[s].createTextNode(this.projectName.getText()));
-                projectInfo.appendChild(projectName);
-
-                // working directory
-                Element workingDirectory = doc[s].createElement("WorkingDir");
-                workingDirectory.appendChild(doc[s].createTextNode(this.workingDirectory.getText()));
-                projectInfo.appendChild(workingDirectory);
-
-                // masking file
-                Element masking = doc[s].createElement("Masking");
-                projectInfo.appendChild(masking);
-
-                Element maskingFile = doc[s].createElement("File");
-                maskingFile.appendChild(doc[s].createTextNode(maskFile.getText()));
-                masking.appendChild(maskingFile);
-
-                Dataset hDataset;
-                double[] adfGeoTransform = new double[6];
-                String pszFilename = maskFile.getText();
-                String res="";
-
-                gdal.AllRegister();
-
-                hDataset = gdal.Open(pszFilename, gdalconstConstants.GA_ReadOnly);
-
-                if (hDataset != null)
-                {
-                    hDataset.GetGeoTransform(adfGeoTransform);
-                    {
-                        if (adfGeoTransform[2] == 0.0 && adfGeoTransform[4] == 0.0) {
-                            res = "" + ((int) (adfGeoTransform[1] + 0.5));
-                        }
-                    }
-
-                    hDataset.delete();
-                }
-
-                Element resolution = doc[s].createElement("Resolution");
-                resolution.appendChild(doc[s].createTextNode(res));
-                masking.appendChild(resolution);
-
-                Element masterShapeFile = doc[s].createElement("MasterShapeFile");
-                masterShapeFile.appendChild(doc[s].createTextNode(masterShapeTextField.getText()));
-                projectInfo.appendChild(masterShapeFile);
-
-                Element timeZone = doc[s].createElement("TimeZone");
-                timeZone.appendChild(doc[s].createTextNode(String.valueOf(timeZoneComboBox.getSelectedItem())));
-                projectInfo.appendChild(timeZone);
-
-                Element isClipping = doc[s].createElement("Clipping");
-                isClipping.appendChild(doc[s].createTextNode(String.valueOf(isClippingCheckBox.isSelected())));
-                projectInfo.appendChild(isClipping);
-
-                // Freezing start Date
-                Element freezingstartDate = doc[s].createElement("FreezingDate");
-                freezingstartDate.appendChild(doc[s].createTextNode(freezingDateChooser.getDate().toString()));
-                projectInfo.appendChild(freezingstartDate);
-
-                // Cooling degree value
-                Element coolingDegree = doc[s].createElement("CoolingDegree");
-                coolingDegree.appendChild(doc[s].createTextNode(coolingTextField.getText()));
-                projectInfo.appendChild(coolingDegree);
-
-                // Heating start Date
-                Element heatingstartDate = doc[s].createElement("HeatingDate");
-                heatingstartDate.appendChild(doc[s].createTextNode(heatingDateChooser.getDate().toString()));
-                projectInfo.appendChild(heatingstartDate);
-
-                // heating degree value
-                Element heatingDegree = doc[s].createElement("HeatingDegree");
-                heatingDegree.appendChild(doc[s].createTextNode(heatingTextField.getText()));
-                projectInfo.appendChild(heatingDegree);
-
-                // re-sampling
-                Element reSampling = doc[s].createElement("ReSampling");
-                reSampling.appendChild(doc[s].createTextNode(String.valueOf(reSamplingComboBox.getSelectedItem())));
-                projectInfo.appendChild(reSampling);
-
-                //datum
-                Element pixelSize = doc[s].createElement("PixelSize");
-                pixelSize.appendChild(doc[s].createTextNode(String.valueOf(this.pixelSize.getText())));
-                projectInfo.appendChild(pixelSize);
-
-                //list of summary tiles
-                Element summaries = doc[s].createElement("Summaries");
-                projectInfo.appendChild(summaries);
-
-                int summaryCounter = 1;
-                for(Object item:summaryListModel.toArray()){
-                    Element summary = doc[s].createElement("Summary");
-                    summary.setAttribute("ID", String.valueOf(summaryCounter));
-                    summaryCounter ++;
-
-                    summary.appendChild(doc[s].createTextNode(item.toString()));
-                    summaries.appendChild(summary);
-                }
-
-                if(ProjectInfoCollection.WriteProjectToFile(doc[s], this.projectName.getText()+"-SUB"+s)){
-                    System.out.println("Subproject saved!");
-                    //mainWindowEvent.fire();
-                }else{
-                    System.out.println("Error in saving");
-                }
-            }*/
         } catch (ParserConfigurationException e) {
             ErrorLog.add(Config.getInstance(), "ProjectInformationPage.CreateNewProject problem with creating new project.", e);
         }

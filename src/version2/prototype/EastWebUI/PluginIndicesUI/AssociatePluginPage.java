@@ -42,6 +42,7 @@ public class AssociatePluginPage {
     private ArrayList<String> globalModisTiles;
     private DefaultListModel<String> modisListModel;
 
+    private static JFrame parent = null;
     @SuppressWarnings("rawtypes")
     private DefaultListModel indicesListModel;
 
@@ -53,7 +54,7 @@ public class AssociatePluginPage {
             @Override
             public void run() {
                 try {
-                    AssociatePluginPage window = new AssociatePluginPage(null, new ArrayList<String>(),null);
+                    AssociatePluginPage window = new AssociatePluginPage(null, new ArrayList<String>(),parent);
                     window.frame.setVisible(true);
                 } catch (Exception e) {
                     ErrorLog.add(Config.getInstance(), "AssociatePluginPage.main problem with running a AssociatePluginPage window.", e);
@@ -67,6 +68,7 @@ public class AssociatePluginPage {
      * @throws Exception
      */
     public AssociatePluginPage(IndicesListener l, ArrayList<String> globalModisTiles, JFrame parent) throws Exception {
+        AssociatePluginPage.parent = parent;
         this.globalModisTiles = new ArrayList<String>();
 
         for(String tile :globalModisTiles) {
@@ -77,7 +79,7 @@ public class AssociatePluginPage {
         indicesEvent.addListener(l);
         initialize();
         frame.setVisible(true);
-        frame.setLocationRelativeTo(parent);
+        frame.setLocationRelativeTo(AssociatePluginPage.parent);
     }
 
     /**
@@ -88,7 +90,6 @@ public class AssociatePluginPage {
         UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 
         frame = new JFrame();
-        //frame.setBounds(100, 100, 345, 400);
         frame.setBounds(100, 100, 603, 400);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -305,10 +306,14 @@ public class AssociatePluginPage {
         PluginMetaData plugin = pluginMetaDataCollection.pluginMetaDataMap.get(String.valueOf(pluginComboBox.getSelectedItem()));
 
         if(plugin.Title.toUpperCase().contains("MODIS")){
-            frame.setBounds(100, 100, 603, 400);
+            if(frame.getBounds().width == 347) {
+                frame.setBounds(frame.getBounds().x-128, frame.getBounds().y, 603, 400);
+            }
         }
         else {
-            frame.setBounds(100, 100, 347, 400);
+            if(frame.getBounds().width == 603) {
+                frame.setBounds(frame.getBounds().x+128, frame.getBounds().y, 347, 400);
+            }
         }
 
         indicesComboBox.removeAllItems();
