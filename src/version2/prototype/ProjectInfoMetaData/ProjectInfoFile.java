@@ -44,6 +44,7 @@ import version2.prototype.ZonalSummary;
     //    private final String rootElement = "ProjectInfo";
     private final ArrayList<ProjectInfoPlugin> plugins;
     private final LocalDate startDate;
+    private final LocalDate endDate;
     private final String projectName;
     private final String workingDir;
     private final String maskingFile;
@@ -93,6 +94,7 @@ import version2.prototype.ZonalSummary;
         // Get file data
         plugins = ReadPlugins();
         startDate = ReadStartDate();
+        endDate = ReadEndDate();
         projectName = ReadProjectName();
         workingDir = ReadWorkingDir();
         maskingFile = ReadMaskingFile();
@@ -128,7 +130,7 @@ import version2.prototype.ZonalSummary;
      * @param summaries
      */
     @SuppressWarnings("unchecked")
-    public ProjectInfoFile(ArrayList<ProjectInfoPlugin> plugins, LocalDate startDate, String projectName, String workingDir, String maskingFile, Integer maskingResolution, String masterShapeFile,
+    public ProjectInfoFile(ArrayList<ProjectInfoPlugin> plugins, LocalDate startDate, LocalDate endDate, String projectName, String workingDir, String maskingFile, Integer maskingResolution, String masterShapeFile,
             String timeZone, Boolean clipping, Projection projection, LocalDate freezingDate, Double coolingDegree, LocalDate heatingDate, Double heatingDegree,
             ArrayList<ProjectInfoSummary> summaries)
     {
@@ -136,6 +138,7 @@ import version2.prototype.ZonalSummary;
         xmlLocation = null;
         this.plugins = (ArrayList<ProjectInfoPlugin>) plugins.clone();
         this.startDate = startDate;
+        this.endDate = endDate;
         this.projectName = projectName;
         this.workingDir = workingDir;
         this.maskingFile = maskingFile;
@@ -165,6 +168,8 @@ import version2.prototype.ZonalSummary;
      * @return Date object representing the start date that could be created from the xml's data.
      */
     public LocalDate GetStartDate() { return startDate; }
+
+    public LocalDate GetEndDate(){ return endDate; }
 
     /**
      * Gets the project name gotten from the once parsed xml file.
@@ -325,6 +330,17 @@ import version2.prototype.ZonalSummary;
         //            errorMsg.add(e.getMessage());
         //            return null;
         //        }
+    }
+
+    private LocalDate ReadEndDate() throws DateTimeParseException{
+        NodeList nodes = GetUpperLevelNodeListIgnoreIfEmpty("EndDate", "Missing end date.");
+        if(nodes!=null){
+            ArrayList<String> values = GetNodeListValues(nodes, "Missing end date.");
+            if(values.size() > 0) {
+                return LocalDate.parse(values.get(0), datesFormatter);
+            }
+        }
+        return null;
     }
 
     private String ReadProjectName()

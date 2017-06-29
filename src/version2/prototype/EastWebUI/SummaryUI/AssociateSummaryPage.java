@@ -41,7 +41,7 @@ public class AssociateSummaryPage {
             @Override
             public void run() {
                 try {
-                    new AssociateSummaryPage(null);
+                    new AssociateSummaryPage(null,null);
                 } catch (Exception e) {
                     ErrorLog.add(Config.getInstance(), "AssociateSummaryPage.main problem running an AssociateSummaryPage window.", e);
                 }
@@ -52,7 +52,7 @@ public class AssociateSummaryPage {
     /**
      * Create the application.
      */
-    public AssociateSummaryPage(SummaryListener l){
+    public AssociateSummaryPage(SummaryListener l,JFrame parent){
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
@@ -67,6 +67,7 @@ public class AssociateSummaryPage {
         frame.setBounds(100, 100, 401, 300);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLocationRelativeTo(parent);
 
         initialize();
     }

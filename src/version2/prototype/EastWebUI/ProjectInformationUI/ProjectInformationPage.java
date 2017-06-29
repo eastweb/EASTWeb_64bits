@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.text.ParseException;
+import java.time.Duration;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,6 +57,9 @@ import version2.prototype.ProjectInfoMetaData.ProjectInfoSummary;
 import org.gdal.gdal.Dataset;
 import org.gdal.gdal.gdal;
 import org.gdal.gdalconst.gdalconstConstants;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Interval;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -71,7 +75,7 @@ public class ProjectInformationPage {
     private MainWindowEvent mainWindowEvent;
 
     private JFrame frame;
-    private JDateChooser  startDate;
+    private JDateChooser startDate;
     private JTextField projectName;
     private JTextField workingDirectory;
     private JTextField maskFile;
@@ -81,6 +85,7 @@ public class ProjectInformationPage {
     private JComboBox<String> projectCollectionComboBox;
     private JTextField masterShapeTextField;
     private JCheckBox isClippingCheckBox;
+    private JCheckBox chckbxBigDataMode;
     private JDateChooser freezingDateChooser;
     private JTextField coolingTextField;
     private JDateChooser heatingDateChooser;
@@ -163,8 +168,78 @@ public class ProjectInformationPage {
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
+                int months, years;
+                DateTime f, l, temp;
+                DateTime start = new DateTime(startDate.getDate());
+                DateTime now = new DateTime();
+                List<String> startDates = new ArrayList<>();
+                List<String> endDates = new ArrayList<>();
                 try {
-                    CreateNewProject();
+                    if(chckbxBigDataMode.isSelected()) {
+                        switch(BigDataMode){
+                        case 0:
+                            break;
+                        case 2:
+                            years = now.getYear() - start.getYear() + 1;
+                            f = start;
+                            l = start;
+                            for(int i=0; i < years; i++){
+                                temp = l;
+                                while(l.isBefore(now.toInstant()) && l.getYear() <= f.getYear()){
+                                    l = l.plusMonths(1);
+                                }
+                                l = l.minusMonths(1);
+                                months = l.getMonthOfYear() - f.getMonthOfYear() + 1;
+                                l = temp;
+                                for(int j=0; j < months; j++){
+                                    while(l.isBefore(now.toInstant()) && l.getMonthOfYear() <= f.getMonthOfYear() && l.getYear() <= f.getYear()){
+                                        l = l.plusDays(1);
+                                    }
+                                    l = l.minusDays(1);
+                                    f = f.withHourOfDay(0);
+                                    f = f.withMinuteOfHour(0);
+                                    f = f.withSecondOfMinute(0);
+                                    l = l.withHourOfDay(23);
+                                    l = l.withMinuteOfHour(59);
+                                    l = l.withSecondOfMinute(59);
+                                    startDates.add(f.toString("EEE MMM dd HH:mm:ss zzz yyyy"));
+                                    endDates.add(l.toString("EEE MMM dd HH:mm:ss zzz yyyy"));
+                                    //System.out.println("Start: "+f.toString("EEE MMM dd HH:mm:ss zzz yyyy")+"\tEnd: "+l.toString("yyyy-MMM-dd"));
+                                    f = l.plusDays(1);
+                                }
+                                l = l.plusDays(1);
+                            }
+                            CreateSubProjects(startDates,endDates);
+                            //CreateNewProject();
+                            break;
+                        default:
+                            years = now.getYear() - start.getYear();
+                            years++;
+                            f = start;
+                            l = start;
+                            for(int i=0; i<years; i++){
+                                while(l.isBefore(now.toInstant()) && l.getYear() <= f.getYear()){
+                                    l = l.plusDays(1);
+                                }
+                                l = l.minusDays(1);
+                                f = f.withHourOfDay(0);
+                                f = f.withMinuteOfHour(0);
+                                f = f.withSecondOfMinute(0);
+                                l = l.withHourOfDay(23);
+                                l = l.withMinuteOfHour(59);
+                                l = l.withSecondOfMinute(59);
+                                startDates.add(f.toString("EEE MMM dd HH:mm:ss zzz yyyy"));
+                                endDates.add(l.toString("EEE MMM dd HH:mm:ss zzz yyyy"));
+                                //System.out.println("Start: "+f.toString("EEE MMM dd HH:mm:ss zzz yyyy")+"\tEnd: "+l.toString("EEE MMM dd HH:mm:ss zzz yyyy"));
+                                f = l.plusDays(1);
+                            }
+                            CreateSubProjects(startDates,endDates);
+                            //CreateNewProject();
+                            break;
+                        }
+                    } else {
+                        CreateNewProject();
+                    }
                     JOptionPane.showMessageDialog(frame, "Project was saved");
                     frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
                 } catch (TransformerException e) {
@@ -213,7 +288,7 @@ public class ProjectInformationPage {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 try {
-                    new AssociatePluginPage(new indicesListenerImplementation(), globalModisTiles);
+                    new AssociatePluginPage(new indicesListenerImplementation(), globalModisTiles,frame);
                 } catch (Exception e) {
                     ErrorLog.add(Config.getInstance(), "ProjectInformationPage.PopulatePluginList problem with creating new AssociatePluginPage.", e);
                 }
@@ -379,7 +454,7 @@ public class ProjectInformationPage {
         lblBigDataMode.setBounds(10, 356, 130, 14);
         panel.add(lblBigDataMode);
 
-        JCheckBox chckbxBigDataMode = new JCheckBox("");
+        chckbxBigDataMode = new JCheckBox("");
         chckbxBigDataMode.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -464,7 +539,7 @@ public class ProjectInformationPage {
         editSummaryButton.setToolTipText("Add summary");
         editSummaryButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent arg0) { new AssociateSummaryPage(new summaryListenerImplementation());}
+            public void actionPerformed(ActionEvent arg0) { new AssociateSummaryPage(new summaryListenerImplementation(),frame);}
         });
         editSummaryButton.setBounds(205, 11, 33, 30);
         summaryPanel.add(editSummaryButton);
@@ -685,8 +760,392 @@ public class ProjectInformationPage {
                 System.out.println("File saved!");
                 mainWindowEvent.fire();
             }else{
-                System.out.println("Erorr in saving");
+                System.out.println("Error in saving");
             }
+        } catch (ParserConfigurationException e) {
+            ErrorLog.add(Config.getInstance(), "ProjectInformationPage.CreateNewProject problem with creating new project.", e);
+        }
+    }
+
+    // Create or save new project
+    private void CreateSubProjects(List<String> startDates, List<String> endDates) throws TransformerException{
+        try {
+            // root elements
+            Document doc = DocumentBuilderInstance.Instance().GetDocument();
+            Element projectInfo = doc.createElement("ProjectInfo");
+            doc.appendChild(projectInfo);
+
+            // Plugin elements
+            Element plugins = doc.createElement("Plugins");
+            projectInfo.appendChild(plugins);
+
+            //list of plugin associate to project
+            for(Object item:listOfAddedPluginModel.toArray()){
+                Element plugin = doc.createElement("Plugin");
+
+                // set attribute to staff element
+                Attr attr = doc.createAttribute("name");
+                String noFormat = item.toString().replaceAll("<html>Plugin: ","");
+                noFormat = noFormat.replaceAll("<br>Indices: ", "");
+                noFormat = noFormat.replaceAll("<br>Quality: ","");
+                noFormat = noFormat.replaceAll("<br>Modis Tiles: ","");
+                noFormat = noFormat.replaceAll("</html>", "");
+                noFormat = noFormat.replaceAll("</span>", "");
+                noFormat = noFormat.replaceAll("<span>", "");
+
+                String[] array = noFormat.split(";");
+
+                attr.setValue(array[0].toString());
+                plugin.setAttributeNode(attr);
+
+                if(array.length < 3){
+                    // start Date
+                    Element qc = doc.createElement("QC");
+                    qc.appendChild(doc.createTextNode(array[1].toString()));
+                    plugin.appendChild(qc);
+                }
+                else{
+                    for(int i = 1; i < array.length -1; i++){
+
+                        if(isValueAModisTile(array, i))
+                        {
+                            Element modisTile = doc.createElement("ModisTile");
+                            modisTile.appendChild(doc.createTextNode(array[i].toString()));
+                            plugin.appendChild(modisTile);
+                        }
+                        else
+                        {
+                            Element indices = doc.createElement("Indices");
+                            indices.appendChild(doc.createTextNode(array[i].toString()));
+                            plugin.appendChild(indices);
+                        }
+                    }
+
+                    Element qc = doc.createElement("QC");
+                    qc.appendChild(doc.createTextNode(array[array.length - 1].toString()));
+                    plugin.appendChild(qc);
+
+                    for(int i = 1; i < array.length -1; i++){
+
+                    }
+                }
+
+                // add a new node for plugin element
+                plugins.appendChild(plugin);
+            }
+
+            // start Date
+            Element startDate = doc.createElement("StartDate");
+            startDate.appendChild(doc.createTextNode(this.startDate.getDate().toString()));
+            projectInfo.appendChild(startDate);
+
+            // project name
+            Element projectName = doc.createElement("ProjectName");
+            projectName.appendChild(doc.createTextNode(this.projectName.getText()));
+            projectInfo.appendChild(projectName);
+
+            // working directory
+            Element workingDirectory = doc.createElement("WorkingDir");
+            workingDirectory.appendChild(doc.createTextNode(this.workingDirectory.getText()));
+            projectInfo.appendChild(workingDirectory);
+
+            // masking file
+            Element masking = doc.createElement("Masking");
+            projectInfo.appendChild(masking);
+
+            Element maskingFile = doc.createElement("File");
+            maskingFile.appendChild(doc.createTextNode(maskFile.getText()));
+            masking.appendChild(maskingFile);
+
+            Dataset hDataset;
+            double[] adfGeoTransform = new double[6];
+            String pszFilename = maskFile.getText();
+            String res="";
+
+            gdal.AllRegister();
+
+            hDataset = gdal.Open(pszFilename, gdalconstConstants.GA_ReadOnly);
+
+            if (hDataset != null)
+            {
+                hDataset.GetGeoTransform(adfGeoTransform);
+                {
+                    if (adfGeoTransform[2] == 0.0 && adfGeoTransform[4] == 0.0) {
+                        res = "" + ((int) (adfGeoTransform[1] + 0.5));
+                    }
+                }
+
+                hDataset.delete();
+            }
+
+            Element resolution = doc.createElement("Resolution");
+            resolution.appendChild(doc.createTextNode(res));
+            masking.appendChild(resolution);
+
+            Element masterShapeFile = doc.createElement("MasterShapeFile");
+            masterShapeFile.appendChild(doc.createTextNode(masterShapeTextField.getText()));
+            projectInfo.appendChild(masterShapeFile);
+
+            Element timeZone = doc.createElement("TimeZone");
+            timeZone.appendChild(doc.createTextNode(String.valueOf(timeZoneComboBox.getSelectedItem())));
+            projectInfo.appendChild(timeZone);
+
+            Element isClipping = doc.createElement("Clipping");
+            isClipping.appendChild(doc.createTextNode(String.valueOf(isClippingCheckBox.isSelected())));
+            projectInfo.appendChild(isClipping);
+
+            // Freezing start Date
+            Element freezingstartDate = doc.createElement("FreezingDate");
+            freezingstartDate.appendChild(doc.createTextNode(freezingDateChooser.getDate().toString()));
+            projectInfo.appendChild(freezingstartDate);
+
+            // Cooling degree value
+            Element coolingDegree = doc.createElement("CoolingDegree");
+            coolingDegree.appendChild(doc.createTextNode(coolingTextField.getText()));
+            projectInfo.appendChild(coolingDegree);
+
+            // Heating start Date
+            Element heatingstartDate = doc.createElement("HeatingDate");
+            heatingstartDate.appendChild(doc.createTextNode(heatingDateChooser.getDate().toString()));
+            projectInfo.appendChild(heatingstartDate);
+
+            // heating degree value
+            Element heatingDegree = doc.createElement("HeatingDegree");
+            heatingDegree.appendChild(doc.createTextNode(heatingTextField.getText()));
+            projectInfo.appendChild(heatingDegree);
+
+            // re-sampling
+            Element reSampling = doc.createElement("ReSampling");
+            reSampling.appendChild(doc.createTextNode(String.valueOf(reSamplingComboBox.getSelectedItem())));
+            projectInfo.appendChild(reSampling);
+
+            //datum
+            Element pixelSize = doc.createElement("PixelSize");
+            pixelSize.appendChild(doc.createTextNode(String.valueOf(this.pixelSize.getText())));
+            projectInfo.appendChild(pixelSize);
+
+            //list of summary tiles
+            Element summaries = doc.createElement("Summaries");
+            projectInfo.appendChild(summaries);
+
+            int summaryCounter = 1;
+            for(Object item:summaryListModel.toArray()){
+                Element summary = doc.createElement("Summary");
+                summary.setAttribute("ID", String.valueOf(summaryCounter));
+                summaryCounter ++;
+
+                summary.appendChild(doc.createTextNode(item.toString()));
+                summaries.appendChild(summary);
+            }
+
+            if(ProjectInfoCollection.WriteProjectToFile(doc, this.projectName.getText())){
+                System.out.println("File saved!");
+                Element startDateSUB = doc.createElement("StartDate");
+                Element endDateSUB = doc.createElement("EndDate");
+
+                projectInfo.appendChild(startDate);
+
+                // end Date
+                //
+                for(int s=0; s < startDates.size(); s++){
+                    startDateSUB.appendChild(doc.createTextNode(startDates.get(s)));
+                    endDateSUB.appendChild(doc.createTextNode(endDates.get(s)));
+                    if(s==0) {
+                        projectInfo.replaceChild(startDateSUB, startDate);
+                        projectInfo.appendChild(endDateSUB);
+                    } else {
+                        projectInfo.replaceChild(startDateSUB, startDateSUB);
+                        projectInfo.replaceChild(endDateSUB, endDateSUB);
+                    }
+                    if(ProjectInfoCollection.WriteProjectToFile(doc, this.projectName.getText()+"-SUB"+s)){
+                        System.out.println("Subproject saved!");
+                    } else {
+                        System.out.println("Error in saving");
+                    }
+                }
+                mainWindowEvent.fire();
+            }else{
+                System.out.println("Error in saving");
+            }
+
+            /*Document doc[] = new Document[startDates.size()];
+            for(int s=0; s < startDates.size(); s++){
+                // root elements
+                doc[s] = DocumentBuilderInstance.Instance().GetDocument();
+                Element projectInfo = doc[s].createElement("ProjectInfo");
+                doc[s].appendChild(projectInfo);
+
+                // Plugin elements
+                Element plugins = doc[s].createElement("Plugins");
+                projectInfo.appendChild(plugins);
+
+                //list of plugin associate to project
+                for(Object item:listOfAddedPluginModel.toArray()){
+                    Element plugin = doc[s].createElement("Plugin");
+
+                    // set attribute to staff element
+                    Attr attr = doc[s].createAttribute("name");
+                    String noFormat = item.toString().replaceAll("<html>Plugin: ","");
+                    noFormat = noFormat.replaceAll("<br>Indices: ", "");
+                    noFormat = noFormat.replaceAll("<br>Quality: ","");
+                    noFormat = noFormat.replaceAll("<br>Modis Tiles: ","");
+                    noFormat = noFormat.replaceAll("</html>", "");
+                    noFormat = noFormat.replaceAll("</span>", "");
+                    noFormat = noFormat.replaceAll("<span>", "");
+
+                    String[] array = noFormat.split(";");
+
+                    attr.setValue(array[0].toString());
+                    plugin.setAttributeNode(attr);
+
+                    if(array.length < 3){
+                        // start Date
+                        Element qc = doc[s].createElement("QC");
+                        qc.appendChild(doc[s].createTextNode(array[1].toString()));
+                        plugin.appendChild(qc);
+                    }
+                    else{
+                        for(int i = 1; i < array.length -1; i++){
+
+                            if(isValueAModisTile(array, i))
+                            {
+                                Element modisTile = doc[s].createElement("ModisTile");
+                                modisTile.appendChild(doc[s].createTextNode(array[i].toString()));
+                                plugin.appendChild(modisTile);
+                            }
+                            else
+                            {
+                                Element indices = doc[s].createElement("Indices");
+                                indices.appendChild(doc[s].createTextNode(array[i].toString()));
+                                plugin.appendChild(indices);
+                            }
+                        }
+
+                        Element qc = doc[s].createElement("QC");
+                        qc.appendChild(doc[s].createTextNode(array[array.length - 1].toString()));
+                        plugin.appendChild(qc);
+                    }
+
+                    // add a new node for plugin element
+                    plugins.appendChild(plugin);
+                }
+
+                // start Date
+                Element startDate = doc[s].createElement("StartDate");
+                startDate.appendChild(doc[s].createTextNode(startDates.get(s)));
+                projectInfo.appendChild(startDate);
+
+                // end Date
+                Element endDate = doc[s].createElement("EndDate");
+                endDate.appendChild(doc[s].createTextNode(endDates.get(s)));
+                projectInfo.appendChild(endDate);
+
+                // project name
+                Element projectName = doc[s].createElement("ProjectName");
+                projectName.appendChild(doc[s].createTextNode(this.projectName.getText()));
+                projectInfo.appendChild(projectName);
+
+                // working directory
+                Element workingDirectory = doc[s].createElement("WorkingDir");
+                workingDirectory.appendChild(doc[s].createTextNode(this.workingDirectory.getText()));
+                projectInfo.appendChild(workingDirectory);
+
+                // masking file
+                Element masking = doc[s].createElement("Masking");
+                projectInfo.appendChild(masking);
+
+                Element maskingFile = doc[s].createElement("File");
+                maskingFile.appendChild(doc[s].createTextNode(maskFile.getText()));
+                masking.appendChild(maskingFile);
+
+                Dataset hDataset;
+                double[] adfGeoTransform = new double[6];
+                String pszFilename = maskFile.getText();
+                String res="";
+
+                gdal.AllRegister();
+
+                hDataset = gdal.Open(pszFilename, gdalconstConstants.GA_ReadOnly);
+
+                if (hDataset != null)
+                {
+                    hDataset.GetGeoTransform(adfGeoTransform);
+                    {
+                        if (adfGeoTransform[2] == 0.0 && adfGeoTransform[4] == 0.0) {
+                            res = "" + ((int) (adfGeoTransform[1] + 0.5));
+                        }
+                    }
+
+                    hDataset.delete();
+                }
+
+                Element resolution = doc[s].createElement("Resolution");
+                resolution.appendChild(doc[s].createTextNode(res));
+                masking.appendChild(resolution);
+
+                Element masterShapeFile = doc[s].createElement("MasterShapeFile");
+                masterShapeFile.appendChild(doc[s].createTextNode(masterShapeTextField.getText()));
+                projectInfo.appendChild(masterShapeFile);
+
+                Element timeZone = doc[s].createElement("TimeZone");
+                timeZone.appendChild(doc[s].createTextNode(String.valueOf(timeZoneComboBox.getSelectedItem())));
+                projectInfo.appendChild(timeZone);
+
+                Element isClipping = doc[s].createElement("Clipping");
+                isClipping.appendChild(doc[s].createTextNode(String.valueOf(isClippingCheckBox.isSelected())));
+                projectInfo.appendChild(isClipping);
+
+                // Freezing start Date
+                Element freezingstartDate = doc[s].createElement("FreezingDate");
+                freezingstartDate.appendChild(doc[s].createTextNode(freezingDateChooser.getDate().toString()));
+                projectInfo.appendChild(freezingstartDate);
+
+                // Cooling degree value
+                Element coolingDegree = doc[s].createElement("CoolingDegree");
+                coolingDegree.appendChild(doc[s].createTextNode(coolingTextField.getText()));
+                projectInfo.appendChild(coolingDegree);
+
+                // Heating start Date
+                Element heatingstartDate = doc[s].createElement("HeatingDate");
+                heatingstartDate.appendChild(doc[s].createTextNode(heatingDateChooser.getDate().toString()));
+                projectInfo.appendChild(heatingstartDate);
+
+                // heating degree value
+                Element heatingDegree = doc[s].createElement("HeatingDegree");
+                heatingDegree.appendChild(doc[s].createTextNode(heatingTextField.getText()));
+                projectInfo.appendChild(heatingDegree);
+
+                // re-sampling
+                Element reSampling = doc[s].createElement("ReSampling");
+                reSampling.appendChild(doc[s].createTextNode(String.valueOf(reSamplingComboBox.getSelectedItem())));
+                projectInfo.appendChild(reSampling);
+
+                //datum
+                Element pixelSize = doc[s].createElement("PixelSize");
+                pixelSize.appendChild(doc[s].createTextNode(String.valueOf(this.pixelSize.getText())));
+                projectInfo.appendChild(pixelSize);
+
+                //list of summary tiles
+                Element summaries = doc[s].createElement("Summaries");
+                projectInfo.appendChild(summaries);
+
+                int summaryCounter = 1;
+                for(Object item:summaryListModel.toArray()){
+                    Element summary = doc[s].createElement("Summary");
+                    summary.setAttribute("ID", String.valueOf(summaryCounter));
+                    summaryCounter ++;
+
+                    summary.appendChild(doc[s].createTextNode(item.toString()));
+                    summaries.appendChild(summary);
+                }
+
+                if(ProjectInfoCollection.WriteProjectToFile(doc[s], this.projectName.getText()+"-SUB"+s)){
+                    System.out.println("Subproject saved!");
+                    //mainWindowEvent.fire();
+                }else{
+                    System.out.println("Error in saving");
+                }
+            }*/
         } catch (ParserConfigurationException e) {
             ErrorLog.add(Config.getInstance(), "ProjectInformationPage.CreateNewProject problem with creating new project.", e);
         }
@@ -770,7 +1229,7 @@ public class ProjectInformationPage {
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         chooser.setAcceptAllFileFilterUsed(false);
 
-        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+        if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
             System.out.println("getCurrentDirectory(): "+ chooser.getCurrentDirectory());
             System.out.println("getSelectedFile() : "+ chooser.getSelectedFile());
             workingDirectory.setText(chooser.getSelectedFile().toString());
@@ -789,7 +1248,7 @@ public class ProjectInformationPage {
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         chooser.setAcceptAllFileFilterUsed(false);
 
-        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+        if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
             System.out.println("getCurrentDirectory(): "+ chooser.getCurrentDirectory());
             System.out.println("getSelectedFile() : "+ chooser.getSelectedFile());
             maskFile.setText(chooser.getSelectedFile().toString());
@@ -806,7 +1265,7 @@ public class ProjectInformationPage {
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         chooser.setAcceptAllFileFilterUsed(false);
 
-        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+        if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
             System.out.println("getCurrentDirectory(): "+ chooser.getCurrentDirectory());
             System.out.println("getSelectedFile() : "+ chooser.getSelectedFile());
             masterShapeTextField.setText(chooser.getSelectedFile().toString());

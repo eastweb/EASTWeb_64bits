@@ -53,7 +53,7 @@ public class AssociatePluginPage {
             @Override
             public void run() {
                 try {
-                    AssociatePluginPage window = new AssociatePluginPage(null, new ArrayList<String>());
+                    AssociatePluginPage window = new AssociatePluginPage(null, new ArrayList<String>(),null);
                     window.frame.setVisible(true);
                 } catch (Exception e) {
                     ErrorLog.add(Config.getInstance(), "AssociatePluginPage.main problem with running a AssociatePluginPage window.", e);
@@ -66,7 +66,7 @@ public class AssociatePluginPage {
      * Create the application.
      * @throws Exception
      */
-    public AssociatePluginPage(IndicesListener l, ArrayList<String> globalModisTiles) throws Exception {
+    public AssociatePluginPage(IndicesListener l, ArrayList<String> globalModisTiles, JFrame parent) throws Exception {
         this.globalModisTiles = new ArrayList<String>();
 
         for(String tile :globalModisTiles) {
@@ -77,6 +77,7 @@ public class AssociatePluginPage {
         indicesEvent.addListener(l);
         initialize();
         frame.setVisible(true);
+        frame.setLocationRelativeTo(parent);
     }
 
     /**
