@@ -748,9 +748,9 @@ public class Scheduler {
         // Create "data" DownloadFactory
         Class<?> downloadFactoryClass = Class.forName("version2.prototype.download." + pluginInfo.GetName() + "." + pluginMetaData.Download.downloadFactoryClassName);
         Constructor<?> downloadFactoryCtor = downloadFactoryClass.getConstructor(Config.class, ProjectInfoFile.class, ProjectInfoPlugin.class, DownloadMetaData.class, PluginMetaData.class,
-                Scheduler.class, DatabaseCache.class, LocalDate.class);
+                Scheduler.class, DatabaseCache.class, LocalDate.class, LocalDate.class);
         DownloadFactory downloadFactory = (DownloadFactory) downloadFactoryCtor.newInstance(configInstance, projectInfoFile, pluginInfo, pluginMetaData.Download, pluginMetaData, this, outputCache,
-                projectInfoFile.GetStartDate());
+                projectInfoFile.GetStartDate(), projectInfoFile.GetEndDate());
 
         // Create "data" GenericGlobalDownloader
         lDownloders.add(manager.StartGlobalDownloader(downloadFactory));

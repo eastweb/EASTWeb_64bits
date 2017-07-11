@@ -29,9 +29,9 @@ import version2.prototype.util.FileSystem;
 
 public class NldasNOAHGlobalDownloader extends GlobalDownloader{
 
-    public NldasNOAHGlobalDownloader(int myID, Config configInstance, String pluginName, DownloadMetaData metaData, ListDatesFiles listDatesFiles, LocalDate startDate) throws ClassNotFoundException, ParserConfigurationException, SAXException,
+    public NldasNOAHGlobalDownloader(int myID, Config configInstance, String pluginName, DownloadMetaData metaData, ListDatesFiles listDatesFiles, LocalDate startDate, LocalDate endDate) throws ClassNotFoundException, ParserConfigurationException, SAXException,
     IOException, SQLException, RegistrationException {
-        super(myID, configInstance, pluginName, metaData, listDatesFiles, startDate);
+        super(myID, configInstance, pluginName, metaData, listDatesFiles, startDate, endDate);
     }
 
     @Override

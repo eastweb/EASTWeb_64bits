@@ -34,25 +34,25 @@ public abstract class ListDatesFiles
      * @param project
      * @throws IOException
      */
-    public ListDatesFiles(DataDate startDate, DownloadMetaData data, ProjectInfoFile project) throws IOException
-    {
-        sDate = startDate;
-        mData = data;
-
-        /* Check if projectInfoFile.GetStartDate() is later than plugin's Origin Date
-         * If not, use plugin's Origin Date as the start date
-         * */
-        if (sDate.compareTo(new DataDate(mData.originDate)) < 0)
-        {
-            sDate = new DataDate(mData.originDate);
-        }
-
-        lDates = null;
-        mapDatesFiles =  null;
-        mProject =  project;
-        mapDatesFiles = null;
-        mapDatesFilesSet = new Boolean(false);
-    }
+    //    public ListDatesFiles(DataDate startDate, DownloadMetaData data, ProjectInfoFile project) throws IOException
+    //    {
+    //        sDate = startDate;
+    //        mData = data;
+    //
+    //        /* Check if projectInfoFile.GetStartDate() is later than plugin's Origin Date
+    //         * If not, use plugin's Origin Date as the start date
+    //         * */
+    //        if (sDate.compareTo(new DataDate(mData.originDate)) < 0)
+    //        {
+    //            sDate = new DataDate(mData.originDate);
+    //        }
+    //
+    //        lDates = null;
+    //        mapDatesFiles =  null;
+    //        mProject =  project;
+    //        mapDatesFiles = null;
+    //        mapDatesFilesSet = new Boolean(false);
+    //    }
 
     // Overloaded (villegar)
     public ListDatesFiles(DataDate startDate, DataDate endDate, DownloadMetaData data, ProjectInfoFile project) throws IOException

@@ -44,6 +44,7 @@ public final class ModisLocalStorageDownloadFactory implements DownloaderFactory
     private final DatabaseCache outputCache;
     private final ListDatesFiles listDatesFiles;
     private final LocalDate startDate;
+    private final LocalDate endDate;
 
     /**
      * @param manager
@@ -57,9 +58,10 @@ public final class ModisLocalStorageDownloadFactory implements DownloaderFactory
      * @param outputCache
      * @param listDatesFiles
      * @param startDate
+     * @param endDate
      */
     public ModisLocalStorageDownloadFactory(Config configInstance, String downloaderClassName, ProjectInfoFile projectInfoFile, ProjectInfoPlugin pluginInfo,
-            DownloadMetaData downloadMetaData, PluginMetaData pluginMetaData, Scheduler scheduler, DatabaseCache outputCache, ListDatesFiles listDatesFiles, LocalDate startDate)
+            DownloadMetaData downloadMetaData, PluginMetaData pluginMetaData, Scheduler scheduler, DatabaseCache outputCache, ListDatesFiles listDatesFiles, LocalDate startDate, LocalDate endDate)
     {
         this.configInstance = configInstance;
         this.downloaderClassName = downloaderClassName;
@@ -71,6 +73,7 @@ public final class ModisLocalStorageDownloadFactory implements DownloaderFactory
         this.outputCache = outputCache;
         this.listDatesFiles = listDatesFiles;
         this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     /* (non-Javadoc)
@@ -90,7 +93,7 @@ public final class ModisLocalStorageDownloadFactory implements DownloaderFactory
         DatabaseConnection con = null;
         Statement stmt = null;
         try {
-            gdl = new ModisLocalStorageGlobalDownloader(myID, configInstance, projectInfoFile, pluginInfo.GetName(), downloadMetaData, listDatesFiles, startDate, downloaderClassName);
+            gdl = new ModisLocalStorageGlobalDownloader(myID, configInstance, projectInfoFile, pluginInfo.GetName(), downloadMetaData, listDatesFiles, startDate, endDate, downloaderClassName);
             con = DatabaseConnector.getConnection(configInstance);
             if(con == null) {
                 return null;

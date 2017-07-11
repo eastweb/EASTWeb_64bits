@@ -19,18 +19,18 @@ import version2.prototype.util.DatabaseCache;
 public class IMERG_RTFactory extends DownloadFactory {
 
     public IMERG_RTFactory(Config configInstance, ProjectInfoFile projectInfoFile, ProjectInfoPlugin pluginInfo, DownloadMetaData downloadMetaData, PluginMetaData pluginMetaData,
-            Scheduler scheduler, DatabaseCache outputCache, LocalDate startDate) {
-        super(configInstance, projectInfoFile, pluginInfo, downloadMetaData, pluginMetaData, scheduler, outputCache, startDate);
+            Scheduler scheduler, DatabaseCache outputCache, LocalDate startDate, LocalDate endDate) {
+        super(configInstance, projectInfoFile, pluginInfo, downloadMetaData, pluginMetaData, scheduler, outputCache, startDate, endDate);
     }
 
     @Override
     public DownloaderFactory CreateDownloaderFactory(ListDatesFiles listDatesFiles) {
         return new LocalStorageDownloadFactory(configInstance, "IMERG_RTDownloader", projectInfoFile, pluginInfo, downloadMetaData, pluginMetaData, scheduler, outputCache, listDatesFiles,
-                startDate);
+                startDate, endDate);
     }
 
     @Override
     public ListDatesFiles CreateListDatesFiles() throws IOException {
-        return new IMERG_RTListDatesFiles(new DataDate(startDate), downloadMetaData, projectInfoFile);
+        return new IMERG_RTListDatesFiles(new DataDate(startDate), new DataDate(endDate), downloadMetaData, projectInfoFile);
     }
 }

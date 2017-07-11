@@ -27,9 +27,9 @@ import version2.prototype.download.ListDatesFiles;
 
 public class ModisListDatesFiles extends ListDatesFiles
 {
-    public ModisListDatesFiles(DataDate startDate, DownloadMetaData data, ProjectInfoFile project) throws IOException
+    public ModisListDatesFiles(DataDate startDate, DataDate endDate, DownloadMetaData data, ProjectInfoFile project) throws IOException
     {
-        super(startDate, data, project);
+        super(startDate, endDate, data, project);
     }
 
     @Override

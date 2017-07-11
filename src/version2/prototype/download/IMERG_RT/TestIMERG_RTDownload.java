@@ -13,8 +13,6 @@ import version2.prototype.PluginMetaData.DownloadMetaData;
 import version2.prototype.PluginMetaData.FTP;
 import version2.prototype.PluginMetaData.HTTP;
 import version2.prototype.download.DownloadFailedException;
-import version2.prototype.download.TRMM3B42RT_New.TRMM3B42RT_NewDownloader;
-import version2.prototype.download.TRMM3B42RT_New.TRMM3B42RT_NewListDatesFiles;
 
 public class TestIMERG_RTDownload
 {
@@ -50,7 +48,7 @@ public class TestIMERG_RTDownload
 
         IMERG_RTListDatesFiles iList;
         try {
-            iList = new IMERG_RTListDatesFiles(new DataDate(data.originDate), data, null);
+            iList = new IMERG_RTListDatesFiles(new DataDate(data.originDate), new DataDate(LocalDate.now()), data, null);
             Map<DataDate, ArrayList<String>> tempDatesFiles = iList.CloneListDatesFiles();
 
             for (Map.Entry<DataDate, ArrayList<String>> entry : tempDatesFiles.entrySet())

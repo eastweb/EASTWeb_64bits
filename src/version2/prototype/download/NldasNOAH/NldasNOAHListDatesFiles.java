@@ -26,9 +26,9 @@ import version2.prototype.download.ListDatesFiles;
 
 public class NldasNOAHListDatesFiles extends ListDatesFiles{
 
-    public NldasNOAHListDatesFiles(DataDate date, DownloadMetaData data, ProjectInfoFile project) throws IOException
+    public NldasNOAHListDatesFiles(DataDate startDate, DataDate endDate, DownloadMetaData data, ProjectInfoFile project) throws IOException
     {
-        super(date, data, project);
+        super(startDate, endDate, data, project);
     }
 
 

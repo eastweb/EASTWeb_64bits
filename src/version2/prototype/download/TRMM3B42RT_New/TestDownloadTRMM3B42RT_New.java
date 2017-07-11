@@ -36,7 +36,7 @@ public class TestDownloadTRMM3B42RT_New
 
         TRMM3B42RT_NewListDatesFiles iList;
         try {
-            iList = new TRMM3B42RT_NewListDatesFiles(new DataDate(data.originDate), data, null);
+            iList = new TRMM3B42RT_NewListDatesFiles(new DataDate(data.originDate), new DataDate(LocalDate.now()), data, null);
             Map<DataDate, ArrayList<String>> tempDatesFiles = iList.CloneListDatesFiles();
 
             for (Map.Entry<DataDate, ArrayList<String>> entry : tempDatesFiles.entrySet())

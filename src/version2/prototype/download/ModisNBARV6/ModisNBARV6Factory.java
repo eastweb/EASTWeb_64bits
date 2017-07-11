@@ -26,8 +26,8 @@ import version2.prototype.util.DatabaseCache;
 public class ModisNBARV6Factory extends DownloadFactory {
 
     public ModisNBARV6Factory(Config configInstance, ProjectInfoFile projectInfoFile, ProjectInfoPlugin pluginInfo, DownloadMetaData downloadMetaData, PluginMetaData pluginMetaData,
-            Scheduler scheduler, DatabaseCache outputCache, LocalDate startDate) {
-        super(configInstance, projectInfoFile, pluginInfo, downloadMetaData, pluginMetaData, scheduler, outputCache, startDate);
+            Scheduler scheduler, DatabaseCache outputCache, LocalDate startDate, LocalDate endDate) {
+        super(configInstance, projectInfoFile, pluginInfo, downloadMetaData, pluginMetaData, scheduler, outputCache, startDate, endDate);
     }
 
     /* (non-Javadoc)
@@ -35,7 +35,7 @@ public class ModisNBARV6Factory extends DownloadFactory {
      */
     @Override
     public DownloaderFactory CreateDownloaderFactory(ListDatesFiles listDatesFiles) {
-        return new ModisLocalStorageDownloadFactory(configInstance, "ModisNBARV6Downloader", projectInfoFile, pluginInfo, downloadMetaData, pluginMetaData, scheduler, outputCache, listDatesFiles, startDate);
+        return new ModisLocalStorageDownloadFactory(configInstance, "ModisNBARV6Downloader", projectInfoFile, pluginInfo, downloadMetaData, pluginMetaData, scheduler, outputCache, listDatesFiles, startDate, endDate);
     }
 
     /* (non-Javadoc)
@@ -43,7 +43,7 @@ public class ModisNBARV6Factory extends DownloadFactory {
      */
     @Override
     public ListDatesFiles CreateListDatesFiles() throws IOException {
-        return new ModisNBARV6ListDatesFiles(new DataDate(startDate), downloadMetaData, projectInfoFile );
+        return new ModisNBARV6ListDatesFiles(new DataDate(startDate), new DataDate(endDate), downloadMetaData, projectInfoFile );
     }
 
 }

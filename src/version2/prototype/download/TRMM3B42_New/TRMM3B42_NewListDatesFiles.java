@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +16,6 @@ import version2.prototype.DataDate;
 import version2.prototype.ErrorLog;
 import version2.prototype.PluginMetaData.DownloadMetaData;
 import version2.prototype.ProjectInfoMetaData.ProjectInfoFile;
-import version2.prototype.ProjectInfoMetaData.ProjectInfoPlugin;
 import version2.prototype.download.DownloadUtils;
 import version2.prototype.download.ListDatesFiles;
 
@@ -25,9 +23,9 @@ import version2.prototype.download.ListDatesFiles;
 
 public class TRMM3B42_NewListDatesFiles extends ListDatesFiles
 {
-    public TRMM3B42_NewListDatesFiles(DataDate startDate, DownloadMetaData data, ProjectInfoFile project) throws IOException
+    public TRMM3B42_NewListDatesFiles(DataDate startDate, DataDate endDate, DownloadMetaData data, ProjectInfoFile project) throws IOException
     {
-        super(startDate, data, project);
+        super(startDate, endDate, data, project);
     }
 
     @Override
@@ -35,6 +33,7 @@ public class TRMM3B42_NewListDatesFiles extends ListDatesFiles
         return null;
     }
 
+    @SuppressWarnings("unused")
     @Override
     protected Map<DataDate, ArrayList<String>> ListDatesFilesHTTP()
     {

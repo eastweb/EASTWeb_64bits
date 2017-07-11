@@ -24,9 +24,9 @@ import version2.prototype.download.ListDatesFiles;
 
 public class IMERGListDatesFiles extends ListDatesFiles{
 
-    public IMERGListDatesFiles(DataDate date, DownloadMetaData data, ProjectInfoFile project) throws IOException
+    public IMERGListDatesFiles(DataDate startDate, DataDate endDate, DownloadMetaData data, ProjectInfoFile project) throws IOException
     {
-        super(date, data, project);
+        super(startDate, endDate, data, project);
     }
 
 

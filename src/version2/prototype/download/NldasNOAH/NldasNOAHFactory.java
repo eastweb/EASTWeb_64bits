@@ -23,17 +23,17 @@ import version2.prototype.util.DatabaseCache;
 public class NldasNOAHFactory extends DownloadFactory {
 
     public NldasNOAHFactory(Config configInstance, ProjectInfoFile projectInfoFile, ProjectInfoPlugin pluginInfo, DownloadMetaData downloadMetaData, PluginMetaData pluginMetaData,
-            Scheduler scheduler, DatabaseCache outputCache, LocalDate startDate) {
-        super( configInstance, projectInfoFile, pluginInfo, downloadMetaData, pluginMetaData, scheduler, outputCache, startDate);
+            Scheduler scheduler, DatabaseCache outputCache, LocalDate startDate, LocalDate endDate) {
+        super( configInstance, projectInfoFile, pluginInfo, downloadMetaData, pluginMetaData, scheduler, outputCache, startDate, endDate);
     }
 
     @Override
     public DownloaderFactory CreateDownloaderFactory(ListDatesFiles listDatesFiles) {
-        return new LocalStorageDownloadFactory(configInstance, "NldasNOAHDownloader", projectInfoFile, pluginInfo, downloadMetaData, pluginMetaData, scheduler, outputCache, listDatesFiles, startDate);
+        return new LocalStorageDownloadFactory(configInstance, "NldasNOAHDownloader", projectInfoFile, pluginInfo, downloadMetaData, pluginMetaData, scheduler, outputCache, listDatesFiles, startDate, endDate);
     }
 
     @Override
     public ListDatesFiles CreateListDatesFiles() throws IOException {
-        return new NldasNOAHListDatesFiles(new DataDate(startDate), downloadMetaData, projectInfoFile);
+        return new NldasNOAHListDatesFiles(new DataDate(startDate), new DataDate(endDate), downloadMetaData, projectInfoFile);
     }
 }

@@ -33,9 +33,9 @@ import version2.prototype.util.FileSystem;
  */
 public class ModisNBARV6GlobalDownloader extends GlobalDownloader
 {
-    public ModisNBARV6GlobalDownloader(int myID, Config configInstance, String pluginName, DownloadMetaData metaData, ListDatesFiles listDatesFiles, LocalDate startDate) throws ClassNotFoundException, ParserConfigurationException, SAXException,
+    public ModisNBARV6GlobalDownloader(int myID, Config configInstance, String pluginName, DownloadMetaData metaData, ListDatesFiles listDatesFiles, LocalDate startDate, LocalDate endDate) throws ClassNotFoundException, ParserConfigurationException, SAXException,
     IOException, SQLException, RegistrationException {
-        super(myID, configInstance, pluginName, metaData, listDatesFiles, startDate);
+        super(myID, configInstance, pluginName, metaData, listDatesFiles, startDate, endDate);
         // TODO Auto-generated constructor stub
     }
 

@@ -67,9 +67,9 @@ public class ModisLocalStorageGlobalDownloader extends GlobalDownloader {
      * @throws NoSuchMethodException
      */
     public ModisLocalStorageGlobalDownloader(int myID, Config configInstance, ProjectInfoFile projectMetaData, String pluginName, DownloadMetaData metaData, ListDatesFiles listDatesFiles, LocalDate startDate,
-            String downloaderClassName) throws ClassNotFoundException, ParserConfigurationException, SAXException, IOException, SQLException, RegistrationException, NoSuchMethodException, SecurityException
+            LocalDate endDate, String downloaderClassName) throws ClassNotFoundException, ParserConfigurationException, SAXException, IOException, SQLException, RegistrationException, NoSuchMethodException, SecurityException
     {
-        super(myID, configInstance, pluginName, metaData, listDatesFiles, startDate);
+        super(myID, configInstance, pluginName, metaData, listDatesFiles, startDate, endDate);
         Class<?> downloaderClass = Class.forName("version2.prototype.download." + pluginName + "." + downloaderClassName);
         downloadCtr = downloaderClass.getConstructor(DataDate.class, String.class, DownloadMetaData.class, String.class);
 

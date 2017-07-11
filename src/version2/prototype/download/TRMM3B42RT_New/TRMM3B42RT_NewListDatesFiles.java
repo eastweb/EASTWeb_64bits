@@ -25,9 +25,9 @@ import version2.prototype.download.ListDatesFiles;
 
 public class TRMM3B42RT_NewListDatesFiles extends ListDatesFiles
 {
-    public TRMM3B42RT_NewListDatesFiles(DataDate startDate, DownloadMetaData data, ProjectInfoFile project) throws IOException
+    public TRMM3B42RT_NewListDatesFiles(DataDate startDate, DataDate endDate,DownloadMetaData data, ProjectInfoFile project) throws IOException
     {
-        super(startDate, data, project);
+        super(startDate, endDate, data, project);
     }
 
     @Override

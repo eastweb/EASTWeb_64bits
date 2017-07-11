@@ -29,12 +29,13 @@ public abstract class DownloadFactory {
     public final ProjectInfoPlugin pluginInfo;
     public final PluginMetaData pluginMetaData;
     public final LocalDate startDate;
+    public final LocalDate endDate;
 
     protected final Scheduler scheduler;
     protected final DatabaseCache outputCache;
 
     protected DownloadFactory(Config configInstance, ProjectInfoFile projectInfoFile, ProjectInfoPlugin pluginInfo, DownloadMetaData downloadMetaData, PluginMetaData pluginMetaData,
-            Scheduler scheduler, DatabaseCache outputCache, LocalDate startDate) {
+            Scheduler scheduler, DatabaseCache outputCache, LocalDate startDate, LocalDate endDate) {
         this.configInstance = configInstance;
         this.projectInfoFile = projectInfoFile;
         this.pluginInfo = pluginInfo;
@@ -43,6 +44,7 @@ public abstract class DownloadFactory {
         this.scheduler = scheduler;
         this.outputCache = outputCache;
         this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     /**

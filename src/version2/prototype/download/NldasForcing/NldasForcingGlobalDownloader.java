@@ -27,9 +27,9 @@ import version2.prototype.util.FileSystem;
 
 public class NldasForcingGlobalDownloader extends GlobalDownloader {
 
-    public NldasForcingGlobalDownloader(int myID, Config configInstance, String pluginName, DownloadMetaData metaData, ListDatesFiles listDatesFiles, LocalDate startDate) throws ClassNotFoundException, ParserConfigurationException, SAXException,
+    public NldasForcingGlobalDownloader(int myID, Config configInstance, String pluginName, DownloadMetaData metaData, ListDatesFiles listDatesFiles, LocalDate startDate, LocalDate endDate) throws ClassNotFoundException, ParserConfigurationException, SAXException,
     IOException, SQLException, RegistrationException {
-        super(myID, configInstance, pluginName, metaData, listDatesFiles, startDate);
+        super(myID, configInstance, pluginName, metaData, listDatesFiles, startDate, endDate);
     }
 
     @Override

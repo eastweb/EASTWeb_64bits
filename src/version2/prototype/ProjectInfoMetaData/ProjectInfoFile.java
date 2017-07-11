@@ -367,16 +367,16 @@ import version2.prototype.ZonalSummary;
 
     private LocalDate ReadEndDate() throws DateTimeParseException{
         NodeList nodes = GetUpperLevelNodeListIgnoreIfEmpty("EndDate", "Missing end date.");
-        DateTime now = DateTime.now();
+        LocalDate now = LocalDate.now();
         if(nodes!=null){
             ArrayList<String> values = GetNodeListValuesIgnoreIfEmpty(nodes, "Missing end date.");
             if(values.size() > 0) {
                 return LocalDate.parse(values.get(0), datesFormatter);
             }
         } else {
-            return LocalDate.now();//LocalDate.parse(now.toString("EEE MMM dd HH:mm:ss zzz yyyy"), datesFormatter);
+            return now;//LocalDate.parse(now.toString("EEE MMM dd HH:mm:ss zzz yyyy"), datesFormatter);
         }
-        return LocalDate.now();
+        return now;
         //LocalDate.parse(now.toString(), datesFormatter);
     }
 

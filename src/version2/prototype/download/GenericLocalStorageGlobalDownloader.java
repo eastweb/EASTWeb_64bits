@@ -57,10 +57,10 @@ public class GenericLocalStorageGlobalDownloader extends GlobalDownloader {
      * @throws ParserConfigurationException
      * @throws RegistrationException
      */
-    public GenericLocalStorageGlobalDownloader(int myID, Config configInstance, String pluginName, DownloadMetaData metaData, ListDatesFiles listDatesFiles, LocalDate startDate, String downloaderClassName)
+    public GenericLocalStorageGlobalDownloader(int myID, Config configInstance, String pluginName, DownloadMetaData metaData, ListDatesFiles listDatesFiles, LocalDate startDate, LocalDate endDate, String downloaderClassName)
             throws ClassNotFoundException, NoSuchMethodException, SecurityException, ParserConfigurationException, SAXException, IOException, SQLException, RegistrationException
     {
-        super(myID, configInstance, pluginName, metaData, listDatesFiles, startDate);
+        super(myID, configInstance, pluginName, metaData, listDatesFiles, startDate, endDate);
         Class<?> downloaderClass = Class.forName("version2.prototype.download." + pluginName + "." + downloaderClassName);
         downloadCtr = downloaderClass.getConstructor(DataDate.class, String.class, DownloadMetaData.class, String.class);
     }

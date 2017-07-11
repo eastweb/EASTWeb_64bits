@@ -30,9 +30,9 @@ public class IMERG_RTListDatesFiles extends ListDatesFiles{
     private String fileNamePatternStr =
             "3B-HHR-L\\.MS\\.MRG\\.3IMERG\\.(\\d{8})-S233000-E235959\\.1410\\.V(\\d{2})[A-Z]\\.1day\\.tif((\\.gz)?)";
 
-    public IMERG_RTListDatesFiles(DataDate date, DownloadMetaData data, ProjectInfoFile project) throws IOException
+    public IMERG_RTListDatesFiles(DataDate startDate, DataDate endDate, DownloadMetaData data, ProjectInfoFile project) throws IOException
     {
-        super(date, data, project);
+        super(startDate, endDate, data, project);
     }
 
 
@@ -81,11 +81,11 @@ public class IMERG_RTListDatesFiles extends ListDatesFiles{
 
             for (int year = startYear; year <= endYear; year ++)
             {
-                int monthS;
+                int months;
                 if (year == startYear) {
-                    monthS = startMonth;
+                    months = startMonth;
                 } else {
-                    monthS = 1;
+                    months = 1;
                 }
 
                 // access month folder
@@ -93,7 +93,7 @@ public class IMERG_RTListDatesFiles extends ListDatesFiles{
                 {
                     //System.out.println(monthInPath + " : " + monthEnd);
 
-                    for (int month = monthS; month <= endMonth; month++)
+                    for (int month = months; month <= endMonth; month++)
                     {
                         String monthDir = String.format("%s/%02d", rootDir, month);
                         AddFiles(ftpC, monthDir, month, year);
@@ -101,7 +101,7 @@ public class IMERG_RTListDatesFiles extends ListDatesFiles{
                 }
                 else   // not the current year. need to access folder yyyy/mm
                 {
-                    for (int month = monthS; month <= 12; month++)
+                    for (int month = months; month <= 12; month++)
                     {
                         String monthDir = String.format("%s/%04d/%02d", rootDir, year, month);
                         AddFiles(ftpC, monthDir, month, year);

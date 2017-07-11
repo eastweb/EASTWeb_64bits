@@ -35,9 +35,9 @@ import version2.prototype.util.FileSystem;
  */
 public class TRMM3B42RT_NewGlobalDownloader extends GlobalDownloader {
 
-    public TRMM3B42RT_NewGlobalDownloader(int myID, Config configInstance, String pluginName, DownloadMetaData metaData, ListDatesFiles listDatesFiles, LocalDate startDate) throws ClassNotFoundException,
+    public TRMM3B42RT_NewGlobalDownloader(int myID, Config configInstance, String pluginName, DownloadMetaData metaData, ListDatesFiles listDatesFiles, LocalDate startDate, LocalDate endDate) throws ClassNotFoundException,
     ParserConfigurationException, SAXException, IOException, SQLException, RegistrationException {
-        super(myID, configInstance, pluginName, metaData, listDatesFiles, startDate);
+        super(myID, configInstance, pluginName, metaData, listDatesFiles, startDate, endDate);
     }
 
     @Override

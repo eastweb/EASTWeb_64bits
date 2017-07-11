@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.time.DateTimeException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,8 +26,8 @@ import version2.prototype.download.ListDatesFiles;
 
 public class NldasForcingListDatesFiles extends ListDatesFiles {
 
-    public NldasForcingListDatesFiles(DataDate startDate, DownloadMetaData data, ProjectInfoFile project) throws IOException {
-        super(startDate, data, project);
+    public NldasForcingListDatesFiles(DataDate startDate, DataDate endDate, DownloadMetaData data, ProjectInfoFile project) throws IOException {
+        super(startDate, endDate, data, project);
     }
 
     @Override

@@ -53,6 +53,7 @@ public abstract class GlobalDownloader extends Observable implements Runnable{
     public final ListDatesFiles listDatesFiles;
     protected TaskState state;
     protected LocalDate currentStartDate;
+    protected LocalDate endDate;
     protected Boolean isRegistered;
 
     /**
@@ -69,7 +70,7 @@ public abstract class GlobalDownloader extends Observable implements Runnable{
      * @throws ClassNotFoundException
      * @throws RegistrationException
      */
-    protected GlobalDownloader(int myID, Config configInstance, String pluginName, DownloadMetaData metaData, ListDatesFiles listDatesFiles, LocalDate startDate) throws
+    protected GlobalDownloader(int myID, Config configInstance, String pluginName, DownloadMetaData metaData, ListDatesFiles listDatesFiles, LocalDate startDate, LocalDate endDate) throws
     ClassNotFoundException, ParserConfigurationException, SAXException, IOException, SQLException, RegistrationException
     {
         state = TaskState.STOPPED;
@@ -79,6 +80,7 @@ public abstract class GlobalDownloader extends Observable implements Runnable{
         this.metaData = metaData;
         this.listDatesFiles = listDatesFiles;
         currentStartDate = startDate;
+        this.endDate = endDate;
         isRegistered = false;
     }
 
@@ -226,6 +228,7 @@ public abstract class GlobalDownloader extends Observable implements Runnable{
             int year = startDate.getYear();
             int dayOfYear = startDate.getDayOfYear();
             query.append(" AND ((B.\"Year\" = " + year + " AND B.\"DayOfYear\" >= " + dayOfYear + ") OR (B.\"Year\" > " + year + "))");
+            query.append(" AND ((B.\"Year\" = " + endDate.getYear() + " AND B.\"DayOfYear\" <= " + endDate.getDayOfYear() + ") OR (B.\"Year\" < " + endDate.getYear() + "))");
         }
         query.append(";");
         rs = stmt.executeQuery(query.toString());
@@ -251,6 +254,7 @@ public abstract class GlobalDownloader extends Observable implements Runnable{
             int year = startDate.getYear();
             int dayOfYear = startDate.getDayOfYear();
             query.append(" AND ((B.\"Year\" = " + year + " AND B.\"DayOfYear\" >= " + dayOfYear + ") OR (B.\"Year\" > " + year + "))");
+            query.append(" AND ((B.\"Year\" = " + endDate.getYear() + " AND B.\"DayOfYear\" <= " + endDate.getDayOfYear() + ") OR (B.\"Year\" < " + endDate.getYear() + "))");
         }
         query.append(";");
         rs = stmt.executeQuery(query.toString());

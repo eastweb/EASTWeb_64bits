@@ -19,19 +19,19 @@ import version2.prototype.util.DatabaseCache;
 public class TRMM3B42_NewFactory extends DownloadFactory {
 
     public TRMM3B42_NewFactory(Config configInstance, ProjectInfoFile projectInfoFile, ProjectInfoPlugin pluginInfo, DownloadMetaData downloadMetaData, PluginMetaData pluginMetaData,
-            Scheduler scheduler, DatabaseCache outputCache, LocalDate startDate) {
-        super(configInstance, projectInfoFile, pluginInfo, downloadMetaData, pluginMetaData, scheduler, outputCache, startDate);
+            Scheduler scheduler, DatabaseCache outputCache, LocalDate startDate, LocalDate endDate) {
+        super(configInstance, projectInfoFile, pluginInfo, downloadMetaData, pluginMetaData, scheduler, outputCache, startDate, endDate);
     }
 
     @Override
     public DownloaderFactory CreateDownloaderFactory(ListDatesFiles listDatesFiles) {
         return new LocalStorageDownloadFactory(configInstance, "TRMM3B42_NewDownloader", projectInfoFile, pluginInfo, downloadMetaData, pluginMetaData, scheduler, outputCache, listDatesFiles,
-                startDate);
+                startDate, endDate);
     }
 
     @Override
     public ListDatesFiles CreateListDatesFiles() throws IOException {
-        return new TRMM3B42_NewListDatesFiles(new DataDate(startDate), downloadMetaData, projectInfoFile);
+        return new TRMM3B42_NewListDatesFiles(new DataDate(startDate), new DataDate(endDate), downloadMetaData, projectInfoFile);
     }
 }
 

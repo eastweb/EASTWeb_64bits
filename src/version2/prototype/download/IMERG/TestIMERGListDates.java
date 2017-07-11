@@ -2,6 +2,7 @@ package version2.prototype.download.IMERG;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Map;
@@ -49,7 +50,7 @@ public class TestIMERGListDates
 
         IMERGListDatesFiles iList;
         try {
-            iList = new IMERGListDatesFiles(new DataDate(data.originDate), data, null);
+            iList = new IMERGListDatesFiles(new DataDate(data.originDate), new DataDate(LocalDate.now()), data, null);
             Map<DataDate, ArrayList<String>> tempDatesFiles = iList.CloneListDatesFiles();
 
             for (Map.Entry<DataDate, ArrayList<String>> entry : tempDatesFiles.entrySet())
