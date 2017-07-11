@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import javax.xml.parsers.*;
 
+import org.joda.time.DateTime;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -94,7 +95,7 @@ import version2.prototype.ZonalSummary;
         // Get file data
         plugins = ReadPlugins();
         startDate = ReadStartDate();
-        endDate = LocalDate.now();
+        endDate = ReadEndDate();//LocalDate.now();
         projectName = ReadProjectName();
         workingDir = ReadWorkingDir();
         maskingFile = ReadMaskingFile();
@@ -366,15 +367,17 @@ import version2.prototype.ZonalSummary;
 
     private LocalDate ReadEndDate() throws DateTimeParseException{
         NodeList nodes = GetUpperLevelNodeListIgnoreIfEmpty("EndDate", "Missing end date.");
+        DateTime now = DateTime.now();
         if(nodes!=null){
-            ArrayList<String> values = GetNodeListValues(nodes, "Missing end date.");
+            ArrayList<String> values = GetNodeListValuesIgnoreIfEmpty(nodes, "Missing end date.");
             if(values.size() > 0) {
                 return LocalDate.parse(values.get(0), datesFormatter);
             }
         } else {
-            return LocalDate.parse(LocalDate.now().toString(), datesFormatter);
+            return LocalDate.now();//LocalDate.parse(now.toString("EEE MMM dd HH:mm:ss zzz yyyy"), datesFormatter);
         }
-        return LocalDate.parse(LocalDate.now().toString(), datesFormatter);
+        return LocalDate.now();
+        //LocalDate.parse(now.toString(), datesFormatter);
     }
 
     private String ReadProjectName()
