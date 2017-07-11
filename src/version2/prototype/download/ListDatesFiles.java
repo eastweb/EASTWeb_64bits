@@ -67,6 +67,10 @@ public abstract class ListDatesFiles
         if (sDate.compareTo(new DataDate(mData.originDate)) < 0)
         {
             sDate = new DataDate(mData.originDate);
+            if(eDate.compareTo(sDate) < 0){
+                return;
+                //eDate = new DataDate(mData.originDate);
+            }
         }
 
         lDates = null;

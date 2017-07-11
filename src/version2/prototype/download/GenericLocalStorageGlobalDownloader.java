@@ -94,7 +94,7 @@ public class GenericLocalStorageGlobalDownloader extends GlobalDownloader {
             ArrayList<DataDate> removeDates = new ArrayList<DataDate>();
             for(DataDate dd : dateKeys)
             {
-                if(dd.getLocalDate().isBefore(currentStartDate))
+                if(dd.getLocalDate().isBefore(currentStartDate) || dd.getLocalDate().isAfter(endDate))
                 {
                     removeDates.add(dd);
                 }
@@ -104,7 +104,7 @@ public class GenericLocalStorageGlobalDownloader extends GlobalDownloader {
             }
 
             // Step 2: Pull all cached downloads
-            ArrayList<DataFileMetaData> cachedD = GetAllDownloadedFiles(currentStartDate);
+            ArrayList<DataFileMetaData> cachedD = GetAllDownloadedFiles(currentStartDate,endDate);
 
             // Step 3: Remove already downloaded files from ListDatesFiles
             for (DataFileMetaData d: cachedD)

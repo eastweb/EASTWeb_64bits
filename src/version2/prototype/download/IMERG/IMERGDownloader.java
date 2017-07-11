@@ -34,6 +34,7 @@ public class IMERGDownloader extends DownloaderFramework
 
     public IMERGDownloader(DataDate date, String outFolder, DownloadMetaData data, String fileToDownload)
     {
+        System.out.println("HERE 1");
         mDate = date;
         mOutputFolder = outFolder;
         mData = data;

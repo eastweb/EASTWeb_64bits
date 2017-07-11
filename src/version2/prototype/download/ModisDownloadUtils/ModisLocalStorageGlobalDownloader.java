@@ -243,7 +243,7 @@ public class ModisLocalStorageGlobalDownloader extends GlobalDownloader {
             }
 
             // Step 2: Pull all cached downloads
-            ArrayList<DataFileMetaData> cachedD = GetAllDownloadedFiles(currentStartDate);
+            ArrayList<DataFileMetaData> cachedD = GetAllDownloadedFiles(currentStartDate,endDate);
 
             // Step 3: Remove already downloaded files from ListDatesFiles
             for (DataFileMetaData d: cachedD)

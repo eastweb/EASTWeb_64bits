@@ -89,8 +89,6 @@ public class SchedulerWorker implements Callable<ProcessWorkerReturn> {
             }
         }
 
-
-
         scheduler.NotifyUI(new GeneralUIEventObject(this, null));
 
         Thread.currentThread().setName(oldThreadName);

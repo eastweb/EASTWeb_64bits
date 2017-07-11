@@ -112,5 +112,4 @@ public final class LocalStorageDownloadFactory implements DownloaderFactory {
         }
         return gdl;
     }
-
 }

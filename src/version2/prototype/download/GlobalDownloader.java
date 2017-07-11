@@ -185,7 +185,7 @@ public abstract class GlobalDownloader extends Observable implements Runnable{
      */
     public final ArrayList<DataFileMetaData> GetAllDownloadedFiles() throws ClassNotFoundException, SQLException, ParserConfigurationException, SAXException, IOException, RegistrationException
     {
-        return GetAllDownloadedFiles(null);
+        return GetAllDownloadedFiles(null,null);
     }
 
     /**
@@ -201,7 +201,7 @@ public abstract class GlobalDownloader extends Observable implements Runnable{
      * @throws ClassNotFoundException
      * @throws RegistrationException
      */
-    public ArrayList<DataFileMetaData> GetAllDownloadedFiles(LocalDate startDate) throws SQLException, ClassNotFoundException, ParserConfigurationException, SAXException,
+    public ArrayList<DataFileMetaData> GetAllDownloadedFiles(LocalDate startDate, LocalDate endDate) throws SQLException, ClassNotFoundException, ParserConfigurationException, SAXException,
     IOException, RegistrationException
     {
         if(!isRegistered) {

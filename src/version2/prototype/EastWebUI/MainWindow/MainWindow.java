@@ -479,10 +479,9 @@ public class MainWindow {
 
         try {
             for(ProjectInfoFile p : subprojects){
-                //System.out.println(p.GetStartDate().toString()+" --- "+p.GetEndDate().toString());
-                System.out.println(p.GetProjectName());
+                /*System.out.println(p.GetProjectName());
                 System.out.println(p.GetStartDate());
-                System.out.println(p.GetEndDate());
+                System.out.println(p.GetEndDate());*/
                 //SchedulerData data = new SchedulerData(project, !chckbxIntermidiateFiles.isSelected());
                 EASTWebManager.LoadNewScheduler(new SchedulerData(p, !chckbxIntermidiateFiles.isSelected()), false);
                 runningProjects.add(p.GetProjectName());//String.valueOf(projectList.getSelectedItem()));
