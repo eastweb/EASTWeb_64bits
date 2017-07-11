@@ -61,12 +61,12 @@ public class NldasForcingListDatesFiles extends ListDatesFiles {
                     continue;
                 }
 
-                if(Integer.parseInt(yearDir.getName()) >= sDate.getYear())
+                if(Integer.parseInt(yearDir.getName()) >= sDate.getYear() && Integer.parseInt(yearDir.getName()) <= eDate.getYear())
                 {
                     for(FTPFile dayOfYearDir : ftpClient.listDirectories(mRootDir + yearDir.getName() + "/"))
                     {
-                        // Continue if the day of year is less than the start date
-                        if(Integer.parseInt(yearDir.getName()) ==  sDate.getYear() && Integer.parseInt(dayOfYearDir.getName()) < sDate.getDayOfYear()) {
+                        // Continue if the day of year is less than the start date or greater than end date
+                        if(Integer.parseInt(yearDir.getName()) ==  sDate.getYear() && (Integer.parseInt(dayOfYearDir.getName()) < sDate.getDayOfYear() || Integer.parseInt(dayOfYearDir.getName()) > eDate.getDayOfYear())) {
                             continue;
                         }
 
@@ -85,7 +85,8 @@ public class NldasForcingListDatesFiles extends ListDatesFiles {
                             if(Integer.parseInt(yearDir.getName()) == sDate.getYear() && Integer.parseInt(dayOfYearDir.getName()) == sDate.getDayOfYear())
                             {
                                 int startIndex = hourlyFile.getName().indexOf(".002.grb") - 4;
-                                if(Integer.parseInt(hourlyFile.getName().substring(startIndex, (startIndex+2))) >= sDate.getHour()) {
+                                if(Integer.parseInt(hourlyFile.getName().substring(startIndex, (startIndex+2))) >= sDate.getHour() &&
+                                        Integer.parseInt(hourlyFile.getName().substring(startIndex, (startIndex+2))) <= eDate.getHour()) {
                                     files.add(hourlyFile.getName());
                                 }
                             }
@@ -130,7 +131,7 @@ public class NldasForcingListDatesFiles extends ListDatesFiles {
     {
         String fileFormat = "NLDAS_FORA0125_H.A%04d%02d%02d.%02d00.002.grb";
         Map<DataDate, ArrayList<String>>  mapDatesToFiles = new HashMap<DataDate, ArrayList<String>>();
-        DataDate today = new DataDate(LocalDate.now());
+        //DataDate today = new DataDate(LocalDate.now());
 
         // Get the files from the start year
         for (int month = sDate.getMonth(); month <= 12; month++)
@@ -178,7 +179,7 @@ public class NldasForcingListDatesFiles extends ListDatesFiles {
         }
 
         // Get the files between the start year and the current year
-        for(int year = sDate.getYear()+1; year < today.getYear(); year++)
+        for(int year = sDate.getYear()+1; year < eDate.getYear(); year++)
         {
             for(int month = 1; month <= 12; month++)
             {
@@ -196,31 +197,31 @@ public class NldasForcingListDatesFiles extends ListDatesFiles {
         }
 
         // Get the files up up to the current date (approximately, as they take about 3 days to process, so up to today's DayOfMonth-3);
-        for (int month = 1; month <= today.getMonth(); month++)
+        for (int month = 1; month <= eDate.getMonth(); month++)
         {
-            if(month != today.getMonth())
+            if(month != eDate.getMonth())
             {
                 for(int day = 1; day <= 31; day++)
                 {
                     ArrayList<String> files = new ArrayList<String>();
                     for (int hour = 0; hour <= 23; hour++)
                     {
-                        files.add(String.format(fileFormat, today.getYear(), month, day, hour));
+                        files.add(String.format(fileFormat, eDate.getYear(), month, day, hour));
                     }
-                    try { mapDatesToFiles.put(new DataDate(day, month, today.getYear()), files); }
+                    try { mapDatesToFiles.put(new DataDate(day, month, eDate.getYear()), files); }
                     catch(DateTimeException e) { }
                 }
             }
             else
             {
-                for (int day = 1; day <= (today.getDay()-3); day++)
+                for (int day = 1; day <= (eDate.getDay()-3); day++)
                 {
                     ArrayList<String> files = new ArrayList<String>();
                     for (int hour = 0; hour <= 23; hour++)
                     {
-                        files.add(String.format(fileFormat, today.getYear(), month, day, hour));
+                        files.add(String.format(fileFormat, eDate.getYear(), month, day, hour));
                     }
-                    try { mapDatesToFiles.put(new DataDate(day, month, today.getYear()), files); }
+                    try { mapDatesToFiles.put(new DataDate(day, month, eDate.getYear()), files); }
                     catch(DateTimeException e) { }
                 }
             }
@@ -286,7 +287,8 @@ public class NldasForcingListDatesFiles extends ListDatesFiles {
                                             int day = Integer.parseInt(matcherD.group().substring(0, 3));
 
                                             if((year == sDate.getYear() && day >= sDate.getDayOfYear())
-                                                    || year > sDate.getYear())
+                                                    || (year > sDate.getYear() && year < eDate.getYear())
+                                                    || (year == eDate.getYear() && day <= eDate.getDayOfYear()))
                                             {
                                                 String dayDir = mHostURL + String.format("%04d/%s", year, matcherD.group());
 
@@ -312,8 +314,6 @@ public class NldasForcingListDatesFiles extends ListDatesFiles {
 
                                                         if(fileDate.compareTo(startDateStr) >= 0)
                                                         {
-
-
                                                             fileList.add(matcherF.group());
 
                                                             String[] strings = matcherF.group().split("[.]");
@@ -324,8 +324,6 @@ public class NldasForcingListDatesFiles extends ListDatesFiles {
                                                             DataDate dataDate = new DataDate(hour, d, month, year);
 
                                                             tempMapDatesToFiles.put(dataDate, fileList);
-
-
                                                         }
                                                     }
                                                 }

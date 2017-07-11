@@ -114,10 +114,30 @@ public class ProgressUpdater {
             ErrorLog.add(configInstance, "Invalid Download progress (current = " + currentCount + ", expected = " + expectedCount + ") of " + progress
                     + " for plugin '" + pluginName + "' and data '" + dataName + "'.", new Exception("Invalid Download progress."));
         }
-
         return progress;
     }
 
+    // Overload (villegar)
+    public double GetCurrentDownloadProgress(String dataName, String pluginName, LocalDate startDate, LocalDate endDate, ArrayList<String> modisTileNames, Statement stmt) throws SQLException
+    {
+        double progress = 0;
+        String mSchemaName = Schemas.getSchemaName(projectMetaData.GetProjectName(), pluginName);
+        PluginMetaData pluginMetaData = pluginMetaDataCollection.pluginMetaDataMap.get(pluginName);
+        int currentCount = calculateDownloadCurrentCount(mSchemaName, dataName, stmt);
+        int expectedCount = getStoredDownloadExpectedTotalOutput(projectMetaData.GetProjectName(), pluginName, dataName, stmt);
+        int maxExpectedCount = calculateMaxDownloadExpectedCount(pluginMetaData, startDate, endDate, modisTileNames);
+
+        if(expectedCount > 0 && currentCount > 0)
+        {
+            progress = (new Double(currentCount) / new Double(expectedCount)) * 100;
+        }
+
+        if((progress > 100 || progress < 0) && (currentCount > maxExpectedCount)) {
+            ErrorLog.add(configInstance, "Invalid Download progress (current = " + currentCount + ", expected = " + expectedCount + ") of " + progress
+                    + " for plugin '" + pluginName + "' and data '" + dataName + "'.", new Exception("Invalid Download progress."));
+        }
+        return progress;
+    }
     /**
      * Calculates the current progress percentage for the Processor process.
      *
@@ -392,6 +412,23 @@ public class ProgressUpdater {
         int expectedCount = 0;
 
         long daysSinceStart = ChronoUnit.DAYS.between(startDate, LocalDate.now());
+        int adjustedDaysSinceStart = (int)(daysSinceStart / pluginMetaData.Download.DaysPerInputData);
+
+        if(modisTileNames != null && modisTileNames.size() > 1) {
+            expectedCount = adjustedDaysSinceStart * modisTileNames.size();
+        } else {
+            expectedCount = adjustedDaysSinceStart * pluginMetaData.Download.filesPerDay;
+        }
+
+        return expectedCount;
+    }
+
+    // Overloaded (villegar)
+    protected int calculateMaxDownloadExpectedCount(PluginMetaData pluginMetaData, LocalDate startDate, LocalDate endDate, ArrayList<String> modisTileNames)
+    {
+        int expectedCount = 0;
+
+        long daysSinceStart = ChronoUnit.DAYS.between(startDate, endDate);
         int adjustedDaysSinceStart = (int)(daysSinceStart / pluginMetaData.Download.DaysPerInputData);
 
         if(modisTileNames != null && modisTileNames.size() > 1) {

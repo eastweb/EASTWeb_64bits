@@ -95,7 +95,7 @@ public class ProjectInformationPage {
     private DefaultListModel<String> summaryListModel;
     private JTextField resolutionTextField;
 
-    private Object[] possibilities = {"Weekly", "Bi-weekly", "Monthly", "Yearly"};
+    private Object[] possibilities = {"Monthly", "Yearly"};
     private int BigDataMode = possibilities.length - 1; // By default the Big Data mode is Yearly
     /**
      * Launch the application.
@@ -178,8 +178,6 @@ public class ProjectInformationPage {
                     if(chckbxBigDataMode.isSelected()) {
                         switch(BigDataMode){
                         case 0:
-                            break;
-                        case 2:
                             years = now.getYear() - start.getYear() + 1;
                             f = start;
                             l = start;
@@ -938,6 +936,7 @@ public class ProjectInformationPage {
 
             if(ProjectInfoCollection.WriteProjectToFile(doc, this.projectName.getText())){
                 System.out.println("File saved!");
+                String postFixName = "";
                 Element startDateSUB, endDateSUB;
                 projectInfo.removeChild(startDate);
                 projectInfo.removeChild(projectName);
@@ -948,11 +947,12 @@ public class ProjectInformationPage {
                     projectName = doc.createElement("ProjectName");
                     startDateSUB.appendChild(doc.createTextNode(startDates.get(s)));
                     endDateSUB.appendChild(doc.createTextNode(endDates.get(s)));
-                    projectName.appendChild(doc.createTextNode(this.projectName.getText()+"-SUB"+s));
+                    postFixName = startDates.get(s).substring(startDates.get(s).length()-4);
+                    projectName.appendChild(doc.createTextNode(this.projectName.getText()+"-SUB"+s+" "+postFixName));
                     projectInfo.appendChild(projectName);
                     projectInfo.appendChild(startDateSUB);
                     projectInfo.appendChild(endDateSUB);
-                    if(ProjectInfoCollection.WriteProjectToFile(doc, this.projectName.getText()+"-SUB"+s)){
+                    if(ProjectInfoCollection.WriteProjectToFile(doc, this.projectName.getText()+"-SUB"+s+" ("+postFixName+")")){
                         System.out.println("Subproject saved!");
                         projectInfo.removeChild(startDateSUB);
                         projectInfo.removeChild(endDateSUB);
@@ -961,7 +961,7 @@ public class ProjectInformationPage {
                         System.out.println("Error in saving");
                     }
                 }
-                //mainWindowEvent.fire();
+                mainWindowEvent.fire();
             }else{
                 System.out.println("Error in saving");
             }

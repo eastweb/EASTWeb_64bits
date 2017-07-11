@@ -374,7 +374,7 @@ import version2.prototype.ZonalSummary;
         } else {
             return LocalDate.parse(LocalDate.now().toString(), datesFormatter);
         }
-        return null;
+        return LocalDate.parse(LocalDate.now().toString(), datesFormatter);
     }
 
     private String ReadProjectName()

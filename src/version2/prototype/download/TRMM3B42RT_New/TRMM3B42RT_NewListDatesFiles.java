@@ -76,7 +76,7 @@ public class TRMM3B42RT_NewListDatesFiles extends ListDatesFiles
                         //get rid of the last character '/'
                         int year = Integer.parseInt(matcher.group().substring(0, 4));
 
-                        if (year >= sDate.getYear())
+                        if (year >= sDate.getYear() && year <= eDate.getYear())
                         {
                             String yearFolderURL = mHostURL + String.format("%04d", year);
 
@@ -104,7 +104,8 @@ public class TRMM3B42RT_NewListDatesFiles extends ListDatesFiles
 
                                             // check if the month of the startDate is not starting at 1
                                             if (((year == sDate.getYear()) && (month >= sDate.getMonth()))
-                                                    || (year > sDate.getYear()))
+                                                    || (year > sDate.getYear() && year < eDate.getYear())
+                                                    || (year == eDate.getYear() && month <= eDate.getMonth()))
                                             {
                                                 String monthFolderURL = mHostURL + String.format("%04d/%s", year, matcherM.group());
                                                 // System.out.println("url : " + monthFolderURL);
