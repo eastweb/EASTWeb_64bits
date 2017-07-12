@@ -65,8 +65,8 @@ public class IMERG_RTListDatesFiles extends ListDatesFiles{
              *            jsimpson.pps.eosdis.nasa.gov/data/imerg/gis
              * 2. if it is for the previous years, search the files in the yyyy/mm directory
              */
-            int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-            int currentMonth = Calendar.getInstance().get(Calendar.MONTH)+ 1;
+            //int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+            //int currentMonth = Calendar.getInstance().get(Calendar.MONTH)+ 1;
 
             //int currentYear = 2016;
             //int currentMonth = 1;
@@ -78,7 +78,7 @@ public class IMERG_RTListDatesFiles extends ListDatesFiles{
 
             String rootDir = mData.myFtp.rootDir;
 
-            for (int year = startYear; year <= currentYear; year ++)
+            for (int year = startYear; year <= eDate.getYear(); year ++)
             {
                 int months;
                 if (year == startYear) {
@@ -88,16 +88,9 @@ public class IMERG_RTListDatesFiles extends ListDatesFiles{
                 }
 
                 // access month folder
-                if (year == currentYear)
+                if (year == eDate.getYear())
                 {
-                    int monthEnd = currentMonth;
-                    //System.out.println(monthInPath + " : " + monthEnd);
-
-<<<<<<< guireview
-                    for (int month = months; month <= endMonth; month++)
-=======
-                    for (int month = monthS; month <= monthEnd; month++)
->>>>>>> 9cd87a8 Major changes in several classes to add the End Date (stop point)
+                    for (int month = months; month <= eDate.getMonth(); month++)
                     {
                         String monthDir = String.format("%s/%02d", rootDir, month);
                         AddFiles(ftpC, monthDir, month, year);

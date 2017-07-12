@@ -19,6 +19,7 @@ public abstract class ListDatesFiles
 {
     protected List<DataDate> lDates;
     protected DataDate sDate;
+    protected DataDate eDate;
     protected DownloadMetaData mData;
     protected Map<DataDate, ArrayList<String>>  mapDatesFiles;
     protected Boolean mapDatesFilesSet;
@@ -33,7 +34,6 @@ public abstract class ListDatesFiles
      * @param project
      * @throws IOException
      */
-<<<<<<< guireview
     //    public ListDatesFiles(DataDate startDate, DownloadMetaData data, ProjectInfoFile project) throws IOException
     //    {
     //        sDate = startDate;
@@ -59,11 +59,6 @@ public abstract class ListDatesFiles
     {
         sDate = startDate;
         eDate = endDate;
-=======
-    public ListDatesFiles(DataDate startDate, DownloadMetaData data, ProjectInfoFile project) throws IOException
-    {
-        sDate = startDate;
->>>>>>> 9cd87a8 Major changes in several classes to add the End Date (stop point)
         mData = data;
 
         /* Check if projectInfoFile.GetStartDate() is later than plugin's Origin Date

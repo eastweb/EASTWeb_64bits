@@ -376,12 +376,7 @@ import version2.prototype.ZonalSummary;
         } else {
             return now;//LocalDate.parse(now.toString("EEE MMM dd HH:mm:ss zzz yyyy"), datesFormatter);
         }
-<<<<<<< guireview
         return now;
-        //LocalDate.parse(now.toString(), datesFormatter);
-=======
-        return null;
->>>>>>> 9cd87a8 Major changes in several classes to add the End Date (stop point)
     }
 
     private String ReadProjectName()
