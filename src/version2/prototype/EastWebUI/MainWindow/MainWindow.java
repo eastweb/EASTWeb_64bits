@@ -476,6 +476,7 @@ public class MainWindow {
         String selectedProject = String.valueOf(projectList.getSelectedItem());
         ProjectInfoFile project = ProjectInfoCollection.GetProject(Config.getInstance(), selectedProject);
         ArrayList<ProjectInfoFile> subprojects = ProjectInfoCollection.GetAllSubProjectsFiles(Config.getInstance(), project.GetProjectName());
+<<<<<<< guireview
 
         try {
             for(ProjectInfoFile p : subprojects){
@@ -499,12 +500,28 @@ public class MainWindow {
                         p.GetProjectName(),
                         p.GetProjectName()});
             }
+=======
+        for(ProjectInfoFile p : subprojects){
+            System.out.println(p.GetStartDate().toString()+" --- "+p.GetEndDate().toString());
+            System.out.println(p.GetProjectName());
+        }
+        /*try {
+            SchedulerData data = new SchedulerData(project, !chckbxIntermidiateFiles.isSelected());
+            EASTWebManager.LoadNewScheduler(data, false);
+            runningProjects.add(String.valueOf(projectList.getSelectedItem()));
+            defaultTableModel.addRow(new Object[] {
+                    String.valueOf(projectList.getSelectedItem()),
+                    chckbxIntermidiateFiles.isSelected(),
+                    String.valueOf(projectList.getSelectedItem()),
+                    String.valueOf(projectList.getSelectedItem()),
+                    String.valueOf(projectList.getSelectedItem())});
+>>>>>>> 9cd87a8 Major changes in several classes to add the End Date (stop point)
             populateProjectList();
         } catch (PatternSyntaxException | DOMException | ParserConfigurationException | SAXException | IOException e) {
             ErrorLog.add(Config.getInstance(), "MainWindow.FileMenu problem with creating new file from Desktop.", e);
         } catch (Exception e) {
             ErrorLog.add(Config.getInstance(), "MainWindow.FileMenu problem with creating new file from Desktop.", e);
-        }
+        }*/
     }
 
     /**

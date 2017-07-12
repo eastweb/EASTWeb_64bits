@@ -87,7 +87,7 @@ public class ModisListDatesFiles extends ListDatesFiles
                         int month = Integer.parseInt(matcher.group(3));
                         int day = Integer.parseInt(matcher.group(4));
                         DataDate dataDate = new DataDate(day, month, year);
-                        if(dataDate.compareTo(sDate) >= 0 && dataDate.compareTo(eDate) <= 0)
+                        if(dataDate.compareTo(sDate) >= 0)
                         {
                             //                            System.out.println("param= " + param);
                             String fileFolderURL = mHostURL +

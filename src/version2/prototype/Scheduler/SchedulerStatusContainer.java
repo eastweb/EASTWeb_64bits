@@ -50,7 +50,6 @@ public class SchedulerStatusContainer {
      * Start date the Scheduler created with.
      */
     public final LocalDate startDate;
-    public LocalDate endDate;
 
     private final Config configInstance;
     private ProgressUpdater progressUpdater;
@@ -120,43 +119,6 @@ public class SchedulerStatusContainer {
         schedulerWorking = false;
     }
 
-    // Overload (villegar)
-    public SchedulerStatusContainer(Config configInstance, int SchedulerID, LocalDate startDate, LocalDate endDate, ProgressUpdater progressUpdater, ProjectInfoFile projectMetaData,
-            PluginMetaDataCollection pluginMetaDataCollection, List<String> log, TaskState state, TreeMap<String, TreeMap<String, Double>> downloadProgressesByData,
-            TreeMap<String, Double> processorProgresses, TreeMap<String, Double> indicesProgresses, TreeMap<String, TreeMap<Integer, Double>> summaryProgresses,
-            boolean projectUpToDate, LocalDateTime lastModifiedTime)
-    {
-        this.configInstance = configInstance;
-        this.SchedulerID = SchedulerID;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.progressUpdater = progressUpdater;
-        this.projectMetaData = projectMetaData;
-        this.pluginMetaDataCollection = pluginMetaDataCollection;
-        this.downloadProgressesByData = downloadProgressesByData;
-        this.processorProgresses = processorProgresses;
-        this.indicesProgresses = indicesProgresses;
-        this.summaryProgresses = summaryProgresses;
-        this.log = log;
-        this.state = state;
-        this.projectUpToDate = projectUpToDate;
-        this.lastModifiedTime = lastModifiedTime;
-
-        workersInQueuePerProcess = new TreeMap<ProcessName,Integer>();
-        workersInQueuePerProcess.put(ProcessName.DOWNLOAD, 0);
-        workersInQueuePerProcess.put(ProcessName.PROCESSOR, 0);
-        workersInQueuePerProcess.put(ProcessName.INDICES, 0);
-        workersInQueuePerProcess.put(ProcessName.SUMMARY, 0);
-
-        activeWorkersPerProcess = new TreeMap<ProcessName,Integer>();
-        activeWorkersPerProcess.put(ProcessName.DOWNLOAD, 0);
-        activeWorkersPerProcess.put(ProcessName.PROCESSOR, 0);
-        activeWorkersPerProcess.put(ProcessName.INDICES, 0);
-        activeWorkersPerProcess.put(ProcessName.SUMMARY, 0);
-
-        schedulerWorking = false;
-    }
-
     /**
      * Creates a default SchedulerStatusContainer with everything set to either the current time, 0, false, or the associated value given.
      * @param configInstance
@@ -173,82 +135,6 @@ public class SchedulerStatusContainer {
         this.configInstance = configInstance;
         this.SchedulerID = SchedulerID;
         this.startDate = startDate;
-        this.progressUpdater = progressUpdater;
-        this.projectMetaData = projectMetaData;
-        this.pluginMetaDataCollection = pluginMetaDataCollection;
-        ArrayList<ProjectInfoSummary> summariesTemp = new ArrayList<ProjectInfoSummary>();
-        for(ProjectInfoSummary pfs : projectMetaData.GetSummaries()) {
-            summariesTemp.add(new ProjectInfoSummary(pfs.GetZonalSummary(), pfs.GetTemporalSummaryCompositionStrategyClassName(), pfs.GetID()));
-        }
-        this.state = state;
-        log = Collections.synchronizedList(new ArrayList<String>(1));
-        projectUpToDate = false;
-
-
-        downloadProgressesByData = new TreeMap<String, TreeMap<String, Double>>();
-        TreeMap<String, Double> downloadDataProgressInit;
-        processorProgresses = new TreeMap<String, Double>();
-        indicesProgresses = new TreeMap<String, Double>();
-        summaryProgresses = new TreeMap<String, TreeMap<Integer, Double>>();
-        TreeMap<Integer, Double> summaryProgressesPluginResults;
-        TreeMap<Integer, Boolean> resultsUpToDatePluginResults;
-        String pluginName;
-        for(ProjectInfoPlugin plugin : projectMetaData.GetPlugins())
-        {
-            pluginName = plugin.GetName();
-
-            // Setup Download progresses
-            downloadDataProgressInit = new TreeMap<String, Double>();
-            downloadDataProgressInit.put("data", 0.0);
-            for(String dataName : pluginMetaDataCollection.pluginMetaDataMap.get(pluginName).ExtraDownloadFiles)
-            {
-                dataName = dataName.toLowerCase();
-                downloadDataProgressInit.put(dataName, 0.0);
-            }
-            downloadProgressesByData.put(pluginName, downloadDataProgressInit);
-
-            // Setup Processor progresses
-            processorProgresses.put(pluginName, 0.0);
-
-            // Setup Indices progresses
-            indicesProgresses.put(pluginName, 0.0);
-
-            // Setup Summary progresses
-            summaryProgressesPluginResults = new TreeMap<Integer, Double>();
-            resultsUpToDatePluginResults = new TreeMap<Integer, Boolean>();
-            for(ProjectInfoSummary summary : projectMetaData.GetSummaries())
-            {
-                summaryProgressesPluginResults.put(summary.GetID(), 0.0);
-                resultsUpToDatePluginResults.put(summary.GetID(), false);
-            }
-            summaryProgresses.put(pluginName, summaryProgressesPluginResults);
-        }
-
-        updateLastModifiedTime();
-
-        workersInQueuePerProcess = new TreeMap<ProcessName,Integer>();
-        workersInQueuePerProcess.put(ProcessName.DOWNLOAD, 0);
-        workersInQueuePerProcess.put(ProcessName.PROCESSOR, 0);
-        workersInQueuePerProcess.put(ProcessName.INDICES, 0);
-        workersInQueuePerProcess.put(ProcessName.SUMMARY, 0);
-
-        activeWorkersPerProcess = new TreeMap<ProcessName,Integer>();
-        activeWorkersPerProcess.put(ProcessName.DOWNLOAD, 0);
-        activeWorkersPerProcess.put(ProcessName.PROCESSOR, 0);
-        activeWorkersPerProcess.put(ProcessName.INDICES, 0);
-        activeWorkersPerProcess.put(ProcessName.SUMMARY, 0);
-
-        schedulerWorking = false;
-    }
-
-    // Overload (villegar)
-    public SchedulerStatusContainer(Config configInstance, int SchedulerID, LocalDate startDate, LocalDate endDate, ProgressUpdater progressUpdater, ProjectInfoFile projectMetaData,
-            PluginMetaDataCollection pluginMetaDataCollection, TaskState state)
-    {
-        this.configInstance = configInstance;
-        this.SchedulerID = SchedulerID;
-        this.startDate = startDate;
-        this.endDate = endDate;
         this.progressUpdater = progressUpdater;
         this.projectMetaData = projectMetaData;
         this.pluginMetaDataCollection = pluginMetaDataCollection;
@@ -464,14 +350,12 @@ public class SchedulerStatusContainer {
                 PluginMetaData pluginMetaData = pluginMetaDataCollection.pluginMetaDataMap.get(pluginName);
 
                 // Setup Download progresses
-                //progress = progressUpdater.GetCurrentDownloadProgress("data", pluginName, startDate, pluginInfo.GetModisTiles(), stmt);
-                progress = progressUpdater.GetCurrentDownloadProgress("data", pluginName, startDate, endDate, pluginInfo.GetModisTiles(), stmt);
+                progress = progressUpdater.GetCurrentDownloadProgress("data", pluginName, startDate, pluginInfo.GetModisTiles(), stmt);
                 downloadProgressesByData.get(pluginName).put("data", progress);
                 for(String dataName : pluginMetaDataCollection.pluginMetaDataMap.get(pluginName).ExtraDownloadFiles)
                 {
                     dataName = dataName.toLowerCase();
-                    //progress = progressUpdater.GetCurrentDownloadProgress(dataName, pluginName, startDate, pluginInfo.GetModisTiles(), stmt);
-                    progress = progressUpdater.GetCurrentDownloadProgress(dataName, pluginName, startDate, endDate, pluginInfo.GetModisTiles(), stmt);
+                    progress = progressUpdater.GetCurrentDownloadProgress(dataName, pluginName, startDate, pluginInfo.GetModisTiles(), stmt);
                     downloadProgressesByData.get(pluginName).put(dataName, progress);
                 }
 

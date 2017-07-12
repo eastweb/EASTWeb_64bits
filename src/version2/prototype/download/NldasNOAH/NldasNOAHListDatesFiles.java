@@ -67,7 +67,7 @@ public class NldasNOAHListDatesFiles extends ListDatesFiles{
                     {
                         int year = Integer.parseInt(matcher.group().substring(0, 4));
 
-                        if(year >= sDate.getYear() && year <= eDate.getYear())
+                        if(year >= sDate.getYear())
                         {
                             String yearDir = mHostURL + String.format("%04d", year);
 
@@ -89,8 +89,7 @@ public class NldasNOAHListDatesFiles extends ListDatesFiles{
                                             int day = Integer.parseInt(matcherD.group().substring(0, 3));
 
                                             if((year == sDate.getYear() && day >= sDate.getDayOfYear())
-                                                    || (year > sDate.getYear() && year < eDate.getYear())
-                                                    || (year == eDate.getYear() && day <= eDate.getDayOfYear()))
+                                                    || year > sDate.getYear())
                                             {
                                                 String dayDir = mHostURL + String.format("%04d/%s", year, matcherD.group());
 
@@ -124,7 +123,11 @@ public class NldasNOAHListDatesFiles extends ListDatesFiles{
                                                             final int d = Integer.parseInt(strings[1].substring(7, 9));
                                                             final int hour = Integer.parseInt(strings[2]);
                                                             DataDate dataDate = new DataDate(hour, d, month, year);
+
+
                                                             tempMapDatesToFiles.put(dataDate, fileList);
+
+
                                                         }
                                                     }
                                                 }
@@ -199,7 +202,7 @@ public class NldasNOAHListDatesFiles extends ListDatesFiles{
                 }
 
                 int year = Integer.parseInt(yearFile.getName());
-                if (year < sDate.getYear() || year > eDate.getYear()) {
+                if (year < sDate.getYear()) {
                     continue;
                 }
 
