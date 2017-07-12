@@ -4,7 +4,6 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Hashtable;
 
 import org.apache.commons.io.FilenameUtils;
 import org.gdal.gdal.Band;
@@ -44,9 +43,8 @@ public class IMERG_RTConvert extends Convert
         GdalUtils.register();
         synchronized (GdalUtils.lockObject)
         {
-
             if (inputFiles == null)
-            { System.out.println("file does not exist");}
+            { System.out.println("File does not exists");}
 
             for (File f:inputFiles){
 

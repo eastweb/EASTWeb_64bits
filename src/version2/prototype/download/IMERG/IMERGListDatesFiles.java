@@ -3,15 +3,11 @@ package version2.prototype.download.IMERG;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
-import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
 import version2.prototype.Config;
@@ -119,5 +115,4 @@ public class IMERGListDatesFiles extends ListDatesFiles{
             return null;
         }
     }
-
 }
