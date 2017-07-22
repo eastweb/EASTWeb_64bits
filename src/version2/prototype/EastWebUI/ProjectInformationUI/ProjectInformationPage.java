@@ -1,6 +1,5 @@
 package version2.prototype.EastWebUI.ProjectInformationUI;
 
-import java.awt.Dialog;
 import java.awt.EventQueue;
 import java.awt.Font;
 
@@ -16,7 +15,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.text.ParseException;
-import java.time.Duration;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,8 +56,6 @@ import org.gdal.gdal.Dataset;
 import org.gdal.gdal.gdal;
 import org.gdal.gdalconst.gdalconstConstants;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Interval;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -93,9 +89,8 @@ public class ProjectInformationPage {
 
     private DefaultListModel<String> listOfAddedPluginModel;
     private DefaultListModel<String> summaryListModel;
-    private JTextField resolutionTextField;
 
-    private Object[] possibilities = {"Weekly", "Bi-weekly", "Monthly", "Yearly"};
+    private Object[] possibilities = {"Monthly", "Yearly"};
     private int BigDataMode = possibilities.length - 1; // By default the Big Data mode is Yearly
     /**
      * Launch the application.
@@ -178,8 +173,6 @@ public class ProjectInformationPage {
                     if(chckbxBigDataMode.isSelected()) {
                         switch(BigDataMode){
                         case 0:
-                            break;
-                        case 2:
                             years = now.getYear() - start.getYear() + 1;
                             f = start;
                             l = start;
@@ -204,13 +197,11 @@ public class ProjectInformationPage {
                                     l = l.withSecondOfMinute(59);
                                     startDates.add(f.toString("EEE MMM dd HH:mm:ss zzz yyyy"));
                                     endDates.add(l.toString("EEE MMM dd HH:mm:ss zzz yyyy"));
-                                    //System.out.println("Start: "+f.toString("EEE MMM dd HH:mm:ss zzz yyyy")+"\tEnd: "+l.toString("yyyy-MMM-dd"));
                                     f = l.plusDays(1);
                                 }
                                 l = l.plusDays(1);
                             }
                             CreateSubProjects(startDates,endDates);
-                            //CreateNewProject();
                             break;
                         default:
                             years = now.getYear() - start.getYear();
@@ -938,30 +929,34 @@ public class ProjectInformationPage {
 
             if(ProjectInfoCollection.WriteProjectToFile(doc, this.projectName.getText())){
                 System.out.println("File saved!");
-                Element startDateSUB, endDateSUB;
+                Element startDateSUB, endDateSUB = null;
                 projectInfo.removeChild(startDate);
                 projectInfo.removeChild(projectName);
 
                 for(int s=0; s < startDates.size(); s++){
                     startDateSUB = doc.createElement("StartDate");
-                    endDateSUB = doc.createElement("EndDate");
                     projectName = doc.createElement("ProjectName");
                     startDateSUB.appendChild(doc.createTextNode(startDates.get(s)));
-                    endDateSUB.appendChild(doc.createTextNode(endDates.get(s)));
                     projectName.appendChild(doc.createTextNode(this.projectName.getText()+"-SUB"+s));
                     projectInfo.appendChild(projectName);
                     projectInfo.appendChild(startDateSUB);
-                    projectInfo.appendChild(endDateSUB);
+                    if( s + 1 < startDates.size()){ // Don't include an EndDate for the last subproject
+                        endDateSUB = doc.createElement("EndDate");
+                        endDateSUB.appendChild(doc.createTextNode(endDates.get(s)));
+                        projectInfo.appendChild(endDateSUB);
+                    }
                     if(ProjectInfoCollection.WriteProjectToFile(doc, this.projectName.getText()+"-SUB"+s)){
                         System.out.println("Subproject saved!");
                         projectInfo.removeChild(startDateSUB);
-                        projectInfo.removeChild(endDateSUB);
+                        if( s + 1 < startDates.size()){
+                            projectInfo.removeChild(endDateSUB);
+                        }
                         projectInfo.removeChild(projectName);
                     } else {
                         System.out.println("Error in saving");
                     }
                 }
-                //mainWindowEvent.fire();
+                mainWindowEvent.fire();
             }else{
                 System.out.println("Error in saving");
             }

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.Future;
 
+import javax.swing.JOptionPane;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.FileUtils;
@@ -757,6 +758,7 @@ public class Scheduler {
         for(DownloadMetaData dlMetaData : pluginMetaData.Download.extraDownloads)
         {
             // Create extra ListDatesFiles instance
+            JOptionPane.showMessageDialog(null, "version2.prototype.download." + pluginInfo.GetName() + "." + dlMetaData.downloadFactoryClassName);
             downloadFactoryClass = Class.forName("version2.prototype.download." + pluginInfo.GetName() + "." + dlMetaData.downloadFactoryClassName);
             downloadFactoryCtor = downloadFactoryClass.getConstructor(Config.class, ProjectInfoFile.class, ProjectInfoPlugin.class, DownloadMetaData.class, PluginMetaData.class,
                     Scheduler.class, DatabaseCache.class, LocalDate.class);
