@@ -95,16 +95,16 @@ import version2.prototype.ProjectInfoMetaData.ProjectInfoSummary;
         ProjectName = projectMetaData.GetProjectName();
         PluginInfo = projectMetaData.GetPlugins();
         Summaries = projectMetaData.GetSummaries();
-        this.downloadProgressesByData = cloneTreeMapStringStringDouble(downloadProgressesByData);
-        this.processorProgresses = cloneTreeMapStringDouble(processorProgresses);
-        this.indicesProgresses = cloneTreeMapStringDouble(indicesProgresses);
-        this.summaryProgresses = cloneTreeMapStringIntegerDouble(summaryProgresses);
+        this.downloadProgressesByData = cloneTreeMapStringStringDouble(downloadProgressesByData, true);
+        this.processorProgresses = cloneTreeMapStringDouble(processorProgresses, true);
+        this.indicesProgresses = cloneTreeMapStringDouble(indicesProgresses, true);
+        this.summaryProgresses = cloneTreeMapStringIntegerDouble(summaryProgresses, true);
         this.log = new ArrayList<String>(log);
         logReaderPos = 0;
         this.State = State;
         this.ProjectUpToDate = ProjectUpToDate;
-        this.workersInQueuePerProcess = cloneTreeMapProcessNameInteger(workersInQueuePerProcess);
-        this.activeWorkersPerProcess = cloneTreeMapProcessNameInteger(activeWorkersPerProcess);
+        this.workersInQueuePerProcess = cloneTreeMapProcessNameInteger(workersInQueuePerProcess, true);
+        this.activeWorkersPerProcess = cloneTreeMapProcessNameInteger(activeWorkersPerProcess, true);
         this.schedulerWorking = schedulerWorking;
 
         this.LastModifiedTime = LastModifiedTime;
@@ -129,8 +129,8 @@ import version2.prototype.ProjectInfoMetaData.ProjectInfoSummary;
         logReaderPos = 0;
         State = statusToCopy.State;
         ProjectUpToDate = statusToCopy.ProjectUpToDate;
-        workersInQueuePerProcess = cloneTreeMapProcessNameInteger(statusToCopy.GetWorkersInQueuePerProcess());
-        activeWorkersPerProcess = cloneTreeMapProcessNameInteger(statusToCopy.GetActiveWorkersPerProcess());
+        workersInQueuePerProcess = cloneTreeMapProcessNameInteger(statusToCopy.GetWorkersInQueuePerProcess(), true);
+        activeWorkersPerProcess = cloneTreeMapProcessNameInteger(statusToCopy.GetActiveWorkersPerProcess(), true);
         schedulerWorking = statusToCopy.schedulerWorking;
 
         LastModifiedTime = statusToCopy.LastModifiedTime;
@@ -195,26 +195,54 @@ import version2.prototype.ProjectInfoMetaData.ProjectInfoSummary;
      * Gets a map of plugin names to their named data to their download progress at the time specified by lastModifiedTime.
      * @return map of plugin names to their named data to their download progress at the time specified by lastModifiedTime
      */
-    public TreeMap<String, TreeMap<String, Double>> GetDownloadProgressesByData() { return cloneTreeMapStringStringDouble(downloadProgressesByData); }
+    public TreeMap<String, TreeMap<String, Double>> GetDownloadProgressesByData() {
+        return downloadProgressesByData;
+        //return cloneTreeMapStringStringDouble(downloadProgressesByData,true);
+    }//return cloneTreeMapStringStringDouble(downloadProgressesByData); }
     /**
      * Gets a map of plugin names to their indices progress at the time specified by lastModifiedTime.
      * @return map of plugin names to their indices progress at the time specified by lastModifiedTime
      */
-    public TreeMap<String, Double> GetProcessorProgresses() { return cloneTreeMapStringDouble(processorProgresses); }
+    public TreeMap<String, Double> GetProcessorProgresses() {
+        return processorProgresses;
+        //return cloneTreeMapStringDouble(processorProgresses,true);
+    }
     /**
      * Gets a map of plugin names to their indices progress at the time specified by lastModifiedTime.
      * @return map of plugin names to their indices progress at the time specified by lastModifiedTime
      */
-    public TreeMap<String, Double> GetIndicesProgresses() { return cloneTreeMapStringDouble(indicesProgresses); }
+    public TreeMap<String, Double> GetIndicesProgresses() {
+        return indicesProgresses;
+        //return cloneTreeMapStringDouble(indicesProgresses,true);
+    }
     /**
      * Gets a map of plugin names to their maps of summary IDs to their summary progress at the time specified by lastModifiedTime.
      * @return map of plugin names to their maps of summary IDs to their summary progress at the time specified by lastModifiedTime
      */
-    public TreeMap<String, TreeMap<Integer, Double>> GetSummaryProgresses() { return cloneTreeMapStringIntegerDouble(summaryProgresses); }
+    public TreeMap<String, TreeMap<Integer, Double>> GetSummaryProgresses() {
+        return cloneTreeMapStringIntegerDouble(summaryProgresses,true);
+    }
 
-    public TreeMap<ProcessName, Integer> GetWorkersInQueuePerProcess() { return cloneTreeMapProcessNameInteger(workersInQueuePerProcess); }
+    public TreeMap<ProcessName, Integer> GetWorkersInQueuePerProcess() {
+        return cloneTreeMapProcessNameInteger(workersInQueuePerProcess,true);
+    }
 
-    public TreeMap<ProcessName, Integer> GetActiveWorkersPerProcess() { return cloneTreeMapProcessNameInteger(activeWorkersPerProcess); }
+    public TreeMap<ProcessName, Integer> GetActiveWorkersPerProcess() {
+        return cloneTreeMapProcessNameInteger(activeWorkersPerProcess,true);
+    }
+
+    /**
+     * Overwriting of the original cloneTreeMapStringStringDouble
+     * @param input
+     * @param v2 (silly parameter)
+     * @return
+     * @author roberto.villegas
+     */
+    private TreeMap<String, TreeMap<Integer, Double>> cloneTreeMapStringIntegerDouble(TreeMap<String, TreeMap<Integer, Double>> input, boolean v2){
+        TreeMap<String, TreeMap<Integer, Double>> newTreeMap = new TreeMap<String, TreeMap<Integer, Double>>();
+        newTreeMap.putAll(input);
+        return newTreeMap;
+    }
 
     private TreeMap<String, TreeMap<Integer, Double>> cloneTreeMapStringIntegerDouble(TreeMap<String, TreeMap<Integer, Double>> input)
     {
@@ -237,6 +265,19 @@ import version2.prototype.ProjectInfoMetaData.ProjectInfoSummary;
             clone.put(plugin, pluginResults);
         }
         return clone;
+    }
+
+    /**
+     * Overwriting of the original cloneTreeMapStringStringDouble
+     * @param input
+     * @param v2 (silly parameter)
+     * @return
+     * @author roberto.villegas
+     */
+    private TreeMap<String, TreeMap<String,Double>> cloneTreeMapStringStringDouble(TreeMap<String,TreeMap<String,Double>> input, boolean v2){
+        TreeMap <String, TreeMap<String, Double>> newTreeMap = new TreeMap<String, TreeMap<String, Double>>();
+        newTreeMap.putAll(input);
+        return newTreeMap;
     }
 
     private TreeMap<String, TreeMap<String, Double>> cloneTreeMapStringStringDouble(TreeMap<String, TreeMap<String, Double>> input)
@@ -262,6 +303,19 @@ import version2.prototype.ProjectInfoMetaData.ProjectInfoSummary;
         return clone;
     }
 
+    /**
+     * Overwriting of the original cloneTreeMapStringDouble
+     * @param input
+     * @param v2 (silly parameter)
+     * @return
+     * @author roberto.villegas
+     */
+    private TreeMap<String, Double> cloneTreeMapStringDouble(TreeMap<String, Double> input, boolean v2){
+        TreeMap<String, Double> newTreeMap = new TreeMap<String, Double>();
+        newTreeMap.putAll(input);
+        return newTreeMap;
+    }
+
     private TreeMap<String, Double> cloneTreeMapStringDouble(TreeMap<String, Double> input)
     {
         TreeMap<String, Double> clone = new TreeMap<String, Double>();
@@ -273,6 +327,19 @@ import version2.prototype.ProjectInfoMetaData.ProjectInfoSummary;
             clone.put(key, input.get(key));
         }
         return clone;
+    }
+
+    /**
+     * Overwriting of the original cloneTreeMapStringStringDouble
+     * @param input
+     * @param v2 (silly parameter)
+     * @return
+     * @author roberto.villegas
+     */
+    private TreeMap<ProcessName, Integer> cloneTreeMapProcessNameInteger(TreeMap<ProcessName, Integer> input, boolean v2){
+        TreeMap<ProcessName, Integer> newTreeMap = new TreeMap<ProcessName, Integer>();
+        newTreeMap.putAll(input);
+        return newTreeMap;
     }
 
     private TreeMap<ProcessName, Integer> cloneTreeMapProcessNameInteger(TreeMap<ProcessName, Integer> input)

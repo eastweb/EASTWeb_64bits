@@ -122,7 +122,7 @@ public class MainWindow {
 
         frame = new JFrame();
         frame.setBounds(100, 100, 1175, 730);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.getContentPane().setLayout(null);
         frame.setResizable(false);
@@ -138,6 +138,11 @@ public class MainWindow {
                     frame.dispose();
                 }
             }
+
+            /*@Override
+            public void windowActivated(WindowEvent e) {
+                populateProjectList(); // Refresh the projects list every time the window gained focus
+            }*/
         }));
 
         runningProjects = new ArrayList<String>();
@@ -223,7 +228,7 @@ public class MainWindow {
         mnFile.addSeparator();
 
         // wrapper for manage intermediate files
-        fileManagementSubMenu = new JMenu("Manage Intermidiate Files");
+        fileManagementSubMenu = new JMenu("Manage Intermediate Files");
         fileManagementSubMenu.setMnemonic(KeyEvent.VK_S);
 
         // opens folder where intermediate file lives
@@ -409,6 +414,7 @@ public class MainWindow {
             projectList.removeItem(project);
         }
     }
+
 
     // open manual
     private void openManual() {

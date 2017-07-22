@@ -40,34 +40,34 @@ public class ProjectInfoCollection {
         ArrayList<ProjectInfoFile> projectListClone;
         synchronized(projectsListLock)
         {
-            if(projects == null)
+            //if(projects == null)
+            // {
+            projects = new ArrayList<ProjectInfoFile>();
+            File fileDir = new File(System.getProperty("user.dir") + "\\projects\\");
+            File[] fl = getXMLFiles(fileDir);
+            if(fl.length > 0)
             {
-                projects = new ArrayList<ProjectInfoFile>();
-                File fileDir = new File(System.getProperty("user.dir") + "\\projects\\");
-                File[] fl = getXMLFiles(fileDir);
-                if(fl.length > 0)
+                ProjectInfoFile metaData;
+                for(File fi : fl)
                 {
-                    ProjectInfoFile metaData;
-                    for(File fi : fl)
-                    {
-                        try{
-                            metaData = new ProjectInfoFile(configInstance, fi.getCanonicalPath());
-                            if(metaData.error) {
-                                ErrorLog.add(Config.getInstance(), "Parsing failure" + (metaData.GetErrorMessages().size() > 1 ? "s" : "") + " for file project meta data file '" + fi.getName() + "'. "
-                                        + metaData.GetErrorMessages().toString(),
-                                        new Exception("Parsing failure" + (metaData.GetErrorMessages().size() > 1 ? "s" : "") + " for file project meta data file '" + fi.getName() + "'."));
-                            } else {
-                                projects.add(metaData);
-                            }
-                        } catch(Exception e) {
-                            ErrorLog.add(Config.getInstance(), "Project meta data file, " + fi.getName() + " has an error in it.", e);
+                    try{
+                        metaData = new ProjectInfoFile(configInstance, fi.getCanonicalPath());
+                        if(metaData.error) {
+                            ErrorLog.add(Config.getInstance(), "Parsing failure" + (metaData.GetErrorMessages().size() > 1 ? "s" : "") + " for file project meta data file '" + fi.getName() + "'. "
+                                    + metaData.GetErrorMessages().toString(),
+                                    new Exception("Parsing failure" + (metaData.GetErrorMessages().size() > 1 ? "s" : "") + " for file project meta data file '" + fi.getName() + "'."));
+                        } else {
+                            projects.add(metaData);
                         }
+                    } catch(Exception e) {
+                        ErrorLog.add(Config.getInstance(), "Project meta data file, " + fi.getName() + " has an error in it.", e);
                     }
                 }
             }
-
-            projectListClone = (ArrayList<ProjectInfoFile>) projects.clone();
         }
+
+        projectListClone = (ArrayList<ProjectInfoFile>) projects.clone();
+        //}
 
         return projectListClone;
     }
@@ -145,6 +145,4 @@ public class ProjectInfoCollection {
             return f.getName().substring(f.getName().length() - 3, f.getName().length());
         }
     }
-
-
 }
