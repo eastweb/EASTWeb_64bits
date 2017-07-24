@@ -41,10 +41,9 @@ public class NldasNOAHListDatesFiles extends ListDatesFiles{
         final Pattern dayDirPattern = Pattern.compile("(0|1|2|3)\\d\\d/");
 
         final String mHostURL = mData.myHttp.url;
-
+        javax.swing.JOptionPane.showMessageDialog(null,"Start date: "+sDate.toString()+"\nEnd date: "+eDate.toString());
         try
         {
-
             tempMapDatesToFiles =  new HashMap<DataDate, ArrayList<String>>();
             ByteArrayOutputStream folderOutStream = new ByteArrayOutputStream();
             DownloadUtils.downloadToStream(new URL(mHostURL), folderOutStream);
@@ -67,7 +66,7 @@ public class NldasNOAHListDatesFiles extends ListDatesFiles{
                     {
                         int year = Integer.parseInt(matcher.group().substring(0, 4));
 
-                        if(year >= sDate.getYear())
+                        if(year >= sDate.getYear() && year <= eDate.getYear())
                         {
                             String yearDir = mHostURL + String.format("%04d", year);
 
@@ -88,8 +87,10 @@ public class NldasNOAHListDatesFiles extends ListDatesFiles{
                                         {
                                             int day = Integer.parseInt(matcherD.group().substring(0, 3));
 
-                                            if((year == sDate.getYear() && day >= sDate.getDayOfYear())
-                                                    || year > sDate.getYear())
+                                            //                                            if((year == sDate.getYear() && day >= sDate.getDayOfYear())
+                                            //                                                    || (year > sDate.getYear() && year < eDate.getYear())
+                                            //                                                    || (year == eDate.getYear() && day <= eDate.getDayOfYear()))
+                                            if((year >= sDate.getYear() && year <= eDate.getYear() && day >= sDate.getDayOfYear() && day <= eDate.getDayOfYear()))
                                             {
                                                 String dayDir = mHostURL + String.format("%04d/%s", year, matcherD.group());
 
@@ -101,7 +102,7 @@ public class NldasNOAHListDatesFiles extends ListDatesFiles{
 
                                                 for(String paramF : availableFiles)
                                                 {
-                                                    if(availableFiles.size() < 94)
+                                                    if(availableFiles.size() < 86)//94)
                                                     {
                                                         break;
                                                     }
@@ -164,7 +165,7 @@ public class NldasNOAHListDatesFiles extends ListDatesFiles{
     protected Map<DataDate, ArrayList<String>> ListDatesFilesFTP()
     {
         Map<DataDate, ArrayList<String>>  tempMapDatesToFiles = new HashMap<DataDate, ArrayList<String>>();
-        System.out.println(sDate);
+        System.out.println("START: "+sDate+" END: "+eDate);
         final Pattern yearDirPattern = Pattern.compile("\\d{4}");
         final Pattern dayDirPattern = Pattern.compile("\\d{3}");
 
@@ -202,7 +203,7 @@ public class NldasNOAHListDatesFiles extends ListDatesFiles{
                 }
 
                 int year = Integer.parseInt(yearFile.getName());
-                if (year < sDate.getYear()) {
+                if (year < sDate.getYear() || year > eDate.getYear()) {
                     continue;
                 }
 
@@ -253,7 +254,7 @@ public class NldasNOAHListDatesFiles extends ListDatesFiles{
                             final int day = Integer.parseInt(strings[1].substring(7, 9));
                             final int hour = Integer.parseInt(strings[2]);
                             DataDate dataDate = new DataDate(hour, day, month, year);
-                            if (dataDate.compareTo(sDate) >= 0)
+                            if (dataDate.compareTo(sDate) >= 0 && dataDate.compareTo(eDate) <= 0)
                             {
                                 tempMapDatesToFiles.put(dataDate, fileNames);
                             }

@@ -4,21 +4,23 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+import javax.swing.JOptionPane;
+
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.net.ftp.FTPClient;
+
 import org.xml.sax.SAXException;
 
 import version2.prototype.Config;
 import version2.prototype.DataDate;
 import version2.prototype.ErrorLog;
 import version2.prototype.PluginMetaData.DownloadMetaData;
-import version2.prototype.PluginMetaData.FTP;
+
 import version2.prototype.PluginMetaData.HTTP;
-import version2.prototype.download.ConnectionContext;
+
 import version2.prototype.download.DownloadFailedException;
 import version2.prototype.download.DownloadUtils;
 import version2.prototype.download.DownloaderFramework;
-import version2.prototype.download.FTPClientPool;
+
 
 public class NldasNOAHDownloader extends DownloaderFramework{
 

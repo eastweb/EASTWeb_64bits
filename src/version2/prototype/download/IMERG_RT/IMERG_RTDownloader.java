@@ -58,7 +58,6 @@ public class IMERG_RTDownloader extends DownloaderFramework
         {
             FTPClient ftpC =
                     (FTPClient) ConnectionContext.getConnection(mData);
-
             try {
 
                 String targetDir = null;

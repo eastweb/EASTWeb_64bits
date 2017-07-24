@@ -1,12 +1,8 @@
 package version2.prototype.download.IMERG_RT;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.ConnectException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -70,7 +66,7 @@ public class IMERG_RTListDatesFiles extends ListDatesFiles{
 
             //int currentYear = 2016;
             //int currentMonth = 1;
-
+            javax.swing.JOptionPane.showMessageDialog(null,"Start date: "+sDate.toString()+"\nEnd date: "+eDate.toString());
             int startYear = sDate.getYear();
             int startMonth = sDate.getMonth();
 

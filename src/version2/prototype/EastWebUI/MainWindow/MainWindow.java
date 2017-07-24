@@ -80,6 +80,8 @@ public class MainWindow {
     private JCheckBox chckbxIntermidiateFiles;
 
     private ArrayList<String> runningProjects;
+    public ArrayList<ProjectInfoFile> queueOfProjects;
+    public ArrayList<Boolean> queueOfProjectsStoreFiles;
 
     /**
      * Launch the application.
@@ -146,6 +148,8 @@ public class MainWindow {
         }));
 
         runningProjects = new ArrayList<String>();
+        queueOfProjects = new ArrayList<ProjectInfoFile>();
+        queueOfProjectsStoreFiles = new ArrayList<Boolean>();
 
         FileMenu();
         PopulateUIControl();
@@ -480,8 +484,13 @@ public class MainWindow {
             if(subprojects.size()>0){
                 for(ProjectInfoFile p : subprojects){
                     //SchedulerData data = new SchedulerData(project, !chckbxIntermidiateFiles.isSelected());
-                    EASTWebManager.LoadNewScheduler(new SchedulerData(p, !chckbxIntermidiateFiles.isSelected()), false);
-                    runningProjects.add(p.GetProjectName());//String.valueOf(projectList.getSelectedItem()));
+                    //                    EASTWebManager.LoadNewScheduler(new SchedulerData(p, !chckbxIntermidiateFiles.isSelected()), false);
+                    //                    runningProjects.add(p.GetProjectName());//String.valueOf(projectList.getSelectedItem()));
+                    if(p.GetStartDate().equals(p.GetEndDate())){
+                        continue;
+                    }
+                    queueOfProjects.add(p);
+                    queueOfProjectsStoreFiles.add(!chckbxIntermidiateFiles.isSelected());
 
                     defaultTableModel.addRow(new Object[] {
                             p.GetProjectName(),
@@ -623,9 +632,33 @@ public class MainWindow {
             }
 
             String projectName = value.toString();
+            /*int index = 0;
+            if(queueOfProjects.contains(projectName)){
+                index = queueOfProjects.indexOf(projectName);
+                try {
+                    EASTWebManager.LoadNewScheduler(new SchedulerData(queueOfProjects.remove(index), queueOfProjectsStoreFiles.remove(index)), false);
+                    runningProjects.add(projectName);
+                } catch (PatternSyntaxException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (DOMException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (ParserConfigurationException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (SAXException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }*/
             SchedulerStatus status = EASTWebManager.GetSchedulerStatus(projectName);
 
             if(status == null) {
+                //setIcon(new ImageIcon(ProjectInformationPage.class.getResource("/version2/prototype/Images/StatusAnnotations_Play_32xSM_color.png")));
                 // Do nothing
             } else if(status.State == TaskState.STARTED || status.State == TaskState.STARTING || status.State == TaskState.RUNNING) {
                 setIcon(new ImageIcon(ProjectInformationPage.class.getResource("/version2/prototype/Images/stop.png")));
@@ -669,6 +702,29 @@ public class MainWindow {
 
             label = (value == null) ? "" : value.toString();
             String projectName = label.toString();
+            /*int index = getIndexOfProject(queueOfProjects,projectName);
+            if(index > -1){
+                //index = queueOfProjects.indexOf(projectName);
+                try {
+                    EASTWebManager.LoadNewScheduler(new SchedulerData(queueOfProjects.remove(index), queueOfProjectsStoreFiles.remove(index)), false);
+                    runningProjects.add(projectName);
+                } catch (PatternSyntaxException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (DOMException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (ParserConfigurationException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (SAXException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }*/
             SchedulerStatus status = EASTWebManager.GetSchedulerStatus(projectName);
 
             if(status == null) {
@@ -683,10 +739,43 @@ public class MainWindow {
             return button;
         }
 
+        private int getIndexOfProject(
+                ArrayList<ProjectInfoFile> queueOfProjects,
+                String projectName) {
+            for(int i=0; i < queueOfProjects.size();i++){
+                if(queueOfProjects.get(i).GetProjectName().equals(projectName)){
+                    return i;
+                }
+            }
+            return -1;
+        }
+
         @Override
         public Object getCellEditorValue() {
             if (isPushed) {
                 String projectName = label.toString();
+                int index = getIndexOfProject(queueOfProjects,projectName);
+                if(index > -1){
+                    try {
+                        EASTWebManager.LoadNewScheduler(new SchedulerData(queueOfProjects.remove(index), queueOfProjectsStoreFiles.remove(index)), false);
+                        runningProjects.add(projectName);
+                    } catch (PatternSyntaxException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (DOMException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (ParserConfigurationException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (SAXException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
                 SchedulerStatus status = EASTWebManager.GetSchedulerStatus(projectName);
 
                 if(status == null) {
@@ -695,7 +784,7 @@ public class MainWindow {
                     EASTWebManager.StopExistingScheduler(projectName, false);
                     button.setIcon(new ImageIcon(ProjectInformationPage.class.getResource("/version2/prototype/Images/StatusAnnotations_Play_32xSM_color.png")));
                 } else {
-                    EASTWebManager.StartExistingScheduler(projectName, false);
+                    EASTWebManager.StartExistingScheduler(projectName, true);
                     button.setIcon(new ImageIcon(ProjectInformationPage.class.getResource("/version2/prototype/Images/stop.png")));
                 }
 
@@ -757,7 +846,8 @@ public class MainWindow {
         private int removeProject = -1;
         private int PromptResult = -1;
         String ObjButtons[] = {"Yes","No"};
-
+        String projectName = null;
+        int index = 0;
         public DeleteButtonEditor(JCheckBox checkBox) {
             super(checkBox);
             button = new JButton();
@@ -772,8 +862,16 @@ public class MainWindow {
                         fireEditingStopped();
 
                         if(removeProject > -1) {
+                            projectName = label.toString();
+                            index = queueOfProjects.indexOf(projectName);
                             defaultTableModel.removeRow(removeProject);
-                            runningProjects.remove(removeProject);
+                            if(index >= 0){
+                                queueOfProjects.remove(index);
+                            }
+                            else{
+                                runningProjects.remove(removeProject);
+                            }
+
                             populateProjectList();
                             removeProject = -1;
                         }

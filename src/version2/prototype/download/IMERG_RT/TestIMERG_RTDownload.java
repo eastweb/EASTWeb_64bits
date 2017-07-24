@@ -58,7 +58,7 @@ public class TestIMERG_RTDownload
                 // download the file
 
                 IMERG_RTDownloader dImerg =
-                        new IMERG_RTDownloader(entry.getKey(), "d:\\eastweb\\testing\\IMERG_RT_Downnload", data, entry.getValue().get(0));
+                        new IMERG_RTDownloader(entry.getKey(), "e:\\eastweb\\testing\\IMERG_RT_Downnload", data, entry.getValue().get(0));
                 try {
                     dImerg.download();
                 } catch (DownloadFailedException e) {

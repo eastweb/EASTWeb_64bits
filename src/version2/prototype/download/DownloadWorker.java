@@ -48,6 +48,8 @@ public class DownloadWorker extends ProcessWorker {
     @Override
     public ProcessWorkerReturn process() {
         try {
+            javax.swing.JOptionPane.showMessageDialog(null,"Start date: "+gdl.GetStartDate().toString()+"\nEnd date: "+gdl.GetEndDate().toString());
+            gdl.setStatetoActive();
             gdl.SetCompleted();
             outputCache.LoadUnprocessedGlobalDownloadsToLocalDownloader(configInstance.getGlobalSchema(), projectInfoFile.GetProjectName(), pluginInfo.GetName(),
                     gdl.metaData.name, projectInfoFile.GetStartDate(), pluginMetaData.ExtraDownloadFiles, pluginInfo.GetModisTiles(), gdl.listDatesFiles);

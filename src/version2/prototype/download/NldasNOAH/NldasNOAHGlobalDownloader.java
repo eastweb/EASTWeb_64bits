@@ -16,6 +16,7 @@ import org.xml.sax.SAXException;
 import version2.prototype.Config;
 import version2.prototype.DataDate;
 import version2.prototype.ErrorLog;
+import version2.prototype.TaskState;
 import version2.prototype.PluginMetaData.DownloadMetaData;
 import version2.prototype.download.DownloadFailedException;
 import version2.prototype.download.GlobalDownloader;
@@ -48,7 +49,9 @@ public class NldasNOAHGlobalDownloader extends GlobalDownloader{
             ErrorLog.add(Config.getInstance(), pluginName, metaData.name, "NldasNOAHGlobalDownloader.run problem while running NldasNOAHDownloader.", e);
             return;
         }
-
+        if(state == TaskState.STOPPED){
+            return;
+        }
         // Step 1: get all downloads from ListDatesFiles
         Map<DataDate, ArrayList<String>> datesFiles = listDatesFiles.CloneListDatesFiles();
 

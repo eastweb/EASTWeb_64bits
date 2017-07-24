@@ -104,6 +104,11 @@ public abstract class GlobalDownloader extends Observable implements Runnable{
         }
     }
 
+    public void setStatetoActive(){
+        synchronized(state) {
+            state = TaskState.STARTED;
+        }
+    }
     /**
      * Gets this GlobalDownloader instance's running state.
      *
@@ -155,6 +160,15 @@ public abstract class GlobalDownloader extends Observable implements Runnable{
         return myCurrentStartDate;
     }
 
+    public final LocalDate GetEndDate()
+    {
+        LocalDate myCurrentEndDate;
+        synchronized(endDate) {
+            myCurrentEndDate = endDate;
+        }
+        return myCurrentEndDate;
+    }
+
     /**
      * Changes the start date for this GlobalDownloader and causes it to start downloading from the given date. Does not cause the GlobalDownloader to redownload anything already
      * downloaded but if the date is earlier than the current start date then it will start downloading from that date onward with the next set of downloads until caught up, or if
@@ -171,6 +185,14 @@ public abstract class GlobalDownloader extends Observable implements Runnable{
         }
     }
 
+    public final void SetEndDate(LocalDate newEndDate)
+    {
+        synchronized(endDate) {
+            if(endDate.isAfter(newEndDate)) {
+                endDate = newEndDate;
+            }
+        }
+    }
     /**
      * Gets all the current Download table entries for this GlobalDownloader. Represents all the dates and files downloaded for this plugin global downloader shareable across all
      * projects.

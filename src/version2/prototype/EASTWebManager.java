@@ -875,10 +875,14 @@ public class EASTWebManager implements Runnable, EASTWebManagerI{
                                             }
                                         }
                                     }
+
                                     else if(gdl.GetRunningState() == TaskState.STOPPED)
                                     {
                                         System.out.println("Starting GlobalDownloader '" + gdl.pluginName + "':'" + gdl.metaData.name + "'.");
+                                        System.out.println("DATES:\nStart: "+gdl.GetStartDate()+"\nEnd: "+gdl.GetEndDate());
                                         gdl.Start();
+                                        //gdl.setStatetoActive();
+                                        //gdl.Stop();
                                         synchronized(globalDLExecutor) {
                                             if(!globalDLExecutor.isShutdown()) {
                                                 ScheduledFuture<?> future = globalDLExecutor.scheduleWithFixedDelay(gdl, 0, 1, TimeUnit.DAYS);
@@ -976,6 +980,8 @@ public class EASTWebManager implements Runnable, EASTWebManagerI{
     @Override
     public LocalDownloader StartGlobalDownloader(DownloadFactory dlFactory)
     {
+        //javax.swing.JOptionPane.showMessageDialog(null,"Start date: "+dlFactory.startDate.toString()+"\nEnd date: "+dlFactory.endDate.toString());
+        System.out.println("Start date: "+dlFactory.startDate.toString()+"\nEnd date: "+dlFactory.endDate.toString());
         synchronized (globalDLs)
         {
             int id = getLowestAvailableGlobalDLID();
@@ -988,7 +994,9 @@ public class EASTWebManager implements Runnable, EASTWebManagerI{
                 for(int i=0; i < globalDLs.size(); i++)
                 {
                     tempDownloadFactoryClassName = globalDLs.get(i).metaData.downloadFactoryClassName;
-                    if(tempDownloadFactoryClassName.equals(dlFactory.downloadMetaData.downloadFactoryClassName))
+                    if(tempDownloadFactoryClassName.equals(dlFactory.downloadMetaData.downloadFactoryClassName)
+                            && globalDLs.get(i).GetStartDate().equals(dlFactory.startDate)
+                            && globalDLs.get(i).GetEndDate().equals(dlFactory.endDate))
                     {
                         currentGDLIdx = i;
                         break;
@@ -1012,6 +1020,8 @@ public class EASTWebManager implements Runnable, EASTWebManagerI{
                 {
                     releaseGlobalDLID(id);
                     gdl = globalDLs.get(currentGDLIdx);
+                    //                    gdl.SetStartDate(dlFactory.startDate); // These 2 lines are replacing the following 3
+                    //                    gdl.SetEndDate(dlFactory.endDate);
                     if(gdl.GetStartDate().isAfter(dlFactory.startDate)) {
                         gdl.SetStartDate(dlFactory.startDate);
                     }
@@ -1054,7 +1064,8 @@ public class EASTWebManager implements Runnable, EASTWebManagerI{
                             }
                         }
                     }
-                } else {
+                }
+                else {
                     System.out.println("Starting GlobalDownloader for '" + dlFactory.downloadMetaData.name + "' for plugin '" + dlFactory.downloadMetaData.Title + "'.");
                     gdl.Start();
                 }

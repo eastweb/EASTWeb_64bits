@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.swing.JOptionPane;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
@@ -57,6 +58,10 @@ public class IMERG_RTGlobalDownloader extends GlobalDownloader {
             return;
         }
 
+        if(listDatesFiles == null){
+            Stop();
+            return;
+        }
         // Step 1: get all downloads from ListDatesFiles
         Map<DataDate, ArrayList<String>> datesFiles = listDatesFiles.CloneListDatesFiles();
 

@@ -60,7 +60,7 @@ public abstract class ListDatesFiles
         sDate = startDate;
         eDate = endDate;
         mData = data;
-
+        //javax.swing.JOptionPane.showMessageDialog(null,"Project: "+project.GetProjectName()+"\nStart date: "+sDate.toString()+"\nEnd date: "+eDate.toString()+"\nOrigin: "+mData.originDate);
         /* Check if projectInfoFile.GetStartDate() is later than plugin's Origin Date
          * If not, use plugin's Origin Date as the start date
          * */

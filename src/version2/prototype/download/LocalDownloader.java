@@ -29,6 +29,8 @@ public abstract class LocalDownloader extends Process {
         dataName = gdl.metaData.name;
         currentStartDate = projectInfoFile.GetStartDate();
         endDate = projectInfoFile.GetEndDate();
+        //        this.gdl.SetStartDate(currentStartDate);
+        //        this.gdl.SetEndDate(endDate);
         this.listDatesFiles = listDatesFiles;
         gdl.addObserver(this);
     }

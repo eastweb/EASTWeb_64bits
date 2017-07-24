@@ -74,6 +74,9 @@ public class GenericLocalStorageGlobalDownloader extends GlobalDownloader {
      */
     public void run() {
         try {
+            if(state == TaskState.STOPPED || state == TaskState.STOPPING){
+                return;
+            }
             DatabaseConnection con = DatabaseConnector.getConnection(configInstance);
             if(con == null) {
                 return;
