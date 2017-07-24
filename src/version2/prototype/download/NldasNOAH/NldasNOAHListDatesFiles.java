@@ -41,7 +41,7 @@ public class NldasNOAHListDatesFiles extends ListDatesFiles{
         final Pattern dayDirPattern = Pattern.compile("(0|1|2|3)\\d\\d/");
 
         final String mHostURL = mData.myHttp.url;
-        javax.swing.JOptionPane.showMessageDialog(null,"Start date: "+sDate.toString()+"\nEnd date: "+eDate.toString());
+        //javax.swing.JOptionPane.showMessageDialog(null,"Start date: "+sDate.toString()+"\nEnd date: "+eDate.toString());
         try
         {
             tempMapDatesToFiles =  new HashMap<DataDate, ArrayList<String>>();

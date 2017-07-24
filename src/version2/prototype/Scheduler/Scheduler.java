@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.Future;
 
-import javax.swing.JOptionPane;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.FileUtils;
@@ -77,8 +76,6 @@ public class Scheduler {
     protected ArrayList<DatabaseCache> downloadCaches;
     protected ArrayList<DatabaseCache> processorCaches;
     protected ArrayList<DatabaseCache> indicesCaches;
-    private ProjectInfoPlugin pluginInfo;
-    private PluginMetaData pluginMetaData;
 
     /**
      * Creates and sets up a Scheduler instance with the given project data. Does not start the Scheduler and Processes.
@@ -713,8 +710,6 @@ public class Scheduler {
                 ProcessName.INDICES);
         DatabaseCache outputCache = new DatabaseCache(this, configInstance.getGlobalSchema(), data.projectInfoFile.GetProjectName(), pluginInfo, pluginMetaData, data.projectInfoFile.GetWorkingDir(),
                 ProcessName.SUMMARY);
-        this.pluginInfo = pluginInfo;
-        this.pluginMetaData = pluginMetaData;
         localDownloaders.addAll(SetupDownloadProcess(pluginInfo, pluginMetaData, downloadCache));
         processorProcesses.add(SetupProcessorProcess(pluginInfo, pluginMetaData, downloadCache, processorCache));
         indicesProcesses.add(SetupIndicesProcess(pluginInfo, pluginMetaData, processorCache, indicesCache));
@@ -725,12 +720,6 @@ public class Scheduler {
         indicesCaches.add(indicesCache);
     }
 
-    public void SetUpLocalDownloader() throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException,
-    IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException, IOException, ParserConfigurationException, SAXException{
-        DatabaseCache downloadCache = new DatabaseCache(this, configInstance.getGlobalSchema(), data.projectInfoFile.GetProjectName(), pluginInfo, pluginMetaData, data.projectInfoFile.GetWorkingDir(),
-                ProcessName.DOWNLOAD);
-        localDownloaders.addAll(SetupDownloadProcess(pluginInfo, pluginMetaData, downloadCache));
-    }
     /**
      * Sets up a {@link GenericFrameworkProcess GenericFrameworkProcess} object to manage DownloadWorkers.
      *
@@ -767,7 +756,6 @@ public class Scheduler {
         for(DownloadMetaData dlMetaData : pluginMetaData.Download.extraDownloads)
         {
             // Create extra ListDatesFiles instance
-            JOptionPane.showMessageDialog(null, "version2.prototype.download." + pluginInfo.GetName() + "." + dlMetaData.downloadFactoryClassName);
             downloadFactoryClass = Class.forName("version2.prototype.download." + pluginInfo.GetName() + "." + dlMetaData.downloadFactoryClassName);
             downloadFactoryCtor = downloadFactoryClass.getConstructor(Config.class, ProjectInfoFile.class, ProjectInfoPlugin.class, DownloadMetaData.class, PluginMetaData.class,
                     Scheduler.class, DatabaseCache.class, LocalDate.class, LocalDate.class);

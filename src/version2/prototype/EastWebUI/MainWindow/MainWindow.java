@@ -632,32 +632,13 @@ public class MainWindow {
             }
 
             String projectName = value.toString();
-            /*int index = 0;
-            if(queueOfProjects.contains(projectName)){
-                index = queueOfProjects.indexOf(projectName);
-                try {
-                    EASTWebManager.LoadNewScheduler(new SchedulerData(queueOfProjects.remove(index), queueOfProjectsStoreFiles.remove(index)), false);
-                    runningProjects.add(projectName);
-                } catch (PatternSyntaxException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (DOMException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (ParserConfigurationException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (SAXException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }*/
+            int index = getIndexOfProject(queueOfProjects,projectName);
             SchedulerStatus status = EASTWebManager.GetSchedulerStatus(projectName);
 
-            if(status == null) {
+            if (index > -1){
+                setIcon(new ImageIcon(ProjectInformationPage.class.getResource("/version2/prototype/Images/StatusAnnotations_Play_32xSM_color.png")));
+            }
+            else if(status == null) {
                 //setIcon(new ImageIcon(ProjectInformationPage.class.getResource("/version2/prototype/Images/StatusAnnotations_Play_32xSM_color.png")));
                 // Do nothing
             } else if(status.State == TaskState.STARTED || status.State == TaskState.STARTING || status.State == TaskState.RUNNING) {
@@ -666,6 +647,17 @@ public class MainWindow {
                 setIcon(new ImageIcon(ProjectInformationPage.class.getResource("/version2/prototype/Images/StatusAnnotations_Play_32xSM_color.png")));
             }
             return this;
+        }
+
+        private int getIndexOfProject(
+                ArrayList<ProjectInfoFile> queueOfProjects,
+                String projectName) {
+            for(int i=0; i < queueOfProjects.size();i++){
+                if(queueOfProjects.get(i).GetProjectName().equals(projectName)){
+                    return i;
+                }
+            }
+            return -1;
         }
     }
 
@@ -702,32 +694,12 @@ public class MainWindow {
 
             label = (value == null) ? "" : value.toString();
             String projectName = label.toString();
-            /*int index = getIndexOfProject(queueOfProjects,projectName);
-            if(index > -1){
-                //index = queueOfProjects.indexOf(projectName);
-                try {
-                    EASTWebManager.LoadNewScheduler(new SchedulerData(queueOfProjects.remove(index), queueOfProjectsStoreFiles.remove(index)), false);
-                    runningProjects.add(projectName);
-                } catch (PatternSyntaxException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (DOMException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (ParserConfigurationException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (SAXException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }*/
+            int index = getIndexOfProject(queueOfProjects,projectName);
             SchedulerStatus status = EASTWebManager.GetSchedulerStatus(projectName);
-
-            if(status == null) {
+            if (index > -1){
+                button.setIcon(new ImageIcon(ProjectInformationPage.class.getResource("/version2/prototype/Images/StatusAnnotations_Play_32xSM_color.png")));
+            }
+            else if(status == null) {
                 // Do nothing
             } else if(status.State == TaskState.STARTED || status.State == TaskState.STARTING || status.State == TaskState.RUNNING) {
                 button.setIcon(new ImageIcon(ProjectInformationPage.class.getResource("/version2/prototype/Images/stop.png")));
@@ -759,6 +731,7 @@ public class MainWindow {
                     try {
                         EASTWebManager.LoadNewScheduler(new SchedulerData(queueOfProjects.remove(index), queueOfProjectsStoreFiles.remove(index)), false);
                         runningProjects.add(projectName);
+                        EASTWebManager.StartExistingScheduler(projectName, false);
                     } catch (PatternSyntaxException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -778,7 +751,10 @@ public class MainWindow {
                 }
                 SchedulerStatus status = EASTWebManager.GetSchedulerStatus(projectName);
 
-                if(status == null) {
+                if (index > -1){
+                    button.setIcon(new ImageIcon(ProjectInformationPage.class.getResource("/version2/prototype/Images/StatusAnnotations_Play_32xSM_color.png")));
+                }
+                else if(status == null) {
                     // Do nothing
                 } else if(status.State == TaskState.STARTED || status.State == TaskState.STARTING || status.State == TaskState.RUNNING) {
                     EASTWebManager.StopExistingScheduler(projectName, false);

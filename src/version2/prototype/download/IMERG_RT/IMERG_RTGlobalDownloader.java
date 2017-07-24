@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.swing.JOptionPane;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
