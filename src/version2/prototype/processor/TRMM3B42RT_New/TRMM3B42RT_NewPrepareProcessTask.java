@@ -28,22 +28,22 @@ public class TRMM3B42RT_NewPrepareProcessTask extends PrepareProcessTask{
         switch (stepId){
         case 1:
             inputFolders[0] = String.format("%s%s" + File.separator + "%04d" + File.separator+"%03d",
-                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetWorkingDir(), project.GetProjectName(), pPlugin.GetName(), ProcessName.PROCESSOR),
+                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetFullPath(), pPlugin.GetName(), ProcessName.PROCESSOR),
                     "download", date.getYear(), date.getDayOfYear());
             break;
         case 2:
             inputFolders[0] = String.format("%s%s" + File.separator + "%04d" + File.separator+"%03d",
-                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetWorkingDir(), project.GetProjectName(), pPlugin.GetName(), ProcessName.PROCESSOR),
+                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetFullPath(), pPlugin.GetName(), ProcessName.PROCESSOR),
                     "convert", date.getYear(), date.getDayOfYear());
             break;
         case 3:
             inputFolders[0] = String.format("%s%s" + File.separator + "%04d" + File.separator+"%03d",
-                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetWorkingDir(), project.GetProjectName(), pPlugin.GetName(), ProcessName.PROCESSOR),
+                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetFullPath(), pPlugin.GetName(), ProcessName.PROCESSOR),
                     "reproject", date.getYear(), date.getDayOfYear());
             break;
         case 4:
             inputFolders[0] = String.format("%s%s" + File.separator + "%04d" + File.separator+"%03d",
-                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetWorkingDir(), project.GetProjectName(), pPlugin.GetName(), ProcessName.PROCESSOR),
+                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetFullPath(), pPlugin.GetName(), ProcessName.PROCESSOR),
                     "clip", date.getYear(), date.getDayOfYear());
             break;
         default:
@@ -59,27 +59,27 @@ public class TRMM3B42RT_NewPrepareProcessTask extends PrepareProcessTask{
         switch (stepId){
         case 1:
             outputFolder = String.format("%s%s" + File.separator + "%04d" + File.separator+"%03d",
-                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetWorkingDir(), project.GetProjectName(), pPlugin.GetName(), ProcessName.PROCESSOR),
+                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetFullPath(), pPlugin.GetName(), ProcessName.PROCESSOR),
                     "convert", date.getYear(), date.getDayOfYear());
             break;
         case 2:
             outputFolder = String.format("%s%s" + File.separator + "%04d" + File.separator+"%03d",
-                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetWorkingDir(), project.GetProjectName(), pPlugin.GetName(), ProcessName.PROCESSOR),
+                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetFullPath(), pPlugin.GetName(), ProcessName.PROCESSOR),
                     "reproject", date.getYear(), date.getDayOfYear());
             break;
         case 3:
             outputFolder = String.format("%s%s" + File.separator + "%04d" + File.separator+"%03d",
-                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetWorkingDir(), project.GetProjectName(), pPlugin.GetName(), ProcessName.PROCESSOR),
+                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetFullPath(), pPlugin.GetName(), ProcessName.PROCESSOR),
                     "clip", date.getYear(), date.getDayOfYear());
             break;
         case 4:
             outputFolder = String.format("%s%s" + File.separator + "%04d" + File.separator+"%03d",
-                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetWorkingDir(), project.GetProjectName(), pPlugin.GetName(), ProcessName.PROCESSOR),
+                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetFullPath(), pPlugin.GetName(), ProcessName.PROCESSOR),
                     "mask", date.getYear(), date.getDayOfYear());
             break;
         default:
             outputFolder = String.format("%s%04d" + File.separator+"%03d",
-                    FileSystem.GetProcessOutputDirectoryPath(project.GetWorkingDir(), project.GetProjectName(), pPlugin.GetName(), ProcessName.PROCESSOR),
+                    FileSystem.GetProcessOutputDirectoryPath(project.GetFullPath(), pPlugin.GetName(), ProcessName.PROCESSOR),
                     date.getYear(), date.getDayOfYear());
         }
 

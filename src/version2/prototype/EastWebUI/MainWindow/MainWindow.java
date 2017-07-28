@@ -486,9 +486,9 @@ public class MainWindow {
                     //SchedulerData data = new SchedulerData(project, !chckbxIntermidiateFiles.isSelected());
                     //                    EASTWebManager.LoadNewScheduler(new SchedulerData(p, !chckbxIntermidiateFiles.isSelected()), false);
                     //                    runningProjects.add(p.GetProjectName());//String.valueOf(projectList.getSelectedItem()));
-                    if(p.GetStartDate().equals(p.GetEndDate())){
+                    /*if(p.GetStartDate().equals(p.GetEndDate())){
                         continue;
-                    }
+                    }*/
                     queueOfProjects.add(p);
                     queueOfProjectsStoreFiles.add(!chckbxIntermidiateFiles.isSelected());
 

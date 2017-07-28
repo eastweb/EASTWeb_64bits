@@ -74,8 +74,7 @@ public class ProcessorWorker extends ProcessWorker {
 
         String pluginName = pluginMetaData.Title;
         String outputFolder  =
-                FileSystem.GetProcessOutputDirectoryPath(projectInfoFile.GetWorkingDir(),
-                        projectInfoFile.GetProjectName(), pluginName, ProcessName.PROCESSOR) ;
+                FileSystem.GetProcessOutputDirectoryPath(projectInfoFile.GetFullPath(), pluginName, ProcessName.PROCESSOR) ;
 
         ProcessorMetaData pMetaData = pluginMetaData.Processor;
         Map<Integer, String> processStep = pMetaData.processStep;

@@ -95,9 +95,17 @@ public final class FileSystem {
      * @param projectName  - name of the project in use
      * @return path to the project's directory
      */
-    public static String GetProjectDirectoryPath(String workingDir, String projectName)
+    public static String GetProjectDirectoryPat(String workingDir, String projectName)
     {
         String path = CheckDirPath(CheckDirPath(workingDir) + "Projects\\" + StandardizeName(projectName) + "\\");
+        new File(path).mkdirs();
+        return path;
+    }
+
+    // Overloaded (@villegar)
+    public static String GetProjectDirectoryPath(String fullPath)
+    {
+        String path = CheckDirPath(fullPath);
         new File(path).mkdirs();
         return path;
     }
@@ -105,15 +113,14 @@ public final class FileSystem {
     /**
      * Gets the process' directory path.
      *
-     * @param workingDir  - path of the working directory for EASTWeb data gotten from ProjectInfoFile
-     * @param projectName  - name of the project in use
+     * @param fullPath  - full path of the project working directory
      * @param pluginName  - name of the plugin in use
      * @param processName  - name of the process in use
      * @return path to the process' directory
      */
-    public static String GetProcessDirectoryPath(String workingDir, String projectName, String pluginName, ProcessName processName)
+    public static String GetProcessDirectoryPath(String fullPath, String pluginName, ProcessName processName)
     {
-        String path = CheckDirPath(GetProjectDirectoryPath(workingDir, projectName) + StandardizeName(pluginName) + "\\" + GetProcessDirectoryName(processName) + "\\");
+        String path = CheckDirPath(GetProjectDirectoryPath(fullPath) + StandardizeName(pluginName) + "\\" + GetProcessDirectoryName(processName) + "\\");
         new File(path).mkdirs();
         return path;
     }
@@ -121,15 +128,14 @@ public final class FileSystem {
     /**
      * Gets the process' output directory path.
      *
-     * @param workingDir  - path of the working directory for EASTWeb data gotten from ProjectInfoFile
-     * @param projectName  - name of the project in use
+     * @param fullPath  - full path of the project working directory
      * @param pluginName  - name of the plugin in use
      * @param processName  - name of the process in use
      * @return path to the process' output directory
      */
-    public static String GetProcessOutputDirectoryPath(String workingDir, String projectName, String pluginName, ProcessName processName)
+    public static String GetProcessOutputDirectoryPath(String fullPath, String pluginName, ProcessName processName)
     {
-        String path = CheckDirPath(GetProcessDirectoryPath(workingDir, projectName, pluginName, processName) + "Output\\");
+        String path = CheckDirPath(GetProcessDirectoryPath(fullPath, pluginName, processName) + "Output\\");
         new File(path).mkdirs();
         return path;
     }
@@ -137,15 +143,14 @@ public final class FileSystem {
     /**
      * Gets the ProcessWorker's temp directory path.
      *
-     * @param workingDir  - path of the working directory for EASTWeb data gotten from ProjectInfoFile
-     * @param projectName  - name of the project in use
+     * @param fullPath  - full path of the project working directory
      * @param pluginName  - name of the plugin in use
      * @param processName  - name of the process in use
      * @return path to the ProcessWorker's temp directory
      */
-    public static String GetProcessWorkerTempDirectoryPath(String workingDir, String projectName, String pluginName, ProcessName processName)
+    public static String GetProcessWorkerTempDirectoryPath(String fullPath, String pluginName, ProcessName processName)
     {
-        String path = CheckDirPath(GetProcessDirectoryPath(workingDir, projectName, pluginName, processName) + "Temp\\");
+        String path = CheckDirPath(GetProcessDirectoryPath(fullPath, pluginName, processName) + "Temp\\");
         new File(path).mkdirs();
         return path;
     }

@@ -76,9 +76,11 @@ public class IndicesWorker extends ProcessWorker{
             return null;
         }
         String pluginName = pluginMetaData.Title;
-        String outputFolder  =
+        /*String outputFolder  =
                 FileSystem.GetProcessOutputDirectoryPath(projectInfoFile.GetWorkingDir(),
-                        projectInfoFile.GetProjectName(), pluginName, ProcessName.INDICES);
+                        projectInfoFile.GetProjectName(), pluginName, ProcessName.INDICES);*/
+        String outputFolder  =
+                FileSystem.GetProcessOutputDirectoryPath(projectInfoFile.GetFullPath(), pluginName, ProcessName.INDICES);
         Statement stmt = null;
 
 

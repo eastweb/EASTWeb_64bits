@@ -33,22 +33,22 @@ public class NldasNOAHPrepareProcessTask extends PrepareProcessTask {
         {
         case 1:
             inputFolders.add(String.format("%s%s" + File.separator + "%04d" + File.separator+"%03d",
-                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetWorkingDir(), project.GetProjectName(), pPlugin.GetName(), ProcessName.PROCESSOR),
+                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetFullPath(), pPlugin.GetName(), ProcessName.PROCESSOR),
                     "Download", date.getYear(), date.getDayOfYear()));
             break;
         case 2:
             inputFolders.add(String.format("%s%s" + File.separator + "%04d" + File.separator+"%03d",
-                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetWorkingDir(), project.GetProjectName(), pPlugin.GetName(), ProcessName.PROCESSOR),
+                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetFullPath(), pPlugin.GetName(), ProcessName.PROCESSOR),
                     "Composite", date.getYear(), date.getDayOfYear()));
             break;
         case 3:
             inputFolders.add(String.format("%s%s" + File.separator + "%04d" + File.separator+"%03d",
-                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetWorkingDir(), project.GetProjectName(), pPlugin.GetName(), ProcessName.PROCESSOR),
+                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetFullPath(), pPlugin.GetName(), ProcessName.PROCESSOR),
                     "Reproject", date.getYear(), date.getDayOfYear()));
             break;
         case 4:
             inputFolders.add(String.format("%s%s" + File.separator + "%04d" + File.separator+"%03d",
-                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetWorkingDir(), project.GetProjectName(), pPlugin.GetName(), ProcessName.PROCESSOR),
+                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetFullPath(), pPlugin.GetName(), ProcessName.PROCESSOR),
                     "Clip", date.getYear(), date.getDayOfYear()));
             break;
         default:
@@ -74,27 +74,27 @@ public class NldasNOAHPrepareProcessTask extends PrepareProcessTask {
         {
         case 1:
             outputFolder = String.format("%s%s" + File.separator + "%04d" + File.separator+"%03d",
-                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetWorkingDir(), project.GetProjectName(), pPlugin.GetName(), ProcessName.PROCESSOR),
+                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetFullPath(), pPlugin.GetName(), ProcessName.PROCESSOR),
                     "Composite", date.getYear(), date.getDayOfYear());
             break;
         case 2:
             outputFolder = String.format("%s%s" + File.separator + "%04d" + File.separator+"%03d",
-                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetWorkingDir(), project.GetProjectName(), pPlugin.GetName(), ProcessName.PROCESSOR),
+                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetFullPath(), pPlugin.GetName(), ProcessName.PROCESSOR),
                     "Reproject", date.getYear(), date.getDayOfYear());
             break;
         case 3:
             outputFolder = String.format("%s%s" + File.separator + "%04d" + File.separator+"%03d",
-                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetWorkingDir(), project.GetProjectName(), pPlugin.GetName(), ProcessName.PROCESSOR),
+                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetFullPath(), pPlugin.GetName(), ProcessName.PROCESSOR),
                     "Clip", date.getYear(), date.getDayOfYear());
             break;
         case 4:
             outputFolder = String.format("%s%s" + File.separator + "%04d" + File.separator+"%03d",
-                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetWorkingDir(), project.GetProjectName(), pPlugin.GetName(), ProcessName.PROCESSOR),
+                    FileSystem.GetProcessWorkerTempDirectoryPath(project.GetFullPath(), pPlugin.GetName(), ProcessName.PROCESSOR),
                     "Mask", date.getYear(), date.getDayOfYear());
             break;
         default:
             outputFolder = String.format("%s%04d" + File.separator+"%03d",
-                    FileSystem.GetProcessOutputDirectoryPath(project.GetWorkingDir(), project.GetProjectName(), pPlugin.GetName(), ProcessName.PROCESSOR),
+                    FileSystem.GetProcessOutputDirectoryPath(project.GetFullPath(), pPlugin.GetName(), ProcessName.PROCESSOR),
                     date.getYear(), date.getDayOfYear());
             break;
         }

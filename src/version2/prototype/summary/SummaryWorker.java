@@ -147,7 +147,7 @@ public class SummaryWorker extends ProcessWorker {
 
                 cachedFileData = cachedFile.ReadMetaDataForSummary();
                 try{
-                    outputFile = new File(FileSystem.GetProcessOutputDirectoryPath(projectInfoFile.GetWorkingDir(), projectInfoFile.GetProjectName(),
+                    outputFile = new File(FileSystem.GetProcessOutputDirectoryPath(projectInfoFile.GetFullPath(),
                             pluginInfo.GetName(), ProcessName.SUMMARY) + String.format("%s/%s/%04d/%03d.csv", cachedFileData.indexNm, "Summary " + summary.GetID(), cachedFileData.year, cachedFileData.day));
                     ZonalSummaryCalculator zonalSummaryCal = new ZonalSummaryCalculator(
                             con,
@@ -168,7 +168,7 @@ public class SummaryWorker extends ProcessWorker {
 
                     if(process.GetClearIntermediateFilesFlag())
                     {
-                        String newFilePath = FileSystem.GetProcessWorkerTempDirectoryPath(projectInfoFile.GetWorkingDir(), projectInfoFile.GetProjectName(), pluginInfo.GetName(), ProcessName.SUMMARY) +
+                        String newFilePath = FileSystem.GetProcessWorkerTempDirectoryPath(projectInfoFile.GetFullPath(), pluginInfo.GetName(), ProcessName.SUMMARY) +
                                 String.format("%04d%03d.tif",
                                         cachedFileData.year,
                                         cachedFileData.day

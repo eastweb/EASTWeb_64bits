@@ -101,7 +101,8 @@ public final class ErrorLog {
             return;
         }
 
-        String logPath = FileSystem.GetProjectDirectoryPath(scheduler.projectInfoFile.GetWorkingDir(), scheduler.projectInfoFile.GetProjectName());
+        //String logPath = FileSystem.GetProjectDirectoryPath(scheduler.projectInfoFile.GetWorkingDir(), scheduler.projectInfoFile.GetProjectName());
+        String logPath = FileSystem.GetProjectDirectoryPath(scheduler.projectInfoFile.GetFullPath());
         String logFileName = getLogFileName();
         String finalPath = processError(message, e, logPath, logFileName);
         scheduler.NotifyUI(new GeneralUIEventObject(e.getCause() != null ? e.getCause() : e, message + " [Error Logged: " + finalPath + "]"));
@@ -119,7 +120,7 @@ public final class ErrorLog {
             return;
         }
 
-        String logPath = FileSystem.GetProjectDirectoryPath(process.projectInfoFile.GetWorkingDir(), process.projectInfoFile.GetProjectName());
+        String logPath = FileSystem.GetProjectDirectoryPath(process.projectInfoFile.GetFullPath());
         String logFileName = getLogFileName();
         String finalPath = processError(message, e, logPath, logFileName);
         process.NotifyUI(new GeneralUIEventObject(e.getCause() != null ? e.getCause() : e, message + " [Error Logged: " + finalPath + "]"));
@@ -138,7 +139,7 @@ public final class ErrorLog {
             return;
         }
 
-        String logPath = FileSystem.GetProjectDirectoryPath(scheduler.projectInfoFile.GetWorkingDir(), scheduler.projectInfoFile.GetProjectName());
+        String logPath = FileSystem.GetProjectDirectoryPath(scheduler.projectInfoFile.GetFullPath());
         String logFileName = processName + "_" + getLogFileName();
         String finalPath = processError(message, e, logPath, logFileName);
         scheduler.NotifyUI(new GeneralUIEventObject(e.getCause() != null ? e.getCause() : e, message + " [Error Logged: " + finalPath + "]"));
@@ -226,7 +227,7 @@ public final class ErrorLog {
     private static String getLogFileName() {
         LocalDateTime temp = LocalDateTime.now();
         return "Error_Log_" + LocalDate.now().getYear() + "_" + LocalDate.now().getMonthValue() + "_" + LocalDate.now().getDayOfMonth() + "_" + String.format("%02d", temp.getHour())
-                + String.format("%02d", temp.getMinute()) + String.format("%02d", temp.getSecond());
+        + String.format("%02d", temp.getMinute()) + String.format("%02d", temp.getSecond());
     }
 
     private static String handleLogFileExtensions(String logFileName, String logPath) {

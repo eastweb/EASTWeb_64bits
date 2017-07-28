@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 import javax.xml.parsers.*;
 
-import org.joda.time.DateTime;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -387,16 +386,12 @@ import version2.prototype.ZonalSummary;
 
     private String ReadFullPath(){
         if(projectName.contains("-SUB")){
-            NodeList nodes = GetUpperLevelNodeListIgnoreIfEmpty("ParentName", "Missing parent name.");
-            ArrayList<String> values = GetNodeListValues(nodes, "Missing parent name.");
-            if(values.size() > 0) {
-                return workingDir.replace('\\', '/')+"/Projects/"+values.get(0);
-            }
+            String parentName = projectName.substring(0, projectName.lastIndexOf("-"));
+            return workingDir.replace('\\', '/')+"/Projects/"+parentName;
         }
         else{
             return workingDir.replace('\\', '/')+"/Projects/"+projectName;
         }
-        return null;
     }
 
     private String ReadProjectName()

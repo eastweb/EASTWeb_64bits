@@ -145,7 +145,8 @@ public class Scheduler {
             if(!temp.exists()) {
                 throw new FileNotFoundException("Directory structure \"" + temp.getCanonicalPath() + "\" doesn't exist");
             }
-            temp = new File(FileSystem.GetProjectDirectoryPath(projectInfoFile.GetWorkingDir(), projectInfoFile.GetProjectName()));
+            //temp = new File(FileSystem.GetProjectDirectoryPath(projectInfoFile.GetWorkingDir(), projectInfoFile.GetProjectName()));
+            temp = new File(FileSystem.GetProjectDirectoryPath(projectInfoFile.GetFullPath()));
             temp.mkdirs();
             if(!temp.exists()) {
                 throw new FileNotFoundException("Directory structure \"" + temp.getCanonicalPath() + "\" doesn't exist");
@@ -453,7 +454,8 @@ public class Scheduler {
                         + " any (select \"ProjectSummaryID\" from \"" + configInstance.getGlobalSchema() + "\".\"ProjectSummary\" where \"ProjectID\"=%1$d);", projectID));
                 stmt.addBatch(String.format("delete from \"" + configInstance.getGlobalSchema() + "\".\"ProjectSummary\" where \"ProjectID\"=%1$d", projectID));
                 stmt.addBatch(String.format("delete from \"" + configInstance.getGlobalSchema() + "\".\"Project\" where \"ProjectID\"=%1$d", projectID));
-                projectDir = new File(FileSystem.GetProjectDirectoryPath(projectInfoFile.GetWorkingDir(), projectInfoFile.GetProjectName()));
+                //projectDir = new File(FileSystem.GetProjectDirectoryPath(projectInfoFile.GetWorkingDir(), projectInfoFile.GetProjectName()));
+                projectDir = new File(FileSystem.GetProjectDirectoryPath(projectInfoFile.GetFullPath()));
                 if(projectDir.exists()) {
                     FileUtils.deleteDirectory(projectDir);
                 }
