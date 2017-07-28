@@ -145,7 +145,6 @@ public class Scheduler {
             if(!temp.exists()) {
                 throw new FileNotFoundException("Directory structure \"" + temp.getCanonicalPath() + "\" doesn't exist");
             }
-            //temp = new File(FileSystem.GetProjectDirectoryPath(projectInfoFile.GetWorkingDir(), projectInfoFile.GetProjectName()));
             temp = new File(FileSystem.GetProjectDirectoryPath(projectInfoFile.GetFullPath()));
             temp.mkdirs();
             if(!temp.exists()) {
@@ -454,7 +453,6 @@ public class Scheduler {
                         + " any (select \"ProjectSummaryID\" from \"" + configInstance.getGlobalSchema() + "\".\"ProjectSummary\" where \"ProjectID\"=%1$d);", projectID));
                 stmt.addBatch(String.format("delete from \"" + configInstance.getGlobalSchema() + "\".\"ProjectSummary\" where \"ProjectID\"=%1$d", projectID));
                 stmt.addBatch(String.format("delete from \"" + configInstance.getGlobalSchema() + "\".\"Project\" where \"ProjectID\"=%1$d", projectID));
-                //projectDir = new File(FileSystem.GetProjectDirectoryPath(projectInfoFile.GetWorkingDir(), projectInfoFile.GetProjectName()));
                 projectDir = new File(FileSystem.GetProjectDirectoryPath(projectInfoFile.GetFullPath()));
                 if(projectDir.exists()) {
                     FileUtils.deleteDirectory(projectDir);
@@ -704,13 +702,23 @@ public class Scheduler {
     IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException, IOException, ParserConfigurationException, SAXException
     {
         //Scheduler scheduler, String globalSchema, String projectName, String pluginName, String workingDir, ProcessName processCachingFor, ArrayList<String> extraDownloadFiles
-        DatabaseCache downloadCache = new DatabaseCache(this, configInstance.getGlobalSchema(), data.projectInfoFile.GetProjectName(), pluginInfo, pluginMetaData, data.projectInfoFile.GetWorkingDir(),
+        String projectName = null;
+        String fullPath = data.projectInfoFile.GetProjectName();
+        if(fullPath.endsWith("\\") || fullPath.endsWith("/")){
+            projectName = fullPath.substring(0, -1).replace('\\', '/');
+        }
+        else{
+            projectName = fullPath.replace('\\', '/');
+        }
+        projectName = projectName.substring(projectName.lastIndexOf('/')+1);
+        javax.swing.JOptionPane.showMessageDialog(null, "DatabaseCache, project name: "+projectName);
+        DatabaseCache downloadCache = new DatabaseCache(this, configInstance.getGlobalSchema(), projectName, pluginInfo, pluginMetaData, data.projectInfoFile.GetWorkingDir(),
                 ProcessName.DOWNLOAD);
-        DatabaseCache processorCache = new DatabaseCache(this, configInstance.getGlobalSchema(), data.projectInfoFile.GetProjectName(), pluginInfo, pluginMetaData, data.projectInfoFile.GetWorkingDir(),
+        DatabaseCache processorCache = new DatabaseCache(this, configInstance.getGlobalSchema(), projectName, pluginInfo, pluginMetaData, data.projectInfoFile.GetWorkingDir(),
                 ProcessName.PROCESSOR);
-        DatabaseCache indicesCache = new DatabaseCache(this, configInstance.getGlobalSchema(), data.projectInfoFile.GetProjectName(), pluginInfo, pluginMetaData, data.projectInfoFile.GetWorkingDir(),
+        DatabaseCache indicesCache = new DatabaseCache(this, configInstance.getGlobalSchema(), projectName, pluginInfo, pluginMetaData, data.projectInfoFile.GetWorkingDir(),
                 ProcessName.INDICES);
-        DatabaseCache outputCache = new DatabaseCache(this, configInstance.getGlobalSchema(), data.projectInfoFile.GetProjectName(), pluginInfo, pluginMetaData, data.projectInfoFile.GetWorkingDir(),
+        DatabaseCache outputCache = new DatabaseCache(this, configInstance.getGlobalSchema(), projectName, pluginInfo, pluginMetaData, data.projectInfoFile.GetWorkingDir(),
                 ProcessName.SUMMARY);
         localDownloaders.addAll(SetupDownloadProcess(pluginInfo, pluginMetaData, downloadCache));
         processorProcesses.add(SetupProcessorProcess(pluginInfo, pluginMetaData, downloadCache, processorCache));

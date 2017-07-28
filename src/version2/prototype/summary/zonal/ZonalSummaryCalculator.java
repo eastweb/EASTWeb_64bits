@@ -40,8 +40,6 @@ import version2.prototype.util.Schemas;
 public class ZonalSummaryCalculator {
     private final DatabaseConnection con;
     private final Process process;
-    @SuppressWarnings("unused")
-    private final String workingDir;
     private final IndicesFileMetaData inputFile;
     private final String shapeFilePath;
     private final File mTableFile;
@@ -49,14 +47,13 @@ public class ZonalSummaryCalculator {
     private final String areaNameField;
     private final SummariesCollection summariesCollection;
     private final String globalSchema;
-    private final String projectName;
     private final String pluginName;
     private final int daysPerInputData;
     private final ProjectInfoSummary summary;
     private final Integer noDataValue;
     private final TemporalSummaryRasterFileStore fileStore;
     private final DatabaseCache outputCache;
-
+    private final String fullPath;
     private Map<Integer, Boolean> zoneReceivedValidData;
     private static Integer invalidZoneCountTot = 0;
     private static Integer oldInvalidZoneCountTot = 0;
@@ -77,12 +74,11 @@ public class ZonalSummaryCalculator {
      * @param fileStore
      * @param outputCache
      */
-    public ZonalSummaryCalculator(DatabaseConnection con, Process process, String globalSchema, String workingDir, String projectName, String pluginName, int daysPerInputData, IndicesFileMetaData inputFile,
+    public ZonalSummaryCalculator(DatabaseConnection con, Process process, String globalSchema, String fullPath, String pluginName, int daysPerInputData, IndicesFileMetaData inputFile,
             File outTableFile, SummariesCollection summariesCollection, ProjectInfoSummary summary, Integer noDataValue, TemporalSummaryRasterFileStore fileStore, DatabaseCache outputCache)
     {
         this.con = con;
         this.process = process;
-        this.workingDir = workingDir;
         this.inputFile = inputFile;
         mTableFile = outTableFile;
         shapeFilePath = summary.GetZonalSummary().GetShapeFile();
@@ -90,14 +86,13 @@ public class ZonalSummaryCalculator {
         areaNameField = summary.GetZonalSummary().GetAreaNameField();
         this.summariesCollection = summariesCollection;
         this.globalSchema = globalSchema;
-        this.projectName = projectName;
         this.pluginName = pluginName;
         this.daysPerInputData = daysPerInputData;
         this.summary = summary;
         this.noDataValue = noDataValue;
         this.fileStore = fileStore;
         this.outputCache = outputCache;
-
+        this.fullPath = fullPath;
         zoneReceivedValidData = new HashMap<Integer, Boolean>();
     }
 
@@ -204,7 +199,7 @@ public class ZonalSummaryCalculator {
 
     private void uploadResultsToDb(File mTableFile, LayerFileData layerData, Map<Integer, Double> countMap, String areaCodeField, String areaNameField, String indexNm, ProjectInfoSummary summary,
             TemporalSummaryRasterFileStore fileStore, SummariesCollection summariesCollection, int year, int day, Process process) throws IllegalArgumentException, UnsupportedOperationException,
-            IOException, ClassNotFoundException, ParserConfigurationException, SAXException, SQLException {
+    IOException, ClassNotFoundException, ParserConfigurationException, SAXException, SQLException {
         Statement stmt = con.createStatement();
         ArrayList<SummaryResult> newResults = new ArrayList<SummaryResult>();
         ArrayList<SummaryNameResultPair> results = summariesCollection.getResults();
@@ -230,10 +225,18 @@ public class ZonalSummaryCalculator {
                 if(zoneNameMap.get(areaCode) == null) {
                     zoneNameMap.put(areaCode, areaName);
                 }
-
+                String projectName = null;
+                if(fullPath.endsWith("\\") || fullPath.endsWith("/")){
+                    projectName = fullPath.substring(0, -1).replace('\\', '/');
+                }
+                else{
+                    projectName = fullPath.replace('\\', '/');
+                }
+                projectName = projectName.substring(projectName.lastIndexOf('/')+1);
                 if (countMap.get(areaCode) != null && countMap.get(areaCode) != 0)
                 {
                     // Insert values
+
                     projectSummaryID = Schemas.getProjectSummaryID(globalSchema, projectName, summary.GetID(), stmt);
                     dateGroupID = Schemas.getDateGroupID(globalSchema, LocalDate.ofYearDay(year, day), stmt);
                     for(int i=0; i < results.size(); i++)

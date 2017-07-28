@@ -153,8 +153,7 @@ public class SummaryWorker extends ProcessWorker {
                             con,
                             process,
                             configInstance.getGlobalSchema(),
-                            projectInfoFile.GetWorkingDir(),
-                            projectInfoFile.GetProjectName(),       // projectName
+                            projectInfoFile.GetFullPath(),
                             pluginInfo.GetName(),                   // pluginName
                             pluginMetaData.DaysPerInputData,        // daysPerInputData
                             cachedFileData,                         // inputFile

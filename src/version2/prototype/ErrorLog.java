@@ -101,7 +101,6 @@ public final class ErrorLog {
             return;
         }
 
-        //String logPath = FileSystem.GetProjectDirectoryPath(scheduler.projectInfoFile.GetWorkingDir(), scheduler.projectInfoFile.GetProjectName());
         String logPath = FileSystem.GetProjectDirectoryPath(scheduler.projectInfoFile.GetFullPath());
         String logFileName = getLogFileName();
         String finalPath = processError(message, e, logPath, logFileName);
