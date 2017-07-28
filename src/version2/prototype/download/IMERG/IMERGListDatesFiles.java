@@ -52,11 +52,10 @@ public class IMERGListDatesFiles extends ListDatesFiles{
 
         try
         {
-            LocalDate currentDate = new LocalDate();
-            //LocalDate currentDate = new LocalDate(2016, 01, 02);
             LocalDate startDate = new LocalDate(sDate.getYear(), sDate.getMonth(), sDate.getDay());
+            LocalDate endDate = new LocalDate(eDate.getYear(), eDate.getMonth(), eDate.getDay());
 
-            for (LocalDate d = startDate; d.isBefore(currentDate)|| d.isEqual(currentDate);
+            for (LocalDate d = startDate; d.isBefore(endDate)|| d.isEqual(endDate);
                     d = d.plusDays(1))
             {
                 // format the file directory

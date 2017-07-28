@@ -2,19 +2,13 @@ package version2.prototype.download.IMERG;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Map;
-
-import org.xml.sax.SAXException;
-
 import version2.prototype.DataDate;
 import version2.prototype.PluginMetaData.DownloadMetaData;
 import version2.prototype.PluginMetaData.FTP;
 import version2.prototype.PluginMetaData.HTTP;
-import version2.prototype.download.DownloadFailedException;
-import version2.prototype.download.IMERG_RT.IMERG_RTDownloader;
 
 public class TestIMERGListDates
 {
