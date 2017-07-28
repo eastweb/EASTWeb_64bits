@@ -932,6 +932,9 @@ public class ProjectInformationPage {
                 Element startDateSUB, endDateSUB = null;
                 projectInfo.removeChild(startDate);
                 projectInfo.removeChild(projectName);
+                Element parentName = doc.createElement("ParentName");
+                parentName.appendChild(doc.createTextNode(this.projectName.getText()));
+                projectInfo.appendChild(parentName);
 
                 for(int s=0; s < startDates.size(); s++){
                     startDateSUB = doc.createElement("StartDate");

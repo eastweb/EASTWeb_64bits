@@ -59,6 +59,7 @@ import version2.prototype.ZonalSummary;
     private final LocalDate freezingDate;
     private final Double coolingDegree;
     private final ArrayList<ProjectInfoSummary> summaries;
+    private final String fullPath;
 
     private ArrayList<String> errorMsg;
 
@@ -109,6 +110,7 @@ import version2.prototype.ZonalSummary;
         heatingDate = ReadHeatingDate();
         heatingDegree = ReadHeatingDegree();
         summaries = ReadSummaries();
+        fullPath = ReadFullPath();
     }
 
     public ProjectInfoFile(Config configInstance, String xmlLocation, boolean HasEndDate) throws ParserConfigurationException, SAXException, IOException, ClassNotFoundException,
@@ -141,6 +143,7 @@ import version2.prototype.ZonalSummary;
         heatingDate = ReadHeatingDate();
         heatingDegree = ReadHeatingDegree();
         summaries = ReadSummaries();
+        fullPath = ReadFullPath();
     }
 
     /**
@@ -185,6 +188,7 @@ import version2.prototype.ZonalSummary;
         this.heatingDate = heatingDate;
         this.heatingDegree = heatingDegree;
         this.summaries = (ArrayList<ProjectInfoSummary>) summaries.clone();
+        fullPath = ReadFullPath();
     }
 
     /**
@@ -350,6 +354,8 @@ import version2.prototype.ZonalSummary;
         return plugins;
     }
 
+    public String GetFullPath() { return fullPath; }
+
     private LocalDate ReadStartDate() throws DateTimeParseException
     {
         NodeList nodes = GetUpperLevelNodeList("StartDate", "Missing start date.");
@@ -377,6 +383,20 @@ import version2.prototype.ZonalSummary;
             return now;//LocalDate.parse(now.toString("EEE MMM dd HH:mm:ss zzz yyyy"), datesFormatter);
         }
         return now;
+    }
+
+    private String ReadFullPath(){
+        if(projectName.contains("-SUB")){
+            NodeList nodes = GetUpperLevelNodeListIgnoreIfEmpty("ParentName", "Missing parent name.");
+            ArrayList<String> values = GetNodeListValues(nodes, "Missing parent name.");
+            if(values.size() > 0) {
+                return workingDir.replace('\\', '/')+"/Projects/"+values.get(0);
+            }
+        }
+        else{
+            return workingDir.replace('\\', '/')+"/Projects/"+projectName;
+        }
+        return null;
     }
 
     private String ReadProjectName()
