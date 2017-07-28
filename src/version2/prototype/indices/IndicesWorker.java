@@ -236,7 +236,7 @@ public class IndicesWorker extends ProcessWorker{
             {
                 if(pluginInfo.GetName() == "NldasForcing")
                 {
-                    NldasForcingExtraIndices.getCumulative(con, projectInfoFile.GetWorkingDir() + "\\projects", configInstance.getGlobalSchema(), Schemas.getSchemaName(projectInfoFile.GetProjectName(), pluginInfo.GetName()),
+                    NldasForcingExtraIndices.getCumulative(con, projectInfoFile.GetWorkingDir() + "\\projects", configInstance.getGlobalSchema(), Schemas.getSchemaName(projectInfoFile.GetParentProjectName(), pluginInfo.GetName()),
                             projectInfoFile.GetProjectName(), projectInfoFile.GetStartDate(), pluginMetaData.DaysPerInputData, projectInfoFile.GetFreezingDate(), projectInfoFile.GetHeatingDate());
                 }
                 allGood = false;

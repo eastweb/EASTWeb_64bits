@@ -528,6 +528,7 @@ public class QueryUI {
 
     // query project that was set in the UI
     private void queryProject() {
+        String projectName = null;
         ProjectInfoFile project = ProjectInfoCollection.GetProject(Config.getInstance(), String.valueOf(projectListComboBox.getSelectedItem()));
         Map<Integer, EASTWebQuery> ewQuery = new HashMap<Integer, EASTWebQuery>();
         String[] indices = new String[includeIndicesListModel.toArray().length];
@@ -538,9 +539,12 @@ public class QueryUI {
 
         for(ProjectInfoSummary summary : project.GetSummaries()) {
             try {
+                projectName = String.valueOf(projectListComboBox.getSelectedItem());
+                projectName = projectName.substring(0,projectName.lastIndexOf('_'));
+                javax.swing.JOptionPane.showMessageDialog(null, "QueryUI, projectName: "+projectName);
                 ewQuery.put(summary.GetID(), EASTWebResults.GetEASTWebQuery(
                         Config.getInstance().getGlobalSchema(),
-                        String.valueOf(projectListComboBox.getSelectedItem()),
+                        projectName,
                         String.valueOf(pluginComboBox.getSelectedItem()),
                         chckbxCount.isSelected(),
                         maxCheckBox.isSelected(),

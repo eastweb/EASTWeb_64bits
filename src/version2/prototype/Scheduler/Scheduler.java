@@ -276,7 +276,7 @@ public class Scheduler {
             updateQueryFormat = "UPDATE \"%1$s\".\"%2$s\" SET \"Retrieved\" = FALSE WHERE \"Processed\" = FALSE;";
             for(ProjectInfoPlugin item: projectInfoFile.GetPlugins())
             {
-                projectSchema = Schemas.getSchemaName(projectInfoFile.GetProjectName(), item.GetName());
+                projectSchema = Schemas.getSchemaName(projectInfoFile.GetParentProjectName(), item.GetName());
                 stmt.addBatch(String.format(updateQueryFormat, projectSchema, "DownloadCache"));
                 stmt.addBatch(String.format(updateQueryFormat, projectSchema, "DownloadCacheExtra"));
                 stmt.addBatch(String.format(updateQueryFormat, projectSchema, "ProcessorCache"));
@@ -443,7 +443,7 @@ public class Scheduler {
 
             for(ProjectInfoPlugin item: projectInfoFile.GetPlugins())
             {
-                projectSchema = Schemas.getSchemaName(projectInfoFile.GetProjectName(), item.GetName());
+                projectSchema = Schemas.getSchemaName(projectInfoFile.GetParentProjectName(), item.GetName());
                 projectID = Schemas.getProjectID(configInstance.getGlobalSchema(), projectInfoFile.GetProjectName(), stmt);
                 stmt.addBatch(String.format(dropSchemaQueryFormat, projectSchema));
                 stmt.addBatch(String.format(deleteFromExpectedTotalOutput, "Download", projectID));

@@ -99,10 +99,10 @@ public class ProgressUpdater {
     public double GetCurrentDownloadProgress(String dataName, String pluginName, LocalDate startDate, ArrayList<String> modisTileNames, Statement stmt) throws SQLException
     {
         double progress = 0;
-        String mSchemaName = Schemas.getSchemaName(projectMetaData.GetProjectName(), pluginName);
+        String mSchemaName = Schemas.getSchemaName(projectMetaData.GetParentProjectName(), pluginName);
         PluginMetaData pluginMetaData = pluginMetaDataCollection.pluginMetaDataMap.get(pluginName);
         int currentCount = calculateDownloadCurrentCount(mSchemaName, dataName, stmt);
-        int expectedCount = getStoredDownloadExpectedTotalOutput(projectMetaData.GetProjectName(), pluginName, dataName, stmt);
+        int expectedCount = getStoredDownloadExpectedTotalOutput(projectMetaData.GetParentProjectName(), pluginName, dataName, stmt);
         int maxExpectedCount = calculateMaxDownloadExpectedCount(pluginMetaData, startDate, modisTileNames);
 
         if(expectedCount > 0 && currentCount > 0)
@@ -141,7 +141,7 @@ public class ProgressUpdater {
             ErrorLog.add(configInstance, "Mising project plugin info for plugin '" + pluginName + "'.", new Exception("Plugin '" + pluginName + "' info could not be found in project "
                     + "metadata."));
         }
-        String mSchemaName = Schemas.getSchemaName(projectMetaData.GetProjectName(), pluginName);
+        String mSchemaName = Schemas.getSchemaName(projectMetaData.GetParentProjectName(), pluginName);
         int currentCount = calculateProcessorCurrentCount(mSchemaName, stmt);
         int expectedCount = calculateProcessorExpectedCount(pluginMetaData, pluginInfo, mSchemaName, stmt);
 
@@ -170,9 +170,9 @@ public class ProgressUpdater {
     {
         double progress = 0;
         PluginMetaData pluginMetaData = pluginMetaDataCollection.pluginMetaDataMap.get(pluginName);
-        String mSchemaName = Schemas.getSchemaName(projectMetaData.GetProjectName(), pluginName);
+        String mSchemaName = Schemas.getSchemaName(projectMetaData.GetParentProjectName(), pluginName);
         int currentCount = calculateIndicesCurrentCount(mSchemaName, stmt);
-        int expectedCount = calculateIndicesExpectedCount(Schemas.getSchemaName(projectMetaData.GetProjectName(), pluginName), pluginMetaData, pluginName, stmt);
+        int expectedCount = calculateIndicesExpectedCount(Schemas.getSchemaName(projectMetaData.GetParentProjectName(), pluginName), pluginMetaData, pluginName, stmt);
 
         if(expectedCount > 0 && currentCount > 0)
         {
@@ -202,8 +202,8 @@ public class ProgressUpdater {
             throws SQLException
     {
         double progress = 0;
-        int projectSummaryID = Schemas.getProjectSummaryID(configInstance.getGlobalSchema(), projectMetaData.GetProjectName(), summaryIDNum, stmt);
-        String mSchemaName = Schemas.getSchemaName(projectMetaData.GetProjectName(), pluginInfo.GetName());
+        int projectSummaryID = Schemas.getProjectSummaryID(configInstance.getGlobalSchema(), projectMetaData.GetParentProjectName(), summaryIDNum, stmt);
+        String mSchemaName = Schemas.getSchemaName(projectMetaData.GetParentProjectName(), pluginInfo.GetName());
         int currentCount = calculateSummaryCurrentCount(projectSummaryID, mSchemaName, stmt);
         int expectedCount = calculateSummaryExpectedCount(mSchemaName, compStrategy, daysPerInputData, pluginInfo, stmt);
 
@@ -231,12 +231,12 @@ public class ProgressUpdater {
      */
     public void UpdateDBDownloadExpectedCount(String pluginName, String dataName, ListDatesFiles listDatesFiles, ArrayList<String> modisTileNames, Statement stmt) throws SQLException
     {
-        int storedExpectedCount = getStoredDownloadExpectedTotalOutput(projectMetaData.GetProjectName(), pluginName, dataName, stmt);
+        int storedExpectedCount = getStoredDownloadExpectedTotalOutput(projectMetaData.GetParentProjectName(), pluginName, dataName, stmt);
         int calculatedExpectedCount = calculateDownloadExpectedCount(listDatesFiles, modisTileNames);
         if(storedExpectedCount != calculatedExpectedCount)
         {
             String updateQuery = "UPDATE \"" + configInstance.getGlobalSchema() + "\".\"DownloadExpectedTotalOutput\" SET \"ExpectedNumOfOutputs\" = " + calculatedExpectedCount + " WHERE " +
-                    "\"ProjectID\" = " + Schemas.getProjectID(configInstance.getGlobalSchema(), projectMetaData.GetProjectName(), stmt) + " AND " +
+                    "\"ProjectID\" = " + Schemas.getProjectID(configInstance.getGlobalSchema(), projectMetaData.GetParentProjectName(), stmt) + " AND " +
                     "\"PluginID\" = " + Schemas.getPluginID(configInstance.getGlobalSchema(), pluginName, stmt) + " AND " +
                     "\"DataName\" = '" + dataName + "';";
             stmt.execute(updateQuery);
@@ -264,13 +264,13 @@ public class ProgressUpdater {
                     + "metadata."));
             return;
         }
-        String mSchemaName = Schemas.getSchemaName(projectMetaData.GetProjectName(), pluginInfo.GetName());
-        int storedExpectedCount = getStoredProcessorExpectedTotalOutput(projectMetaData.GetProjectName(), pluginName, stmt);
+        String mSchemaName = Schemas.getSchemaName(projectMetaData.GetParentProjectName(), pluginInfo.GetName());
+        int storedExpectedCount = getStoredProcessorExpectedTotalOutput(projectMetaData.GetParentProjectName(), pluginName, stmt);
         int calculatedExpectedCount = calculateProcessorExpectedCount(pluginMetaDataCollection.pluginMetaDataMap.get(pluginName), pluginInfo, mSchemaName, stmt);
         if(storedExpectedCount != calculatedExpectedCount)
         {
             String updateQuery = "UPDATE \"" + configInstance.getGlobalSchema() + "\".\"ProcessorExpectedTotalOutput\" SET \"ExpectedNumOfOutputs\" = " + calculatedExpectedCount + " WHERE " +
-                    "\"ProjectID\" = " + Schemas.getProjectID(configInstance.getGlobalSchema(), projectMetaData.GetProjectName(), stmt) + " AND " +
+                    "\"ProjectID\" = " + Schemas.getProjectID(configInstance.getGlobalSchema(), projectMetaData.GetParentProjectName(), stmt) + " AND " +
                     "\"PluginID\" = " + Schemas.getPluginID(configInstance.getGlobalSchema(), pluginName, stmt) + ";";
             stmt.execute(updateQuery);
             processorExpectedNumOfOutputs.put(pluginName, calculatedExpectedCount);
@@ -285,12 +285,12 @@ public class ProgressUpdater {
      */
     public void UpdateDBIndicesExpectedCount(String pluginName, Statement stmt) throws SQLException
     {
-        int storedExpectedCount = getStoredIndicesExpectedTotalOutput(projectMetaData.GetProjectName(), pluginName, stmt);
-        int calculatedExpectedCount = calculateIndicesExpectedCount(Schemas.getSchemaName(projectMetaData.GetProjectName(), pluginName), pluginMetaDataCollection.pluginMetaDataMap.get(pluginName), pluginName, stmt);
+        int storedExpectedCount = getStoredIndicesExpectedTotalOutput(projectMetaData.GetParentProjectName(), pluginName, stmt);
+        int calculatedExpectedCount = calculateIndicesExpectedCount(Schemas.getSchemaName(projectMetaData.GetParentProjectName(), pluginName), pluginMetaDataCollection.pluginMetaDataMap.get(pluginName), pluginName, stmt);
         if(storedExpectedCount != calculatedExpectedCount)
         {
             String updateQuery = "UPDATE \"" + configInstance.getGlobalSchema() + "\".\"IndicesExpectedTotalOutput\" SET \"ExpectedNumOfOutputs\" = " + calculatedExpectedCount + " WHERE " +
-                    "\"ProjectID\" = " + Schemas.getProjectID(configInstance.getGlobalSchema(), projectMetaData.GetProjectName(), stmt) + " AND " +
+                    "\"ProjectID\" = " + Schemas.getProjectID(configInstance.getGlobalSchema(), projectMetaData.GetParentProjectName(), stmt) + " AND " +
                     "\"PluginID\" = " + Schemas.getPluginID(configInstance.getGlobalSchema(), pluginName, stmt) + ";";
             stmt.execute(updateQuery);
             indicesExpectedNumOfOutputs.put(pluginName, calculatedExpectedCount);
@@ -308,12 +308,12 @@ public class ProgressUpdater {
      */
     public void UpdateDBSummaryExpectedCount(int summaryIDNum, TemporalSummaryCompositionStrategy compStrategy, int daysPerInputData, ProjectInfoPlugin pluginInfo, Statement stmt) throws SQLException
     {
-        int storedExpectedCount = getStoredSummaryExpectedTotalOutput(projectMetaData.GetProjectName(), pluginInfo.GetName(), summaryIDNum, stmt);
-        int calculatedExpectedCount = calculateSummaryExpectedCount(Schemas.getSchemaName(projectMetaData.GetProjectName(), pluginInfo.GetName()), compStrategy, daysPerInputData, pluginInfo, stmt);
+        int storedExpectedCount = getStoredSummaryExpectedTotalOutput(projectMetaData.GetParentProjectName(), pluginInfo.GetName(), summaryIDNum, stmt);
+        int calculatedExpectedCount = calculateSummaryExpectedCount(Schemas.getSchemaName(projectMetaData.GetParentProjectName(), pluginInfo.GetName()), compStrategy, daysPerInputData, pluginInfo, stmt);
         if(storedExpectedCount != calculatedExpectedCount)
         {
             String updateQuery = "UPDATE \"" + configInstance.getGlobalSchema() + "\".\"SummaryExpectedTotalOutput\" SET \"ExpectedNumOfOutputs\" = " + calculatedExpectedCount + " WHERE " +
-                    "\"ProjectSummaryID\" = " + Schemas.getProjectSummaryID(configInstance.getGlobalSchema(), projectMetaData.GetProjectName(), summaryIDNum, stmt) + " AND " +
+                    "\"ProjectSummaryID\" = " + Schemas.getProjectSummaryID(configInstance.getGlobalSchema(), projectMetaData.GetParentProjectName(), summaryIDNum, stmt) + " AND " +
                     "\"PluginID\" = " + Schemas.getPluginID(configInstance.getGlobalSchema(), pluginInfo.GetName(), stmt) + ";";
             stmt.execute(updateQuery);
             summaryExpectedNumOfOutputs.get(pluginInfo.GetName()).put(summaryIDNum, calculatedExpectedCount);
@@ -422,7 +422,7 @@ public class ProgressUpdater {
     {
         //        if(downloadExpectedFiles.get(pluginInfo.GetName()).get("data") == null)
         //        {
-        //            downloadExpectedFiles.get(pluginInfo.GetName()).put("data", getStoredDownloadExpectedTotalOutput(projectMetaData.GetProjectName(), pluginInfo.GetName(), "data", stmt));
+        //            downloadExpectedFiles.get(pluginInfo.GetName()).put("data", getStoredDownloadExpectedTotalOutput(projectMetaData.GetParentProjectName(), pluginInfo.GetName(), "data", stmt));
         //        }
         //        if(pluginMetaData.ExtraInfo.Tiles) {
         //            return pluginMetaData.Processor.numOfOutput * (downloadExpectedFiles.get(pluginInfo.GetName()).get("data") / pluginInfo.GetModisTiles().size());
@@ -462,7 +462,7 @@ public class ProgressUpdater {
     {
         if(processorExpectedNumOfOutputs.get(pluginName) == null)
         {
-            processorExpectedNumOfOutputs.put(pluginName, getStoredProcessorExpectedTotalOutput(projectMetaData.GetProjectName(), pluginName, stmt));
+            processorExpectedNumOfOutputs.put(pluginName, getStoredProcessorExpectedTotalOutput(projectMetaData.GetParentProjectName(), pluginName, stmt));
         }
         int indicesCount = 0;
         for(ProjectInfoPlugin pluginInfo : projectMetaData.GetPlugins()) {
@@ -532,7 +532,7 @@ public class ProgressUpdater {
         else {
             if(indicesExpectedNumOfOutputs.get(pluginInfo.GetName()) == null)
             {
-                indicesExpectedNumOfOutputs.put(pluginInfo.GetName(), getStoredIndicesExpectedTotalOutput(projectMetaData.GetProjectName(), pluginInfo.GetName(), stmt));
+                indicesExpectedNumOfOutputs.put(pluginInfo.GetName(), getStoredIndicesExpectedTotalOutput(projectMetaData.GetParentProjectName(), pluginInfo.GetName(), stmt));
             }
 
             expectedCount = indicesExpectedNumOfOutputs.get(pluginInfo.GetName());

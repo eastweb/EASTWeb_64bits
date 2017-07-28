@@ -150,7 +150,7 @@ public class IMERG_RTListDatesFiles extends ListDatesFiles{
                 if(dataDate.getDayOfYear() >= sDate.getDayOfYear() && dataDate.getDayOfYear() <= eDate.getDayOfYear()
                         && dataDate.getYear() >= sDate.getYear() && dataDate.getYear() <= eDate.getYear())
                 {
-                    //System.out.println(file.getName());
+                    System.out.println(file.getName());
                     fileNames.add(file.getName());
                     tempMapDatesToFiles.put(dataDate, fileNames);
                 }

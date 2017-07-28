@@ -223,7 +223,7 @@ public class SummaryWorker extends ProcessWorker {
             for(ProjectInfoSummary summary: projectInfoFile.GetSummaries())
             {
                 if(!UpdateForMissingSummaries.findMissingSummaries(con, projectInfoFile.GetWorkingDir() + "\\projects", configInstance.getGlobalSchema(),
-                        configInstance.getPort(), Schemas.getSchemaName(projectInfoFile.GetProjectName(), pluginInfo.GetName()),
+                        configInstance.getPort(), Schemas.getSchemaName(projectInfoFile.GetParentProjectName(), pluginInfo.GetName()),
                         projectInfoFile.GetProjectName(), projectInfoFile.GetStartDate(), "Summary " + summary.GetID(), pluginMetaData.DaysPerInputData, fileStores.get(summary.GetID()).compStrategy.maxNumberOfDaysInComposite(),
                         fileStores.get(summary.GetID()).compStrategy.getClass().getSimpleName(), pluginMetaData.CompositesContinueIntoNextYear)) {
                     allGood = false;

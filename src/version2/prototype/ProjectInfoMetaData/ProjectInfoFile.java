@@ -355,6 +355,18 @@ import version2.prototype.ZonalSummary;
 
     public String GetFullPath() { return fullPath; }
 
+    public String GetParentProjectName(){
+        String projectName = null;
+        String fullPath = GetFullPath();
+        if(fullPath.endsWith("\\") || fullPath.endsWith("/")){
+            projectName = fullPath.substring(0, -1).replace('\\', '/');
+        }
+        else{
+            projectName = fullPath.replace('\\', '/');
+        }
+        projectName = projectName.substring(projectName.lastIndexOf('/')+1);
+        return projectName;
+    }
     private LocalDate ReadStartDate() throws DateTimeParseException
     {
         NodeList nodes = GetUpperLevelNodeList("StartDate", "Missing start date.");
