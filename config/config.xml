@@ -6,7 +6,7 @@
 <GlobalSchema>EASTWeb</GlobalSchema>
 <HostName>localhost</HostName>
 <Port>5432</Port>
-<DatabaseName>postgresN2</DatabaseName>
+<DatabaseName>eastweb</DatabaseName>
 <UserName>postgres</UserName>
 <PassWord>eastweb</PassWord>
 <MaxNumOfConnectionsPerInstance>50</MaxNumOfConnectionsPerInstance>

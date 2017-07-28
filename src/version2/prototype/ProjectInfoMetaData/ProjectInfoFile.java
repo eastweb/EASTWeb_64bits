@@ -389,6 +389,10 @@ import version2.prototype.ZonalSummary;
             String parentName = projectName.substring(0, projectName.lastIndexOf("-"));
             return workingDir.replace('\\', '/')+"/Projects/"+parentName;
         }
+        else if(projectName.contains("_SUB")){
+            String parentName = projectName.substring(0, projectName.lastIndexOf("_"));
+            return workingDir.replace('\\', '/')+"/Projects/"+parentName;
+        }
         else{
             return workingDir.replace('\\', '/')+"/Projects/"+projectName;
         }

@@ -703,7 +703,7 @@ public class Scheduler {
     {
         //Scheduler scheduler, String globalSchema, String projectName, String pluginName, String workingDir, ProcessName processCachingFor, ArrayList<String> extraDownloadFiles
         String projectName = null;
-        String fullPath = data.projectInfoFile.GetProjectName();
+        String fullPath = data.projectInfoFile.GetFullPath();
         if(fullPath.endsWith("\\") || fullPath.endsWith("/")){
             projectName = fullPath.substring(0, -1).replace('\\', '/');
         }

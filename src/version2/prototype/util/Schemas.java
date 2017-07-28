@@ -48,7 +48,16 @@ public class Schemas {
         try{
             conn = postgreSQLConnection;
             stmt = conn.createStatement();
-            mSchemaName = getSchemaName(projectMetaData.GetProjectName(), pluginName);
+            String projectName = null;
+            String fullPath = projectMetaData.GetFullPath();
+            if(fullPath.endsWith("\\") || fullPath.endsWith("/")){
+                projectName = fullPath.substring(0, -1).replace('\\', '/');
+            }
+            else{
+                projectName = fullPath.replace('\\', '/');
+            }
+            projectName = projectName.substring(projectName.lastIndexOf('/')+1);
+            mSchemaName = getSchemaName(projectName, pluginName);
 
             // Drop an existing schema with the same name
             //        dropSchemaIfExists(stmt, mSchemaName);
@@ -97,7 +106,7 @@ public class Schemas {
             int dateGroupID = getDateGroupID(globalEASTWebSchema, projectMetaData.GetStartDate(), stmt);
 
             // Add entry to Project table
-            addProject(globalEASTWebSchema, projectMetaData.GetProjectName(), dateGroupID, stmt);
+            addProject(globalEASTWebSchema, projectName, dateGroupID, stmt);
 
             // Add entry to Plugin table if not already existing
             addPlugin(globalEASTWebSchema, pluginName, daysPerInputFile, filesPerDay, stmt);
@@ -111,7 +120,7 @@ public class Schemas {
                     if(strategyName != null) {
                         strategyName = strategyName.substring(strategyName.lastIndexOf(".") + 1);
                     }
-                    addProjectSummaryID(globalEASTWebSchema, projectMetaData.GetProjectName(), summary.GetID(), summary.GetZonalSummary().GetAreaNameField(), summary.GetZonalSummary().GetShapeFile(),
+                    addProjectSummaryID(globalEASTWebSchema, projectName, summary.GetID(), summary.GetZonalSummary().GetAreaNameField(), summary.GetZonalSummary().GetShapeFile(),
                             summary.GetZonalSummary().GetAreaCodeField(), strategyName, stmt);
                 }
             }
