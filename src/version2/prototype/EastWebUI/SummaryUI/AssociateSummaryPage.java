@@ -175,7 +175,7 @@ public class AssociateSummaryPage {
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         chooser.setAcceptAllFileFilterUsed(false);
 
-        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+        if (chooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
             System.out.println("getCurrentDirectory(): "+ chooser.getCurrentDirectory());
             System.out.println("getSelectedFile() : "+ chooser.getSelectedFiles());
             filePathText.setText(chooser.getSelectedFile().toString());
