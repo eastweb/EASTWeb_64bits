@@ -66,7 +66,7 @@ public class IMERG_RTListDatesFiles extends ListDatesFiles{
 
             //int currentYear = 2016;
             //int currentMonth = 1;
-            javax.swing.JOptionPane.showMessageDialog(null,"Start date: "+sDate.toString()+"\nEnd date: "+eDate.toString());
+            //javax.swing.JOptionPane.showMessageDialog(null,"Start date: "+sDate.toString()+"\nEnd date: "+eDate.toString());
             int startYear = sDate.getYear();
             int startMonth = sDate.getMonth();
 

@@ -23,8 +23,7 @@ import version2.prototype.download.FTPClientPool;
 
 public class IMERG_RTDownloader extends DownloaderFramework
 {
-    private DataDate startDate;
-    private DataDate endDate;
+    private DataDate mDate;
     private String mOutputFolder;
     private String mMode;
     private String mHost;
@@ -33,10 +32,9 @@ public class IMERG_RTDownloader extends DownloaderFramework
     private DownloadMetaData mData;
     private String outFilePath;
 
-    public IMERG_RTDownloader(DataDate startDate, String outFolder, DownloadMetaData data, String fileToDownload)
+    public IMERG_RTDownloader(DataDate mDate, String outFolder, DownloadMetaData data, String fileToDownload)
     {
-        this.startDate = startDate;
-        //endDate = endDate;
+        this.mDate = mDate;
         mOutputFolder = outFolder;
         mData = data;
         mFileToDownload = fileToDownload;
@@ -67,10 +65,10 @@ public class IMERG_RTDownloader extends DownloaderFramework
                 /* the files of current year are located at:
                  *      ftp://jsimpson.pps.eosdis.nasa.gov/data/imerg/gis/mm
                  */
-                if (startDate.getYear() == currentYear)// && currentYear <= endDate.getYear())
+                if (mDate.getYear() == currentYear)// && currentYear <= endDate.getYear())
                 {
                     targetDir = String.format("%s/%02d",
-                            mRoot, startDate.getMonth());
+                            mRoot, mDate.getMonth());
                 }
                 else
                     /* the files of the past years are located at:
@@ -78,7 +76,7 @@ public class IMERG_RTDownloader extends DownloaderFramework
                      */
                 {
                     targetDir = String.format("%s/%04d/%02d",
-                            mRoot, startDate.getYear(), startDate.getMonth(), startDate.getDay());
+                            mRoot, mDate.getYear(), mDate.getMonth(), mDate.getDay());
                 }
 
                 if (!ftpC.changeWorkingDirectory(targetDir))
@@ -89,7 +87,7 @@ public class IMERG_RTDownloader extends DownloaderFramework
 
                 // set the directory to store the download file
                 String dir = String.format("%s"+"%04d" + File.separator+"%03d",
-                        mOutputFolder, startDate.getYear(), startDate.getDayOfYear());
+                        mOutputFolder, mDate.getYear(), mDate.getDayOfYear());
 
                 if(!(new File(dir).exists()))
                 {
