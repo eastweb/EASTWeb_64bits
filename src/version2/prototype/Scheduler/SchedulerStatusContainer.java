@@ -50,6 +50,7 @@ public class SchedulerStatusContainer {
      * Start date the Scheduler created with.
      */
     public final LocalDate startDate;
+    public final LocalDate endDate;
 
     private final Config configInstance;
     private ProgressUpdater progressUpdater;
@@ -84,7 +85,7 @@ public class SchedulerStatusContainer {
      * @param projectUpToDate
      * @param lastModifiedTime
      */
-    public SchedulerStatusContainer(Config configInstance, int SchedulerID, LocalDate startDate, ProgressUpdater progressUpdater, ProjectInfoFile projectMetaData,
+    public SchedulerStatusContainer(Config configInstance, int SchedulerID, LocalDate startDate, LocalDate endDate, ProgressUpdater progressUpdater, ProjectInfoFile projectMetaData,
             PluginMetaDataCollection pluginMetaDataCollection, List<String> log, TaskState state, TreeMap<String, TreeMap<String, Double>> downloadProgressesByData,
             TreeMap<String, Double> processorProgresses, TreeMap<String, Double> indicesProgresses, TreeMap<String, TreeMap<Integer, Double>> summaryProgresses,
             boolean projectUpToDate, LocalDateTime lastModifiedTime)
@@ -92,6 +93,7 @@ public class SchedulerStatusContainer {
         this.configInstance = configInstance;
         this.SchedulerID = SchedulerID;
         this.startDate = startDate;
+        this.endDate = endDate;
         this.progressUpdater = progressUpdater;
         this.projectMetaData = projectMetaData;
         this.pluginMetaDataCollection = pluginMetaDataCollection;
@@ -129,12 +131,13 @@ public class SchedulerStatusContainer {
      * @param pluginMetaDataCollection
      * @param state
      */
-    public SchedulerStatusContainer(Config configInstance, int SchedulerID, LocalDate startDate, ProgressUpdater progressUpdater, ProjectInfoFile projectMetaData,
+    public SchedulerStatusContainer(Config configInstance, int SchedulerID, LocalDate startDate, LocalDate endDate, ProgressUpdater progressUpdater, ProjectInfoFile projectMetaData,
             PluginMetaDataCollection pluginMetaDataCollection, TaskState state)
     {
         this.configInstance = configInstance;
         this.SchedulerID = SchedulerID;
         this.startDate = startDate;
+        this.endDate = endDate;
         this.progressUpdater = progressUpdater;
         this.projectMetaData = projectMetaData;
         this.pluginMetaDataCollection = pluginMetaDataCollection;
@@ -350,12 +353,12 @@ public class SchedulerStatusContainer {
                 PluginMetaData pluginMetaData = pluginMetaDataCollection.pluginMetaDataMap.get(pluginName);
 
                 // Setup Download progresses
-                progress = progressUpdater.GetCurrentDownloadProgress("data", pluginName, startDate, pluginInfo.GetModisTiles(), stmt);
+                progress = progressUpdater.GetCurrentDownloadProgress("data", pluginName, startDate, endDate, pluginInfo.GetModisTiles(), stmt);
                 downloadProgressesByData.get(pluginName).put("data", progress);
                 for(String dataName : pluginMetaDataCollection.pluginMetaDataMap.get(pluginName).ExtraDownloadFiles)
                 {
                     dataName = dataName.toLowerCase();
-                    progress = progressUpdater.GetCurrentDownloadProgress(dataName, pluginName, startDate, pluginInfo.GetModisTiles(), stmt);
+                    progress = progressUpdater.GetCurrentDownloadProgress(dataName, pluginName, startDate, endDate, pluginInfo.GetModisTiles(), stmt);
                     downloadProgressesByData.get(pluginName).put(dataName, progress);
                 }
 

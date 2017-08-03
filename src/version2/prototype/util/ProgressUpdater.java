@@ -96,14 +96,14 @@ public class ProgressUpdater {
      * @return double  - progress percentage of the download process in relation to the local downloader downloading the files named by the given dataName and for the specified pluginName
      * @throws SQLException
      */
-    public double GetCurrentDownloadProgress(String dataName, String pluginName, LocalDate startDate, ArrayList<String> modisTileNames, Statement stmt) throws SQLException
+    public double GetCurrentDownloadProgress(String dataName, String pluginName, LocalDate startDate, LocalDate endDate, ArrayList<String> modisTileNames, Statement stmt) throws SQLException
     {
         double progress = 0;
         String mSchemaName = Schemas.getSchemaName(projectMetaData.GetParentProjectName(), pluginName);
         PluginMetaData pluginMetaData = pluginMetaDataCollection.pluginMetaDataMap.get(pluginName);
-        int currentCount = calculateDownloadCurrentCount(mSchemaName, dataName, stmt);
+        int currentCount = calculateDownloadCurrentCount(mSchemaName, dataName, stmt, startDate, endDate);
         int expectedCount = getStoredDownloadExpectedTotalOutput(projectMetaData.GetParentProjectName(), pluginName, dataName, stmt);
-        int maxExpectedCount = calculateMaxDownloadExpectedCount(pluginMetaData, startDate, modisTileNames);
+        int maxExpectedCount = calculateMaxDownloadExpectedCount(pluginMetaData, startDate, endDate, modisTileNames);
 
         if(expectedCount > 0 && currentCount > 0)
         {
@@ -142,8 +142,8 @@ public class ProgressUpdater {
                     + "metadata."));
         }
         String mSchemaName = Schemas.getSchemaName(projectMetaData.GetParentProjectName(), pluginName);
-        int currentCount = calculateProcessorCurrentCount(mSchemaName, stmt);
-        int expectedCount = calculateProcessorExpectedCount(pluginMetaData, pluginInfo, mSchemaName, stmt);
+        int currentCount = calculateProcessorCurrentCount(mSchemaName, stmt,projectMetaData.GetStartDate(),projectMetaData.GetEndDate());
+        int expectedCount = calculateProcessorExpectedCount(pluginMetaData, pluginInfo, mSchemaName, stmt,projectMetaData.GetStartDate(),projectMetaData.GetEndDate());
 
         if(expectedCount > 0 && currentCount > 0)
         {
@@ -171,8 +171,8 @@ public class ProgressUpdater {
         double progress = 0;
         PluginMetaData pluginMetaData = pluginMetaDataCollection.pluginMetaDataMap.get(pluginName);
         String mSchemaName = Schemas.getSchemaName(projectMetaData.GetParentProjectName(), pluginName);
-        int currentCount = calculateIndicesCurrentCount(mSchemaName, stmt);
-        int expectedCount = calculateIndicesExpectedCount(Schemas.getSchemaName(projectMetaData.GetParentProjectName(), pluginName), pluginMetaData, pluginName, stmt);
+        int currentCount = calculateIndicesCurrentCount(mSchemaName, stmt,projectMetaData.GetStartDate(),projectMetaData.GetEndDate());
+        int expectedCount = calculateIndicesExpectedCount(Schemas.getSchemaName(projectMetaData.GetParentProjectName(), pluginName), pluginMetaData, pluginName, stmt,projectMetaData.GetStartDate(),projectMetaData.GetEndDate());
 
         if(expectedCount > 0 && currentCount > 0)
         {
@@ -204,7 +204,7 @@ public class ProgressUpdater {
         double progress = 0;
         int projectSummaryID = Schemas.getProjectSummaryID(configInstance.getGlobalSchema(), projectMetaData.GetParentProjectName(), summaryIDNum, stmt);
         String mSchemaName = Schemas.getSchemaName(projectMetaData.GetParentProjectName(), pluginInfo.GetName());
-        int currentCount = calculateSummaryCurrentCount(projectSummaryID, mSchemaName, stmt);
+        int currentCount = calculateSummaryCurrentCount(projectSummaryID, mSchemaName, stmt, projectMetaData.GetStartDate(),projectMetaData.GetEndDate());
         int expectedCount = calculateSummaryExpectedCount(mSchemaName, compStrategy, daysPerInputData, pluginInfo, stmt);
 
         if(expectedCount > 0 && currentCount > 0)
@@ -266,7 +266,7 @@ public class ProgressUpdater {
         }
         String mSchemaName = Schemas.getSchemaName(projectMetaData.GetParentProjectName(), pluginInfo.GetName());
         int storedExpectedCount = getStoredProcessorExpectedTotalOutput(projectMetaData.GetParentProjectName(), pluginName, stmt);
-        int calculatedExpectedCount = calculateProcessorExpectedCount(pluginMetaDataCollection.pluginMetaDataMap.get(pluginName), pluginInfo, mSchemaName, stmt);
+        int calculatedExpectedCount = calculateProcessorExpectedCount(pluginMetaDataCollection.pluginMetaDataMap.get(pluginName), pluginInfo, mSchemaName, stmt,projectMetaData.GetStartDate(),projectMetaData.GetEndDate());
         if(storedExpectedCount != calculatedExpectedCount)
         {
             String updateQuery = "UPDATE \"" + configInstance.getGlobalSchema() + "\".\"ProcessorExpectedTotalOutput\" SET \"ExpectedNumOfOutputs\" = " + calculatedExpectedCount + " WHERE " +
@@ -286,7 +286,7 @@ public class ProgressUpdater {
     public void UpdateDBIndicesExpectedCount(String pluginName, Statement stmt) throws SQLException
     {
         int storedExpectedCount = getStoredIndicesExpectedTotalOutput(projectMetaData.GetParentProjectName(), pluginName, stmt);
-        int calculatedExpectedCount = calculateIndicesExpectedCount(Schemas.getSchemaName(projectMetaData.GetParentProjectName(), pluginName), pluginMetaDataCollection.pluginMetaDataMap.get(pluginName), pluginName, stmt);
+        int calculatedExpectedCount = calculateIndicesExpectedCount(Schemas.getSchemaName(projectMetaData.GetParentProjectName(), pluginName), pluginMetaDataCollection.pluginMetaDataMap.get(pluginName), pluginName, stmt, projectMetaData.GetStartDate(),projectMetaData.GetEndDate());
         if(storedExpectedCount != calculatedExpectedCount)
         {
             String updateQuery = "UPDATE \"" + configInstance.getGlobalSchema() + "\".\"IndicesExpectedTotalOutput\" SET \"ExpectedNumOfOutputs\" = " + calculatedExpectedCount + " WHERE " +
@@ -320,20 +320,23 @@ public class ProgressUpdater {
         }
     }
 
-    protected int calculateDownloadCurrentCount(String mSchemaName, String dataName, Statement stmt) throws SQLException
+    protected int calculateDownloadCurrentCount(String mSchemaName, String dataName, Statement stmt,LocalDate startDate,LocalDate endDate) throws SQLException
     {
         int currentCount = 0;
         String progressQuery;
         String columnName;
-
         if(dataName.toLowerCase().equals("data"))
         {
-            progressQuery = "SELECT Count(\"DownloadCacheID\") AS \"DownloadCacheIDCount\" FROM \"" + mSchemaName + "\".\"DownloadCache\";";
+            progressQuery = "SELECT Count(\"DownloadCacheID\") AS \"DownloadCacheIDCount\" FROM \"" + mSchemaName + "\".\"DownloadCache\" ";
+            progressQuery += generateDatesFilter(startDate, endDate, "DataFilePath");
+            progressQuery += ";";
             columnName = "DownloadCacheIDCount";
         }
         else
         {
-            progressQuery = "SELECT Count(\"DownloadCacheExtraID\") AS \"DownloadCacheExtraIDCount\" FROM \"" + mSchemaName + "\".\"DownloadCacheExtra\";";
+            progressQuery = "SELECT Count(\"DownloadCacheExtraID\") AS \"DownloadCacheExtraIDCount\" FROM \"" + mSchemaName + "\".\"DownloadCacheExtra\" ";
+            progressQuery += generateDatesFilter(startDate, endDate, "DataName");
+            progressQuery += ";";
             columnName = "DownloadCacheExtraIDCount";
         }
 
@@ -345,8 +348,53 @@ public class ProgressUpdater {
             }
             rs.close();
         }
-
         return currentCount;
+    }
+
+    /**
+     * Function to filter files inside a dates range
+     * @param startDate
+     * @param endDate
+     * @param table
+     * @return Portion of SQL code with the filters
+     */
+    private String generateDatesFilter(LocalDate startDate, LocalDate endDate, String table){
+        String filter = "";
+        int lastMonth, month;
+        boolean where = true;
+        for(int i=startDate.getYear(); i <= endDate.getYear();i++){
+            if(startDate.getYear()==endDate.getYear()){
+                month = startDate.getMonthValue();
+                lastMonth = endDate.getMonthValue();
+            }
+            else if(i==startDate.getYear()){
+                month = startDate.getMonthValue();
+                lastMonth = 12;
+            }
+            else if(i==endDate.getYear()){
+                month = 1;
+                lastMonth = endDate.getMonthValue();
+            }
+            else{
+                month = 1;
+                lastMonth = 12;
+            }
+            for(int j=month; j <= lastMonth; j++){
+                if(where){
+                    filter += "WHERE";
+                    where = false;
+                }
+                if(j < 10) {
+                    filter += " \""+table+"\" LIKE Concat('%','"+i+'0'+j+"','%') OR";
+                } else {
+                    filter += " \""+table+"\" LIKE Concat('%','"+i+j+"','%') OR";
+                }
+            }
+        }
+        if(filter.length() > 0) {
+            filter = filter.substring(0,filter.length()-3);
+        }
+        return filter;
     }
 
     protected int calculateDownloadExpectedCount(ListDatesFiles listDatesFiles, ArrayList<String> modisTileNames)
@@ -387,11 +435,11 @@ public class ProgressUpdater {
         return expectedCount;
     }
 
-    protected int calculateMaxDownloadExpectedCount(PluginMetaData pluginMetaData, LocalDate startDate, ArrayList<String> modisTileNames)
+    protected int calculateMaxDownloadExpectedCount(PluginMetaData pluginMetaData, LocalDate startDate, LocalDate endDate, ArrayList<String> modisTileNames)
     {
         int expectedCount = 0;
 
-        long daysSinceStart = ChronoUnit.DAYS.between(startDate, LocalDate.now());
+        long daysSinceStart = ChronoUnit.DAYS.between(startDate, endDate) + 1;//LocalDate.now());
         int adjustedDaysSinceStart = (int)(daysSinceStart / pluginMetaData.Download.DaysPerInputData);
 
         if(modisTileNames != null && modisTileNames.size() > 1) {
@@ -403,10 +451,12 @@ public class ProgressUpdater {
         return expectedCount;
     }
 
-    protected int calculateProcessorCurrentCount(String mSchemaName, Statement stmt) throws SQLException
+    protected int calculateProcessorCurrentCount(String mSchemaName, Statement stmt, LocalDate startDate, LocalDate endDate) throws SQLException
     {
-        String progressQuery = "SELECT Count(\"ProcessorCacheID\") AS \"ProcessorCacheIDCount\" FROM \"" + mSchemaName + "\".\"ProcessorCache\";";
         int currentCount = 0;
+        String progressQuery = "SELECT Count(\"ProcessorCacheID\") AS \"ProcessorCacheIDCount\" FROM \"" + mSchemaName + "\".\"ProcessorCache\" ";
+        progressQuery += generateDatesFilter(startDate, endDate, "DataFilePath");
+        progressQuery += ";";
         ResultSet rs = stmt.executeQuery(progressQuery);
         if(rs != null)
         {
@@ -418,7 +468,7 @@ public class ProgressUpdater {
         return currentCount;
     }
 
-    protected int calculateProcessorExpectedCount(PluginMetaData pluginMetaData, ProjectInfoPlugin pluginInfo, String mSchemaName, Statement stmt) throws SQLException
+    protected int calculateProcessorExpectedCount(PluginMetaData pluginMetaData, ProjectInfoPlugin pluginInfo, String mSchemaName, Statement stmt, LocalDate startDate, LocalDate endDate) throws SQLException
     {
         //        if(downloadExpectedFiles.get(pluginInfo.GetName()).get("data") == null)
         //        {
@@ -430,7 +480,9 @@ public class ProgressUpdater {
         //            return pluginMetaData.Processor.numOfOutput * downloadExpectedFiles.get(pluginInfo.GetName()).get("data");
         //        }
 
-        String progressQuery = "SELECT Count(Distinct \"DateGroupID\") \"DateGroupIDCount\" FROM \"" + mSchemaName + "\".\"DownloadCache\";";
+        String progressQuery = "SELECT Count(Distinct \"DateGroupID\") \"DateGroupIDCount\" FROM \"" + mSchemaName + "\".\"DownloadCache\" ";
+        progressQuery += generateDatesFilter(startDate, endDate, "DataFilePath");
+        progressQuery += ";";
         int daysDownloadFor = 0;
         ResultSet rs = stmt.executeQuery(progressQuery);
         if(rs != null)
@@ -443,9 +495,11 @@ public class ProgressUpdater {
         return pluginMetaData.Processor.numOfOutput * daysDownloadFor;
     }
 
-    protected int calculateIndicesCurrentCount(String mSchemaName, Statement stmt) throws SQLException
+    protected int calculateIndicesCurrentCount(String mSchemaName, Statement stmt, LocalDate startDate, LocalDate endDate) throws SQLException
     {
-        String progressQuery = "SELECT Count(\"IndicesCacheID\") AS \"IndicesCacheIDCount\" FROM \"" + mSchemaName + "\".\"IndicesCache\";";
+        String progressQuery = "SELECT Count(\"IndicesCacheID\") AS \"IndicesCacheIDCount\" FROM \"" + mSchemaName + "\".\"IndicesCache\" ";
+        progressQuery += generateDatesFilter(startDate, endDate, "DataFilePath");
+        progressQuery += ";";
         int currentCount = 0;
         ResultSet rs = stmt.executeQuery(progressQuery);
         if(rs != null)
@@ -458,7 +512,7 @@ public class ProgressUpdater {
         return currentCount;
     }
 
-    protected int calculateIndicesExpectedCount(String mSchemaName, PluginMetaData pluginMetaData, String pluginName, Statement stmt) throws SQLException
+    protected int calculateIndicesExpectedCount(String mSchemaName, PluginMetaData pluginMetaData, String pluginName, Statement stmt, LocalDate startDate, LocalDate endDate) throws SQLException
     {
         if(processorExpectedNumOfOutputs.get(pluginName) == null)
         {
@@ -472,8 +526,10 @@ public class ProgressUpdater {
             }
         }
         int dateGroups = 0;
-        ResultSet rs = stmt.executeQuery("SELECT Count(Distinct \"DateGroupID\") \"DateGroupIDCount\"" +
-                "FROM \"" + mSchemaName + "\".\"ProcessorCache\";");
+        String progressQuery = "SELECT Count(Distinct \"DateGroupID\") \"DateGroupIDCount\" FROM \"" + mSchemaName + "\".\"ProcessorCache\" ";
+        progressQuery += generateDatesFilter(startDate, endDate, "DataFilePath");
+        progressQuery += ";";
+        ResultSet rs = stmt.executeQuery(progressQuery);
         if(rs != null) {
             if(rs.next()) {
                 dateGroups = rs.getInt("DateGroupIDCount");
@@ -484,13 +540,19 @@ public class ProgressUpdater {
         return (indicesCount * dateGroups);
     }
 
-    protected int calculateSummaryCurrentCount(int projectSummaryID, String mSchemaName, Statement stmt) throws SQLException
+    protected int calculateSummaryCurrentCount(int projectSummaryID, String mSchemaName, Statement stmt, LocalDate startDate, LocalDate endDate) throws SQLException
     {
         int currentCount = 0;
-
+        String temp = "";
         String progressQuery = "SELECT \"IndexID\", Count(DISTINCT \"DateGroupID\") AS \"DateGroupIDCount\" " +
                 "FROM \"" + mSchemaName + "\".\"ZonalStat\" " +
-                "WHERE \"ProjectSummaryID\"=" + projectSummaryID + " GROUP BY \"IndexID\", \"ProjectSummaryID\";";
+                "WHERE \"ProjectSummaryID\"=" + projectSummaryID;
+        temp = generateDatesFilter(startDate, endDate, "DataFilePath");
+        temp = temp.replaceFirst("WHERE", "AND");
+        progressQuery += temp;
+        progressQuery += " GROUP BY \"IndexID\", \"ProjectSummaryID\";";
+        javax.swing.JOptionPane.showMessageDialog(null, temp);
+        javax.swing.JOptionPane.showMessageDialog(null, progressQuery);
         ResultSet rs = stmt.executeQuery(progressQuery);
         if(rs != null)
         {
