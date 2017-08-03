@@ -165,7 +165,7 @@ public class NldasNOAHListDatesFiles extends ListDatesFiles{
     protected Map<DataDate, ArrayList<String>> ListDatesFilesFTP()
     {
         Map<DataDate, ArrayList<String>>  tempMapDatesToFiles = new HashMap<DataDate, ArrayList<String>>();
-        System.out.println("START: "+sDate+" END: "+eDate);
+        //System.out.println("START: "+sDate+" END: "+eDate);
         final Pattern yearDirPattern = Pattern.compile("\\d{4}");
         final Pattern dayDirPattern = Pattern.compile("\\d{3}");
 
