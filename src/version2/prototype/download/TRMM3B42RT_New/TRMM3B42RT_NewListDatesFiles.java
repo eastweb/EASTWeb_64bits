@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +16,6 @@ import version2.prototype.DataDate;
 import version2.prototype.ErrorLog;
 import version2.prototype.PluginMetaData.DownloadMetaData;
 import version2.prototype.ProjectInfoMetaData.ProjectInfoFile;
-import version2.prototype.ProjectInfoMetaData.ProjectInfoPlugin;
 import version2.prototype.download.DownloadUtils;
 import version2.prototype.download.ListDatesFiles;
 
@@ -45,6 +43,7 @@ public class TRMM3B42RT_NewListDatesFiles extends ListDatesFiles
         // DataDate.toCompactString() returns a date in the format of yyyy-mm-dd-hh
         // get the substring of yyyy-mm-dd and remove the '-'
         String startDateStr = (sDate.toCompactString().substring(0, 10)).replaceAll("-", "");
+        String endDateStr = (eDate.toCompactString().substring(0, 10)).replaceAll("-", "");
 
         String yearPattern = "(19|20)\\d\\d/";
         String monthPattern = "(0?[1-9]|1[012])/";
@@ -76,7 +75,7 @@ public class TRMM3B42RT_NewListDatesFiles extends ListDatesFiles
                         //get rid of the last character '/'
                         int year = Integer.parseInt(matcher.group().substring(0, 4));
 
-                        if (year >= sDate.getYear())
+                        if (year >= sDate.getYear() && year <= eDate.getYear())
                         {
                             String yearFolderURL = mHostURL + String.format("%04d", year);
 
@@ -104,7 +103,7 @@ public class TRMM3B42RT_NewListDatesFiles extends ListDatesFiles
 
                                             // check if the month of the startDate is not starting at 1
                                             if (((year == sDate.getYear()) && (month >= sDate.getMonth()))
-                                                    || (year > sDate.getYear()))
+                                                    || ((year == eDate.getYear()) && (month <= eDate.getMonth())))
                                             {
                                                 String monthFolderURL = mHostURL + String.format("%04d/%s", year, matcherM.group());
                                                 // System.out.println("url : " + monthFolderURL);
@@ -129,7 +128,7 @@ public class TRMM3B42RT_NewListDatesFiles extends ListDatesFiles
                                                          */
                                                         String fileDate = matcherF.group(1);
                                                         //System.out.println(fileDate);
-                                                        if (fileDate.compareTo(startDateStr) >= 0)
+                                                        if (fileDate.compareTo(startDateStr) >= 0 && fileDate.compareTo(endDateStr) <= 0)
                                                         {
                                                             // System.out.println(matcherF.group());
                                                             ArrayList<String> fileList = new ArrayList<String>();
