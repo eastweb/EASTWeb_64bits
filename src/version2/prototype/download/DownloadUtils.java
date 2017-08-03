@@ -184,8 +184,10 @@ public final class DownloadUtils {
                 while ((numBytesRead = inS.read(buffer)) > 0) {
                     fout.write(buffer, 0, numBytesRead);
                 }
+                fout.close();
             } finally {
                 inS.close();
+                fout.close();
             }
         }else {
             throw new IOException("HTTP request returned code " + code);
