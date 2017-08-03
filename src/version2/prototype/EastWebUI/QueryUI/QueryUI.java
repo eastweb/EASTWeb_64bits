@@ -421,32 +421,32 @@ public class QueryUI {
         }
 
         JPanel resultPanel = new JPanel();
-        resultPanel.setBorder(new TitledBorder(null, "Results", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        resultPanel.setBorder(new TitledBorder(null, "Query Statement", TitledBorder.LEADING, TitledBorder.TOP, null, null));
         resultPanel.setBounds(10, 454, 1113, 296);
         frame.getContentPane().add(resultPanel);
         resultPanel.setLayout(null);
 
-        JLabel lblQueryStatement = new JLabel("Query Statement");
-        lblQueryStatement.setBounds(10, 35, 109, 14);
-        resultPanel.add(lblQueryStatement);
+        //        JLabel lblQueryStatement = new JLabel("Query Statement");
+        //        lblQueryStatement.setBounds(10, 35, 109, 14);
+        //        resultPanel.add(lblQueryStatement);
 
         JScrollPane sqlScrollPane = new JScrollPane();
-        sqlScrollPane.setBounds(10, 60, 500, 225);
+        sqlScrollPane.setBounds(20, 40, 1070, 225);     //sqlScrollPane.setBounds(10, 60, 500, 225);
         resultPanel.add(sqlScrollPane);
 
         sqlViewTextPanel = new JTextPane();
         sqlScrollPane.setViewportView(sqlViewTextPanel);
 
-        JLabel lblQueryResults = new JLabel("Query Results");
-        lblQueryResults.setBounds(603, 35, 109, 14);
-        resultPanel.add(lblQueryResults);
-
-        JScrollPane resultScrollPane = new JScrollPane();
-        resultScrollPane.setBounds(603, 60, 500, 225);
-        resultPanel.add(resultScrollPane);
-
-        resultTextPane = new JTextPane();
-        resultScrollPane.setViewportView(resultTextPane);
+        //        JLabel lblQueryResults = new JLabel("Query Results");
+        //        lblQueryResults.setBounds(603, 35, 109, 14);
+        //        resultPanel.add(lblQueryResults);
+        //
+        //        JScrollPane resultScrollPane = new JScrollPane();
+        //        resultScrollPane.setBounds(603, 60, 500, 225);
+        //        resultPanel.add(resultScrollPane);
+        //
+        //        resultTextPane = new JTextPane();
+        //        resultScrollPane.setViewportView(resultTextPane);
     }
 
     // remove selected indices
@@ -531,9 +531,14 @@ public class QueryUI {
         ProjectInfoFile project = ProjectInfoCollection.GetProject(Config.getInstance(), String.valueOf(projectListComboBox.getSelectedItem()));
         Map<Integer, EASTWebQuery> ewQuery = new HashMap<Integer, EASTWebQuery>();
         String[] indicies = new String[includeIndicesListModel.toArray().length];
+        String[] zones = new String[includeZoneListModel.toArray().length];
 
         for(int i=0; i < includeIndicesListModel.toArray().length; i++){
             indicies[i] = includeIndicesListModel.get(i);
+        }
+
+        for(int i=0; i < includeZoneListModel.toArray().length; i++){
+            zones[i] = includeZoneListModel.get(i);
         }
 
         for(ProjectInfoSummary summary : project.GetSummaries()) {
@@ -549,7 +554,7 @@ public class QueryUI {
                         chckbxMean.isSelected(),
                         sqrSumCheckBox.isSelected(),
                         chckbxStdev.isSelected(),
-                        (String[])includeZoneListModel.toArray(),
+                        zones,
                         String.valueOf(yearComboBox.getSelectedItem()),
                         (yearTextField.getText().equals("") ? null : Integer.parseInt(yearTextField.getText())),
                         String.valueOf(dayComboBox.getSelectedItem()),
@@ -666,7 +671,12 @@ public class QueryUI {
                 for(int i = 0; i < includeZoneListModel.size(); i ++){
                     query += String.format("    Zone = %s,\n", includeZoneListModel.elementAt(i));
                 }
-                query = query.substring(0, query.length()-1);
+                if(query.length()-1 < 0){
+                    query = query.substring(0, query.length());
+                }
+                else{
+                    query = query.substring(0, query.length()-1);
+                }
             }
 
             query = String.format("WHERE\n") + query;

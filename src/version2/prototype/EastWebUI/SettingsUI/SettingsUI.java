@@ -160,7 +160,7 @@ public class SettingsUI {
         errorLogDirTextField.setText(Config.getInstance().getErrorLogDir());
         downloadDirtextField.setText(Config.getInstance().getDownloadDir());
         GlobalSchematextField.setText(Config.getInstance().getGlobalSchema());
-        textFieldHostName.setText(Config.getInstance().getDatabaseHost());
+        textFieldHostName.setText(Config.getInstance().getDatabaseHost().replace("jdbc:postgresql://", ""));
         textFieldPort.setText(Config.getInstance().getPort().toString());
         textFieldDatabaseName.setText(Config.getInstance().getDatabaseName());
         textFieldUserName.setText(Config.getInstance().getDatabaseUsername());

@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -21,6 +22,7 @@ import version2.prototype.ErrorLog;
  *
  */
 public class EASTWebResults {
+
 
     /**
      * Get the EASTWebQuery object that represents a query for retrieving zonal summary results.
@@ -87,6 +89,7 @@ public class EASTWebResults {
             String[] includedIndices, Integer[] summaryIDs)
     {
         StringBuilder zoneCondition = new StringBuilder();
+        System.out.println(zones);
         if(zones.length > 0 && !zones[0].trim().equals(""))
         {
             zoneCondition.append(" AND (A.\"AreaName\" like '" + Schemas.escapeUnderScoresAndPercents(zones[0]) + "'");
@@ -272,6 +275,7 @@ public class EASTWebResults {
         Statement stmt = con.createStatement();
         ResultSet rs;
         ArrayList<Double> summaryCalculations;
+        ArrayList<String> summaryNames = new ArrayList<String>();
         ArrayList<EASTWebResult> results = new ArrayList<EASTWebResult>(0);
         boolean foundColumn;
 
@@ -292,6 +296,7 @@ public class EASTWebResults {
                         if(rs.getMetaData().getColumnName(i).equalsIgnoreCase(summary))
                         {
                             summaryCalculations.add(rs.getDouble(i));
+                            summaryNames.add(summary);
                             foundColumn = true;
                             break;
                         }
@@ -303,7 +308,7 @@ public class EASTWebResults {
 
                 results.add(new EASTWebResult(query.projectName, query.pluginName, rs.getString("IndexName"), rs.getInt("Year"), rs.getInt("DayOfYear"),
                         rs.getString("AreaNameField"), rs.getString("AreaName"), rs.getString("AreaCodeField"), rs.getInt("AreaCode"), rs.getInt("SummaryIDNum"),
-                        rs.getString("ShapeFile"), rs.getString("TemporalSummaryCompositionStrategyClass"), Config.getInstance().getSummaryCalculations(), summaryCalculations,
+                        rs.getString("ShapeFile"), rs.getString("TemporalSummaryCompositionStrategyClass"), summaryNames, summaryCalculations,
                         rs.getString("FilePath")));
             }
             rs.close();
@@ -556,6 +561,14 @@ public class EASTWebResults {
                 whereCondition.append(" \nAND " + summariesCondition.toString());
             } else {
                 whereCondition.append("WHERE " + summariesCondition.toString());
+            }
+        }
+
+        if(zoneCondition != "") {
+            if(whereCondition.length() > 1) {
+                whereCondition.append(" \n" + zoneCondition);
+            } else {
+                whereCondition.append("WHERE " + zoneCondition);
             }
         }
 
