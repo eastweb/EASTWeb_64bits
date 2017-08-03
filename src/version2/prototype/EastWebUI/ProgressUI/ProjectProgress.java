@@ -275,6 +275,9 @@ public class ProjectProgress {
                     total += value;
                 }
             }
+            if(total > 100){
+                total = 100;
+            }
             return new ProgressValue((int)total);
         }
     }
