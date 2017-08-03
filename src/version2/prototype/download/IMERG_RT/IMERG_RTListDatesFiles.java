@@ -88,7 +88,7 @@ public class IMERG_RTListDatesFiles extends ListDatesFiles{
                 {
                     for (int month = months; month <= eDate.getMonth(); month++)
                     {
-                        String monthDir = String.format("%s/%02d", rootDir, month);
+                        String monthDir = String.format("%s/%04d/%02d", rootDir, eDate.getYear(),month);
                         AddFiles(ftpC, monthDir, month, year);
                     }
                 }
@@ -143,14 +143,15 @@ public class IMERG_RTListDatesFiles extends ListDatesFiles{
 
                 String[] str = file.getName().split("[.]");
 
+                //year = Integer.parseInt(str[4].substring(0, 4));
+                //month = Integer.parseInt(str[4].substring(4, 6));
                 final int day = Integer.parseInt(str[4].substring(6, 8));
                 // always get the last hour of the day -  23
                 DataDate dataDate = new DataDate(23, day, month, year);
                 //if (dataDate.compareTo(sDate) >= 0)
-                if(dataDate.getDayOfYear() >= sDate.getDayOfYear() && dataDate.getDayOfYear() <= eDate.getDayOfYear()
-                        && dataDate.getYear() >= sDate.getYear() && dataDate.getYear() <= eDate.getYear())
+                if(dataDate.compareTo(sDate) >= 0 && dataDate.compareTo(eDate) <= 0)
                 {
-                    //System.out.println(file.getName());
+                    System.out.println(file.getName());
                     fileNames.add(file.getName());
                     tempMapDatesToFiles.put(dataDate, fileNames);
                 }
