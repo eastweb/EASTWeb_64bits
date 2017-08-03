@@ -44,6 +44,7 @@ public class TRMM3B42_NewListDatesFiles extends ListDatesFiles
         // DataDate.toCompactString() returns a date in the format of yyyy-mm-dd-hh
         // get the substring of yyyy-mm-dd and remove the '-'
         String startDateStr = (sDate.toCompactString().substring(0, 10)).replaceAll("-", "");
+        String endDateStr = (eDate.toCompactString().substring(0, 10)).replaceAll("-", "");
         // System.out.println(startDateStr);
 
         String yearPattern = "(19|20)\\d\\d/";
@@ -76,7 +77,7 @@ public class TRMM3B42_NewListDatesFiles extends ListDatesFiles
                         //get rid of the last character '/'
                         int year = Integer.parseInt(matcher.group().substring(0, 4));
 
-                        if (year >= sDate.getYear())
+                        if (year >= sDate.getYear() && year <= eDate.getYear())
                         {
                             String yearFolderURL = mHostURL + String.format("%04d", year);
 
@@ -104,12 +105,9 @@ public class TRMM3B42_NewListDatesFiles extends ListDatesFiles
 
                                             // check if the month of the startDate is not starting at 1
                                             if (((year == sDate.getYear()) && (month >= sDate.getMonth()))
-                                                    || (year > sDate.getYear()))
+                                                    //|| (year > sDate.getYear()))
+                                                    || ((year == eDate.getYear()) && (month <= eDate.getMonth())))
                                             {
-                                                /*  System.out.println("inside: " + mHostURL);
-                                                System.out.println(year);
-                                                System.out.println(matcherM.group());
-                                                 */
                                                 String monthFolderURL = mHostURL + String.format("%04d/%s", year, matcherM.group());
                                                 // System.out.println("url : " + monthFolderURL);
 
@@ -132,7 +130,7 @@ public class TRMM3B42_NewListDatesFiles extends ListDatesFiles
                                                          * than the start date
                                                          */
                                                         String fileDate = matcherF.group(1);
-                                                        if (fileDate.compareTo(startDateStr) >= 0)
+                                                        if (fileDate.compareTo(startDateStr) >= 0 && fileDate.compareTo(endDateStr) <= 0)
                                                         {
                                                             ArrayList<String> fileList = new ArrayList<String>();
                                                             // add file name to the list
