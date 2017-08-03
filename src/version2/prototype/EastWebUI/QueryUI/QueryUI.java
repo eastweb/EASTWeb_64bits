@@ -541,7 +541,7 @@ public class QueryUI {
             try {
                 projectName = String.valueOf(projectListComboBox.getSelectedItem());
                 projectName = projectName.substring(0,projectName.lastIndexOf('_'));
-                javax.swing.JOptionPane.showMessageDialog(null, "QueryUI, projectName: "+projectName);
+                javax.swing.JOptionPane.showMessageDialog(frame, "QueryUI, projectName: "+projectName);
                 ewQuery.put(summary.GetID(), EASTWebResults.GetEASTWebQuery(
                         Config.getInstance().getGlobalSchema(),
                         projectName,

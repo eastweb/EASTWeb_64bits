@@ -332,14 +332,14 @@ public class AssociatePluginPage {
         String tile = JOptionPane.showInputDialog(frame,"Enter Modis Tile", null);
 
         if(tile.toUpperCase().charAt(0) != 'H' || tile.toUpperCase().charAt(3) != 'V' || tile.length() > 6) {
-            JOptionPane.showMessageDialog(null, "Modis format: hddvdd  d=> digit");
+            JOptionPane.showMessageDialog(frame, "Modis format: hddvdd  d=> digit");
             return;
         } else{
             int horizontal = Integer.parseInt(String.format("%s%s", tile.toUpperCase().charAt(1), tile.toUpperCase().charAt(2)));
             int vertical = Integer.parseInt(String.format("%c%c", tile.toUpperCase().charAt(4), tile.toUpperCase().charAt(5)));
 
             if(horizontal < ModisTile.HORZ_MIN || horizontal > ModisTile.HORZ_MAX || vertical < ModisTile.VERT_MIN || vertical > ModisTile.VERT_MAX){
-                JOptionPane.showMessageDialog(null, String.format("Horizontal has be to within %d-%d and Vertical has to be within %d-%d",
+                JOptionPane.showMessageDialog(frame, String.format("Horizontal has be to within %d-%d and Vertical has to be within %d-%d",
                         ModisTile.HORZ_MIN , ModisTile.HORZ_MAX , ModisTile.VERT_MIN, ModisTile.VERT_MAX ));
                 return;
             }
@@ -348,7 +348,7 @@ public class AssociatePluginPage {
 
         for(Object item:modisListModel.toArray()){
             if(tile.contentEquals(item.toString())) {
-                JOptionPane.showMessageDialog(null, "Modis tile already exist");
+                JOptionPane.showMessageDialog(frame, "Modis tile already exist");
                 return;
             }
         }

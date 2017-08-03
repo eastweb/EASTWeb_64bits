@@ -711,7 +711,6 @@ public class Scheduler {
             projectName = fullPath.replace('\\', '/');
         }
         projectName = projectName.substring(projectName.lastIndexOf('/')+1);
-        javax.swing.JOptionPane.showMessageDialog(null, "DatabaseCache, project name: "+projectName);
         DatabaseCache downloadCache = new DatabaseCache(this, configInstance.getGlobalSchema(), projectName, pluginInfo, pluginMetaData, data.projectInfoFile.GetWorkingDir(),
                 ProcessName.DOWNLOAD);
         DatabaseCache processorCache = new DatabaseCache(this, configInstance.getGlobalSchema(), projectName, pluginInfo, pluginMetaData, data.projectInfoFile.GetWorkingDir(),
