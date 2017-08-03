@@ -60,12 +60,13 @@ public class NldasForcingListDatesFiles extends ListDatesFiles {
                     continue;
                 }
 
-                if(Integer.parseInt(yearDir.getName()) >= sDate.getYear())
+                if(Integer.parseInt(yearDir.getName()) >= sDate.getYear() && Integer.parseInt(yearDir.getName()) <= eDate.getYear())
                 {
                     for(FTPFile dayOfYearDir : ftpClient.listDirectories(mRootDir + yearDir.getName() + "/"))
                     {
-                        // Continue if the day of year is less than the start date
-                        if(Integer.parseInt(yearDir.getName()) ==  sDate.getYear() && Integer.parseInt(dayOfYearDir.getName()) < sDate.getDayOfYear()) {
+                        // Continue if the day of year is less than the start date or greater than the end date
+                        if((Integer.parseInt(yearDir.getName()) ==  sDate.getYear() && Integer.parseInt(dayOfYearDir.getName()) < sDate.getDayOfYear())
+                                ||(Integer.parseInt(yearDir.getName()) == eDate.getYear() && Integer.parseInt(dayOfYearDir.getName()) > eDate.getDayOfYear())){
                             continue;
                         }
 
@@ -85,6 +86,13 @@ public class NldasForcingListDatesFiles extends ListDatesFiles {
                             {
                                 int startIndex = hourlyFile.getName().indexOf(".002.grb") - 4;
                                 if(Integer.parseInt(hourlyFile.getName().substring(startIndex, (startIndex+2))) >= sDate.getHour()) {
+                                    files.add(hourlyFile.getName());
+                                }
+                            }
+                            else if(Integer.parseInt(yearDir.getName()) == eDate.getYear() && Integer.parseInt(dayOfYearDir.getName()) == eDate.getDayOfYear())
+                            {
+                                int startIndex = hourlyFile.getName().indexOf(".002.grb") - 4;
+                                if(Integer.parseInt(hourlyFile.getName().substring(startIndex, (startIndex+2))) <= eDate.getHour()) {
                                     files.add(hourlyFile.getName());
                                 }
                             }
@@ -263,7 +271,7 @@ public class NldasForcingListDatesFiles extends ListDatesFiles {
                     {
                         int year = Integer.parseInt(matcher.group().substring(0, 4));
 
-                        if(year >= sDate.getYear())
+                        if(year >= sDate.getYear() && year <= eDate.getYear())
                         {
                             String yearDir = mHostURL + String.format("%04d", year);
 
