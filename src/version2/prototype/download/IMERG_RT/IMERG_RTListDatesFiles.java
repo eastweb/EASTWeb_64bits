@@ -138,7 +138,7 @@ public class IMERG_RTListDatesFiles extends ListDatesFiles{
             if (file.isFile() &&
                     Pattern.compile(fileNamePatternStr).matcher(file.getName()).matches())
             {
-                //System.out.println(file.getName());
+                System.out.println(file.getName());
                 //fileNames.add(file.getName());
 
                 String[] str = file.getName().split("[.]");
@@ -151,7 +151,7 @@ public class IMERG_RTListDatesFiles extends ListDatesFiles{
                 //if (dataDate.compareTo(sDate) >= 0)
                 if(dataDate.compareTo(sDate) >= 0 && dataDate.compareTo(eDate) <= 0)
                 {
-                    System.out.println(file.getName());
+                    //System.out.println(file.getName());
                     fileNames.add(file.getName());
                     tempMapDatesToFiles.put(dataDate, fileNames);
                 }
