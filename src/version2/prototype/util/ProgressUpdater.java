@@ -96,14 +96,14 @@ public class ProgressUpdater {
      * @return double  - progress percentage of the download process in relation to the local downloader downloading the files named by the given dataName and for the specified pluginName
      * @throws SQLException
      */
-    public double GetCurrentDownloadProgress(String dataName, String pluginName, LocalDate startDate, LocalDate endDate, ArrayList<String> modisTileNames, Statement stmt) throws SQLException
+    public double GetCurrentDownloadProgress(String dataName, String pluginName, LocalDate startDate, ArrayList<String> modisTileNames, Statement stmt) throws SQLException
     {
         double progress = 0;
         String mSchemaName = Schemas.getSchemaName(projectMetaData.GetParentProjectName(), pluginName);
         PluginMetaData pluginMetaData = pluginMetaDataCollection.pluginMetaDataMap.get(pluginName);
-        int currentCount = calculateDownloadCurrentCount(mSchemaName, dataName, stmt, startDate, endDate);
+        int currentCount = calculateDownloadCurrentCount(mSchemaName, dataName, stmt, projectMetaData.GetStartDate(), projectMetaData.GetEndDate());
         int expectedCount = getStoredDownloadExpectedTotalOutput(projectMetaData.GetParentProjectName(), pluginName, dataName, stmt);
-        int maxExpectedCount = calculateMaxDownloadExpectedCount(pluginMetaData, startDate, endDate, modisTileNames);
+        int maxExpectedCount = calculateMaxDownloadExpectedCount(pluginMetaData, projectMetaData.GetStartDate(), projectMetaData.GetEndDate(), modisTileNames);
 
         if(expectedCount > 0 && currentCount > 0)
         {
@@ -362,6 +362,9 @@ public class ProgressUpdater {
         String filter = "";
         int lastMonth, month;
         boolean where = true;
+        if(startDate.getYear()-endDate.getYear() > 0) {
+            return filter;
+        }
         for(int i=startDate.getYear(); i <= endDate.getYear();i++){
             if(startDate.getYear()==endDate.getYear()){
                 month = startDate.getMonthValue();
