@@ -481,7 +481,16 @@ public class MainWindow {
         ProjectInfoFile project = ProjectInfoCollection.GetProject(Config.getInstance(), selectedProject);
         ArrayList<ProjectInfoFile> subprojects = ProjectInfoCollection.GetAllSubProjectsFiles(Config.getInstance(), project.GetProjectName());
         try {
-            if(subprojects.size()>0){
+            if(subprojects.size() > 0){
+                //                runningProjects.add(project.GetProjectName());
+                //                defaultTableModel.addRow(new Object[] {
+                //                        String.valueOf(projectList.getSelectedItem()),
+                //                        chckbxIntermidiateFiles.isSelected(),
+                //                        String.valueOf(projectList.getSelectedItem()),
+                //                        String.valueOf(projectList.getSelectedItem()),
+                //                        String.valueOf(projectList.getSelectedItem())});
+                //                queueOfProjects.add(project);
+                //                queueOfProjectsStoreFiles.add(!chckbxIntermidiateFiles.isSelected());
                 for(ProjectInfoFile p : subprojects){
                     //SchedulerData data = new SchedulerData(project, !chckbxIntermidiateFiles.isSelected());
                     //                    EASTWebManager.LoadNewScheduler(new SchedulerData(p, !chckbxIntermidiateFiles.isSelected()), false);
@@ -711,15 +720,32 @@ public class MainWindow {
             return button;
         }
 
-        private int getIndexOfProject(
-                ArrayList<ProjectInfoFile> queueOfProjects,
-                String projectName) {
+        private int getIndexOfProject(ArrayList<ProjectInfoFile> queueOfProjects,String projectName) {
             for(int i=0; i < queueOfProjects.size();i++){
                 if(queueOfProjects.get(i).GetProjectName().equals(projectName)){
                     return i;
                 }
             }
             return -1;
+        }
+
+        private int getIndexOfSubProject(ArrayList<ProjectInfoFile> queueOfProjects,String projectName) {
+            for(int i=0; i < queueOfProjects.size();i++){
+                if(queueOfProjects.get(i).GetProjectName().equals(projectName)){
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        private int getNumberOfProjects(ArrayList<ProjectInfoFile> queueOfProjects,String projectName) {
+            int count = 0;
+            for(int i=0; i < queueOfProjects.size();i++){
+                if(queueOfProjects.get(i).GetProjectName().contains(projectName+"_SUB")){
+                    count++;
+                }
+            }
+            return count;
         }
 
         @Override
