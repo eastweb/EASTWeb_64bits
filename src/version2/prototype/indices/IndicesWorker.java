@@ -50,7 +50,6 @@ import version2.prototype.util.Schemas;
  *
  */
 public class IndicesWorker extends ProcessWorker{
-
     /**
      * An implementation of ProcessWorker that handles the indexing of a list of raster files after being handled by the Processor framework. Output used by the
      * Summary framework. Meant to be ran on its own thread.
@@ -67,6 +66,12 @@ public class IndicesWorker extends ProcessWorker{
             PluginMetaData pluginMetaData, ArrayList<DataFileMetaData> cachedFiles, DatabaseCache outputCache)
     {
         super(configInstance, "IndicesWorker", process, projectInfoFile, pluginInfo, pluginMetaData, cachedFiles, outputCache);
+    }
+
+    public IndicesWorker(Config configInstance, Process process,
+            ProjectInfoFile projectInfoFile, ProjectInfoPlugin pluginInfo,
+            PluginMetaData pluginMetaData) {
+        super(configInstance, "IndicesWorker", process, projectInfoFile, pluginInfo, pluginMetaData, null, null);
     }
 
     @Override
@@ -229,23 +234,23 @@ public class IndicesWorker extends ProcessWorker{
     public boolean verifyResults() {
         String url = "jdbc:postgresql://localhost:" + configInstance.getPort() + "/" + configInstance.getDatabaseName();
         Connection con = null;
-        boolean allGood = true;
+        boolean allGood = false;
         try {
             con = DriverManager.getConnection(url, configInstance.getDatabaseUsername(), configInstance.getDatabasePassword());
 
             if(pluginMetaData.ExtraIndices)
             {
-                if(pluginInfo.GetName() == "NldasForcing")
+                if(pluginInfo.GetName().equals("NldasForcing"))
                 {
-                    NldasForcingExtraIndices.getCumulative(con, projectInfoFile.GetWorkingDir() + "\\projects", configInstance.getGlobalSchema(), Schemas.getSchemaName(projectInfoFile.GetProjectName(), pluginInfo.GetName()),
+                    allGood = NldasForcingExtraIndices.getCumulative(con, projectInfoFile.GetWorkingDir() + "\\projects", configInstance.getGlobalSchema(), Schemas.getSchemaName(projectInfoFile.GetProjectName(), pluginInfo.GetName()),
                             projectInfoFile.GetProjectName(), projectInfoFile.GetStartDate(), pluginMetaData.DaysPerInputData, projectInfoFile.GetFreezingDate(), projectInfoFile.GetHeatingDate());
                 }
-                allGood = false;
             }
+
             con.close();
 
         } catch (SQLException|NumberFormatException|ClassNotFoundException|FileNotFoundException e) {
-            ErrorLog.add(process, "Problem identifying missing summaries", e);
+            ErrorLog.add(process, "Problem identifying cumulative indices", e);
 
             if(con != null) {
                 try {

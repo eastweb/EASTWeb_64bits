@@ -3,6 +3,7 @@ package version2.prototype.indices.NldasForcing;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -63,11 +64,13 @@ public class NldasForcingExtraIndices {
         con.close();
     }
 
-    public static void getCumulative(Connection con, final String rootDir, final String globalSchema, final String projectSchema, final String projectName,
+    public static boolean getCumulative(Connection con, final String rootDir, final String globalSchema, final String projectSchema, final String projectName,
             final LocalDate startDate, final Integer outDayCount, final LocalDate freezing, final LocalDate heating) throws NumberFormatException, ClassNotFoundException, SQLException, FileNotFoundException {
 
         final Integer inDayCount = outDayCount;
         final String projectRoot;
+        String lastDate = "";
+        boolean cumulative = true;
         fdate = MonthDay.of(freezing.getMonth(), freezing.getDayOfMonth());
         hdate = MonthDay.of(heating.getMonth(), heating.getDayOfMonth());
 
@@ -82,6 +85,22 @@ public class NldasForcingExtraIndices {
                 return new File(dir, name).isDirectory();
             }
         });
+
+        System.out.println();
+        System.out.println("ROOT DIR: " + rootDir);
+        System.out.println();
+
+        File prev = new File(projectRoot);
+        for(File file : prev.listFiles())
+        {
+            if(file.getName().contains(".txt"))
+            {
+                lastDate = file.getName().replace(".txt", "");
+                File previous = new File(file.getPath());
+                previous.delete();
+                break;
+            }
+        }
 
         System.out.println("Creating Cumulative Indices...");
 
@@ -118,7 +137,14 @@ public class NldasForcingExtraIndices {
                     File d = new File(yearRoot + day + "\\");
                     for(File file : d.listFiles())
                     {
-                        if(file.getName().contains("NldasForcingOverwinteringIndex")) {
+                        if(file.getName().contains("Cumulative"))
+                        {
+                            File done = new File(file.getPath());
+                            done.delete();
+                            indexDates.getDates().clear();
+                            break;
+                        }
+                        else if(file.getName().contains("NldasForcingOverwinteringIndex")) {
                             indexDates.addDate(plugin, file.getName().substring(0, file.getName().lastIndexOf(".")), Integer.parseInt(year), Integer.parseInt(day));
                         }
                         else if(file.getName().contains("NldasForcingLymeDiseaseIndex"))
@@ -145,94 +171,103 @@ public class NldasForcingExtraIndices {
         }
 
 
-        stmt = con.createStatement();
-        ResultSet rs = null;
 
-        ArrayList<Integer> dateGroupIDs;
-        for(IndicesDate aDate : indexDates.getDates())
+        if(indexDates.getDates().isEmpty())
         {
-            System.out.println("Handling " + aDate.plugin + "." + aDate.index + "." + aDate.year + "." + aDate.day);
-            dateGroupIDs = new ArrayList<Integer>();
+            cumulative = false;
+        }
+        else
+        {
+            stmt = con.createStatement();
+            ResultSet rs = null;
 
-            // Get IndexID
-            Integer indexID = Schemas.getIndexID(globalSchema, aDate.index, stmt);
-            if(indexID == null || indexID == -1)
+            ArrayList<Integer> dateGroupIDs;
+            for(IndicesDate aDate : indexDates.getDates())
             {
-                System.err.println("ERROR: Failed to get IndexID of '" + aDate.index + "'.");
-                if(rs != null) {
+                System.out.println("Handling " + aDate.plugin + "." + aDate.index + "." + aDate.year + "." + aDate.day);
+                dateGroupIDs = new ArrayList<Integer>();
+
+                // Get IndexID
+                Integer indexID = Schemas.getIndexID(globalSchema, aDate.index, stmt);
+                if(indexID == null || indexID == -1)
+                {
+                    System.err.println("ERROR: Failed to get IndexID of '" + aDate.index + "'.");
+                    if(rs != null) {
+                        rs.close();
+                    }
+                    stmt.close();
+                    con.close();
+                    return false;
+                }
+
+                // Get DateGroupIDs
+                StringBuilder query = new StringBuilder("select * from \"EASTWeb\".\"DateGroup\" where \"Year\"=" + aDate.year + " and (\"DayOfYear\"=" + aDate.day);
+                if(outDayCount > 1)
+                {
+                    for(int i=inDayCount; i < outDayCount && (aDate.day+i < 367); i += inDayCount) {
+                        query.append(" or \"DayOfYear\"=" + (aDate.day+i));
+                    }
+                }
+                query.append(") ");
+                rs = stmt.executeQuery(query.toString());
+                if(rs != null)
+                {
+                    while(rs.next())
+                    {
+                        dateGroupIDs.add(rs.getInt("DateGroupID"));
+                    }
                     rs.close();
                 }
-                stmt.close();
-                con.close();
-                return;
-            }
 
-            // Get DateGroupIDs
-            StringBuilder query = new StringBuilder("select * from \"EASTWeb\".\"DateGroup\" where \"Year\"=" + aDate.year + " and (\"DayOfYear\"=" + aDate.day);
-            if(outDayCount > 1)
-            {
-                for(int i=inDayCount; i < outDayCount && (aDate.day+i < 367); i += inDayCount) {
-                    query.append(" or \"DayOfYear\"=" + (aDate.day+i));
+                // If no DateGroupIDs retrieved then assume no problems to correct for this date and skip to next
+                if(dateGroupIDs.size() == 0) {
+                    continue;
                 }
-            }
-            query.append(") ");
-            rs = stmt.executeQuery(query.toString());
-            if(rs != null)
-            {
-                while(rs.next())
+
+
+
+                // Make sure there are no rows for the current dates in the ZonalStat table
+                query = new StringBuilder("delete from " + projectSchema + ".\"ZonalStat\" where \"IndexID\"=" + indexID
+                        + " and (\"DateGroupID\"=" + dateGroupIDs.get(0));
+                for(int i=1; i < dateGroupIDs.size(); i++)
                 {
-                    dateGroupIDs.add(rs.getInt("DateGroupID"));
+                    query.append(" or \"DateGroupID\"="+dateGroupIDs.get(i));
                 }
-                rs.close();
+                query.append(")");
+                stmt.executeUpdate(query.toString());
+
+                // Get current values in IndicesCache table
+                query = new StringBuilder("select \"Retrieved\", \"Processed\" from \"" + projectSchema + "\".\"IndicesCache\" "
+                        + "where (\"DateGroupID\"=" + dateGroupIDs.get(0));
+                for(int i=1; i < dateGroupIDs.size(); i++)
+                {
+                    query.append(" or \"DateGroupID\"="+dateGroupIDs.get(i));
+                }
+                query.append(") and \"IndexID\"=" + indexID);
+                rs = stmt.executeQuery(query.toString());
+
+                // Correct IndicesCache table
+                query = new StringBuilder("update \"" + projectSchema + "\".\"IndicesCache\" set \"Retrieved\"=false, \"Processed\"=false where \"IndexID\"=" + indexID + " and (\"DateGroupID\"=" + dateGroupIDs.get(0));
+                for(int i=1; i < dateGroupIDs.size(); i++) {
+                    query.append(" or \"DateGroupID\"=" + dateGroupIDs.get(i));
+                }
+                query.append(")");
+                stmt.execute(query.toString());
+
+                GetCumulativeDays(aDate.plugin, aDate.index, projectRoot, aDate.year, aDate.day);
+
+                // Progress message
+                StringBuilder msg = new StringBuilder("Handled " + aDate.plugin + "." + aDate.index + "." + aDate.year + "." + aDate.day + " with DateGroupIDs: " + dateGroupIDs.get(0));
+                for(int i=1; i < dateGroupIDs.size(); i++) {
+                    msg.append(", " + dateGroupIDs.get(i));
+                }
+                System.out.println(msg.toString());
             }
-
-            // If no DateGroupIDs retrieved then assume no problems to correct for this date and skip to next
-            if(dateGroupIDs.size() == 0) {
-                continue;
-            }
-
-
-
-            // Make sure there are no rows for the current dates in the ZonalStat table
-            query = new StringBuilder("delete from " + projectSchema + ".\"ZonalStat\" where \"IndexID\"=" + indexID
-                    + " and (\"DateGroupID\"=" + dateGroupIDs.get(0));
-            for(int i=1; i < dateGroupIDs.size(); i++)
-            {
-                query.append(" or \"DateGroupID\"="+dateGroupIDs.get(i));
-            }
-            query.append(")");
-            stmt.executeUpdate(query.toString());
-
-            // Get current values in IndicesCache table
-            query = new StringBuilder("select \"Retrieved\", \"Processed\" from \"" + projectSchema + "\".\"IndicesCache\" "
-                    + "where (\"DateGroupID\"=" + dateGroupIDs.get(0));
-            for(int i=1; i < dateGroupIDs.size(); i++)
-            {
-                query.append(" or \"DateGroupID\"="+dateGroupIDs.get(i));
-            }
-            query.append(") and \"IndexID\"=" + indexID);
-            rs = stmt.executeQuery(query.toString());
-
-            // Correct IndicesCache table
-            query = new StringBuilder("update \"" + projectSchema + "\".\"IndicesCache\" set \"Retrieved\"=false, \"Processed\"=false where \"IndexID\"=" + indexID + " and (\"DateGroupID\"=" + dateGroupIDs.get(0));
-            for(int i=1; i < dateGroupIDs.size(); i++) {
-                query.append(" or \"DateGroupID\"=" + dateGroupIDs.get(i));
-            }
-            query.append(")");
-            stmt.execute(query.toString());
-
-            GetCumulativeDays(aDate.plugin, aDate.index, projectRoot, aDate.year, aDate.day);
-
-            // Progress message
-            StringBuilder msg = new StringBuilder("Handled " + aDate.plugin + "." + aDate.index + "." + aDate.year + "." + aDate.day + " with DateGroupIDs: " + dateGroupIDs.get(0));
-            for(int i=1; i < dateGroupIDs.size(); i++) {
-                msg.append(", " + dateGroupIDs.get(i));
-            }
-            System.out.println(msg.toString());
+            stmt.close();
         }
-        stmt.close();
 
         System.out.println("Finished creating cumulative..");
+        return cumulative;
     }
 
     public class IndicesDates
@@ -273,6 +308,12 @@ public class NldasForcingExtraIndices {
 
         String inputFolder = projectRoot + plugin + "\\Indices\\Output\\" + year + "\\" + String.format("%03d", day);
         File input = new File (inputFolder + "\\" + prefix + ".tif");
+        File done = new File(inputFolder + "\\Cumulative.txt");
+        try {
+            done.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Integer noDataValue = 9999;
 
         System.out.println(prefix);
@@ -283,7 +324,6 @@ public class NldasForcingExtraIndices {
             if(!(new File(inputFolder).exists())){
                 return;
             }
-
 
             Dataset inputDS = gdal.Open(input.getPath());
 
@@ -414,12 +454,16 @@ public class NldasForcingExtraIndices {
         }
 
         if(yesterdayFile != null) {
-            Dataset ds = gdal.Open(yesterdayFile.getPath());
-            int rasterX = ds.GetRasterXSize();
-            int rasterY = ds.GetRasterYSize();
+            GdalUtils.register();
+            synchronized (GdalUtils.lockObject) {
+                Dataset ds = gdal.Open(yesterdayFile.getPath());
+                int rasterX = ds.GetRasterXSize();
+                int rasterY = ds.GetRasterYSize();
 
-            cumulative = new double[rasterX * rasterY];
-            ds.GetRasterBand(1).ReadRaster(0, 0, rasterX, rasterY, cumulative);
+                cumulative = new double[rasterX * rasterY];
+                ds.GetRasterBand(1).ReadRaster(0, 0, rasterX, rasterY, cumulative);
+                ds.delete();
+            }
         }
 
         return cumulative;

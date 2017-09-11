@@ -1,5 +1,6 @@
 package version2.prototype;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.sql.SQLException;
@@ -24,7 +25,15 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.PatternSyntaxException;
 
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.DOMException;
+import org.xml.sax.SAXException;
+
+import version2.prototype.ProjectInfoMetaData.ProjectInfoCollection;
+import version2.prototype.ProjectInfoMetaData.ProjectInfoFile;
 import version2.prototype.ProjectInfoMetaData.ProjectInfoPlugin;
 import version2.prototype.Scheduler.Scheduler;
 import version2.prototype.Scheduler.SchedulerData;
@@ -85,6 +94,26 @@ public class EASTWebManager implements Runnable, EASTWebManagerI{
     protected final ScheduledThreadPoolExecutor globalDLExecutor;
     protected HashMap<Integer, ScheduledFuture<?>> globalDLFutures;
     protected final ExecutorService processWorkerExecutor;
+
+    public static void main(String[] args) throws ClassNotFoundException, SQLException, FileNotFoundException, InterruptedException {
+        if(args.length != 1) {
+            System.out.println("Incorrect number of arguments included. Please enter one project name as argument.");
+            return;
+        }
+
+        String selectedProject = args[0];
+        ProjectInfoFile project = ProjectInfoCollection.GetProject(Config.getInstance(), selectedProject);
+
+        try {
+            SchedulerData data = new SchedulerData(project);
+            EASTWebManager.LoadNewScheduler(data, false);
+            EASTWebManager.StartExistingScheduler(selectedProject, false);
+        } catch (PatternSyntaxException | DOMException | ParserConfigurationException | SAXException | IOException e) {
+            ErrorLog.add(Config.getInstance(), "MainWindow.FileMenu problem with creating new file from Desktop.", e);
+        } catch (Exception e) {
+            ErrorLog.add(Config.getInstance(), "MainWindow.FileMenu problem with creating new file from Desktop.", e);
+        }
+    }
 
     /**
      *  If first time calling, starts up the EASTWebManager background processing thread to handle passively processing logged requests and updating
@@ -921,16 +950,16 @@ public class EASTWebManager implements Runnable, EASTWebManagerI{
                     }
                 }
 
-                if(schedulerStatesChanged && !Thread.currentThread().isInterrupted())
-                {
-                    System.out.println("Running GUI Update Handlers");
-                    synchronized (schedulerStatesChanged)
-                    {
-                        runGUIUpdateHandlers();
-                        schedulerStatesChanged = false;
-                    }
-                    System.out.println("Done with GUI Update Handlers");
-                }
+                //                if(schedulerStatesChanged && !Thread.currentThread().isInterrupted())
+                //                {
+                //                    System.out.println("Running GUI Update Handlers");
+                //                    synchronized (schedulerStatesChanged)
+                //                    {
+                //                        runGUIUpdateHandlers();
+                //                        schedulerStatesChanged = false;
+                //                    }
+                //                    System.out.println("Done with GUI Update Handlers");
+                //                }
             }
         }
         catch (ConcurrentModificationException e) {
