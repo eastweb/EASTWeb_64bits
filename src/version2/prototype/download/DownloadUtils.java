@@ -20,6 +20,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.net.ftp.FTPClient;
 
+import com.amazonaws.samples.DeployCode.S3;
+
 public final class DownloadUtils {
 
     private DownloadUtils() {
@@ -30,6 +32,7 @@ public final class DownloadUtils {
         //        System.out.println(remoteFilename);
         final OutputStream outStream = new FileOutputStream(localFile);
 
+        WriteDownloadFilesToS3(localFile.getName(),localFile.getPath());
         try {
             if (!ftp.retrieveFile(remoteFilename, outStream)) {
                 throw new IOException("Download failed");
@@ -87,6 +90,7 @@ public final class DownloadUtils {
         try {
             downloadToStream(connection, outStream);
             outStream.close();
+            WriteDownloadFilesToS3(localFile.getName(),localFile.getPath());
         } catch (IOException e) {
             IOUtils.closeQuietly(outStream);
             FileUtils.deleteQuietly(localFile);
@@ -100,6 +104,7 @@ public final class DownloadUtils {
         try {
             downloadToStream(url, outStream);
             outStream.close();
+            WriteDownloadFilesToS3(localFile.getName(),localFile.getPath());
         } catch (IOException e) {
             IOUtils.closeQuietly(outStream);
             FileUtils.deleteQuietly(localFile);
@@ -189,9 +194,19 @@ public final class DownloadUtils {
                 inS.close();
                 fout.close();
             }
+            WriteDownloadFilesToS3(localFile.getName(),localFile.getPath());
         }else {
             throw new IOException("HTTP request returned code " + code);
         }
+    }
+
+    public static void WriteDownloadFilesToS3(String FileName, String Filepath) {
+        /* S3 s3 = new S3();
+        String folderName = "EASTWeb";
+        s3.init();
+        //S3.createFolder(folderName);
+        S3.WriteDownloadFilesToFolder(folderName, Filepath, FileName);
+        System.out.println("Write Downloaded File to S3 : "+FileName);*/
     }
 
 }

@@ -109,7 +109,7 @@ public class NldasForcingGlobalDownloader extends GlobalDownloader {
         }
         try {
             stmt.close();
-        } catch (SQLException e) { /* do nothing */ }
+        } catch (SQLException e) {/* do nothing */ }
         con.close();
     }
 }

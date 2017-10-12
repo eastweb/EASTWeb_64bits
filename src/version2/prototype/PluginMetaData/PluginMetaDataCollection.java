@@ -130,11 +130,11 @@ public class PluginMetaDataCollection {
      * @throws IOException
      */
     public static PluginMetaData CreatePluginMetaData(String Title, Integer DaysPerInputData, Integer NoDataValue, Integer Resolution, Boolean CompositesContinueIntoNextYear, Boolean ExtraIndices, ArrayList<String> ExtraDownloadFiles, DownloadMetaData Download,
-            ProcessorMetaData Processor, IndicesMetaData Indices, SummaryMetaData Summary, ArrayList<String> QualityControlMetaData, ExtraInfoData ExtraInfo) throws ParserConfigurationException,
+            ProcessorMetaData Processor, IndicesMetaData Indices, SummaryMetaData Summary, ArrayList<String> QualityControlMetaData, ExtraInfoData ExtraInfo, Boolean IsAccumulative) throws ParserConfigurationException,
     SAXException, IOException
     {
         PluginMetaDataCollection collection = new PluginMetaDataCollection();
-        return collection.new PluginMetaData(Title, DaysPerInputData, NoDataValue, Resolution, CompositesContinueIntoNextYear, ExtraIndices, ExtraDownloadFiles, Download, Processor, Indices, Summary, QualityControlMetaData, ExtraInfo);
+        return collection.new PluginMetaData(Title, DaysPerInputData, NoDataValue, Resolution, CompositesContinueIntoNextYear, ExtraIndices, ExtraDownloadFiles, Download, Processor, Indices, Summary, QualityControlMetaData, ExtraInfo,IsAccumulative);
     }
 
     private PluginMetaDataCollection(File[] xmlFiles) throws ParserConfigurationException, SAXException, IOException, DOMException, PatternSyntaxException
@@ -150,6 +150,8 @@ public class PluginMetaDataCollection {
     private Map<String, PluginMetaData> createMap(File[] xmlFiles) throws ParserConfigurationException, SAXException, IOException, DOMException, PatternSyntaxException
     {
         Map<String,PluginMetaData> myMap=new HashMap<String,PluginMetaData>();
+        String AccumulativeIndex = "";
+        Boolean IsAccumulative = false;
         for(File fXmlFile: xmlFiles){
             // Setup Document
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -185,7 +187,6 @@ public class PluginMetaDataCollection {
             {
                 ExtraDownloadFiles.add( ((Element) extraDownloadFilesNodeList.item(0)).getElementsByTagName("Name").item(i).getTextContent());
             }
-
             // Get process specific metadata
             DownloadMetaData Download = new DownloadMetaData(Title, QualityControlMetaData, DaysPerInputData, Resolution, CompositesContinueIntoNextYear, ExtraIndices, ExtraDownloadFiles, doc.getElementsByTagName("Download"));
             ProcessorMetaData Processor = new ProcessorMetaData(Title, QualityControlMetaData, DaysPerInputData, Resolution, CompositesContinueIntoNextYear, ExtraIndices, ExtraDownloadFiles, doc.getElementsByTagName("Processor"));
@@ -195,12 +196,39 @@ public class PluginMetaDataCollection {
             // Extra Info
             ExtraInfoData ExtraInfo = new ExtraInfoData(Title, QualityControlMetaData, DaysPerInputData, Resolution, CompositesContinueIntoNextYear, ExtraIndices, ExtraDownloadFiles, doc.getElementsByTagName("ExtraInfo"));
 
+            //
+            //Boolean IsAccumulative = false;
+
+            if (ExtraIndices == true){
+                NodeList in = doc.getElementsByTagName("Indices");
+                NodeList Indexname = ((Element)in.item(0)).getElementsByTagName("ClassName");
+                int len = Indexname.getLength();
+                for(int i = 0; i < len; i++) {
+                    if(((Element)Indexname.item(i)).hasAttribute("span")){
+                        //System.out.println("@@@@@@@@@@@@@@@@@@@ Has Span Attribute @@@@@@@@@@@@@@");
+                        //System.out.println("%%%%%%%%%%%%%%% it is True %%%%%%%%%%%%%%%%%%%%");
+                        //AccumulativeIndex = Indexname.item(i).getTextContent();
+                        //System.out.println(Indexname.item(i).getAttributes().getNamedItem("span").getNodeValue());
+
+                        if(Indexname.item(i).getAttributes().getNamedItem("span").getNodeValue().trim().equals("true") ){
+                            IsAccumulative = true;
+                            AccumulativeIndex = Indexname.item(i).getTextContent();
+                            //System.out.println(Indexname.item(i).getAttributes().getNamedItem("span").getNodeValue());
+                        }/* else {
+                            //AccumulativeIndex = "";
+                            IsAccumulative = false;
+                        }*/
+                    }
+                }
+            }
+
             // Setup map
             //            String pluginName = FilenameUtils.removeExtension(fXmlFile.getName()).replace("Plugin_","");
             pluginList.add(Title);
-            myMap.put(Title, new PluginMetaData(Title, DaysPerInputData, NoDataValue, Resolution, CompositesContinueIntoNextYear, ExtraIndices, ExtraDownloadFiles, Download, Processor, Indices, Summary, QualityControlMetaData, ExtraInfo));
+            myMap.put(Title, new PluginMetaData(Title, DaysPerInputData, NoDataValue, Resolution, CompositesContinueIntoNextYear, ExtraIndices, ExtraDownloadFiles, Download, Processor, Indices, Summary, QualityControlMetaData, ExtraInfo, IsAccumulative));
 
         }
+        System.out.println("**********************************"+AccumulativeIndex+"***********************"+IsAccumulative);
         return myMap;
     }
 
@@ -238,9 +266,11 @@ public class PluginMetaDataCollection {
         public final SummaryMetaData Summary;
         public final ArrayList<String> QualityControlMetaData;
         public final ExtraInfoData ExtraInfo;
+        public final Boolean IsAccumulative;
+        //public final String AccumulativeIndex;
 
         public PluginMetaData(String Title, Integer DaysPerInputData, Integer NoDataValue, Integer Resolution, Boolean CompositesContinueIntoNextYear, Boolean ExtraIndices, ArrayList<String> ExtraDownloadFiles, DownloadMetaData Download, ProcessorMetaData Processor,
-                IndicesMetaData Indices, SummaryMetaData Summary, ArrayList<String> QualityControlMetaData, ExtraInfoData ExtraInfo)
+                IndicesMetaData Indices, SummaryMetaData Summary, ArrayList<String> QualityControlMetaData, ExtraInfoData ExtraInfo, Boolean IsAccumulative)
         {
             this.Download = Download;
             this.Processor = Processor;
@@ -255,6 +285,7 @@ public class PluginMetaDataCollection {
             this.ExtraIndices = ExtraIndices;
             this.ExtraDownloadFiles = ExtraDownloadFiles;
             this.ExtraInfo = ExtraInfo;
+            this.IsAccumulative = IsAccumulative;
         }
     }
 

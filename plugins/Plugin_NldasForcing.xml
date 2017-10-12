@@ -38,21 +38,21 @@
 		<NumberOfOutput>15</NumberOfOutput>
 	</Processor>
 	<Indices>
-		<ClassName>NldasForcingHeatingDegreeDays</ClassName>
-		<ClassName>NldasForcingFreezingDegreeDays</ClassName>
-		<ClassName>NldasForcingLymeDiseaseIndex</ClassName>
-		<ClassName>NldasForcingMinAirTemperature</ClassName>
-		<ClassName>NldasForcingMeanAirTemperature</ClassName>
-		<ClassName>NldasForcingMaxAirTemperature</ClassName>
-		<ClassName>NldasForcingMeanHeatIndex</ClassName>
-		<ClassName>NldasForcingMaxHeatIndex</ClassName>
-		<ClassName>NldasForcingMeanWindspeed</ClassName>
-		<ClassName>NldasForcingMaxWindspeed</ClassName>
-		<ClassName>NldasForcingMeanHumidity</ClassName>
-		<ClassName>NldasForcingMeanRelativeHumidity</ClassName>
-		<ClassName>NldasForcingOverwinteringIndex</ClassName>
-		<ClassName>NldasForcingTotalPrecipitation</ClassName>
-		<ClassName>NldasForcingWNVAmplificationIndex</ClassName>
+		<ClassName span="false">NldasForcingHeatingDegreeDays</ClassName>
+		<ClassName span="false">NldasForcingFreezingDegreeDays</ClassName>
+		<ClassName span="false">NldasForcingLymeDiseaseIndex</ClassName>
+		<ClassName span="false">NldasForcingMinAirTemperature</ClassName>
+		<ClassName span="false">NldasForcingMeanAirTemperature</ClassName>
+		<ClassName span="false">NldasForcingMaxAirTemperature</ClassName>
+		<ClassName span="false">NldasForcingMeanHeatIndex</ClassName>
+		<ClassName span="false">NldasForcingMaxHeatIndex</ClassName>
+		<ClassName span="false">NldasForcingMeanWindspeed</ClassName>
+		<ClassName span="false">NldasForcingMaxWindspeed</ClassName>
+		<ClassName span="false">NldasForcingMeanHumidity</ClassName>
+		<ClassName span="false">NldasForcingMeanRelativeHumidity</ClassName>
+		<ClassName span="true">NldasForcingOverwinteringIndex</ClassName>
+		<ClassName span="false">NldasForcingTotalPrecipitation</ClassName>
+		<ClassName span="false">NldasForcingWNVAmplificationIndex</ClassName>
 	</Indices>
 	<Summary>
 		<Temporal>

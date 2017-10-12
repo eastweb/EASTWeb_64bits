@@ -21,6 +21,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.io.FileUtils;
 import org.xml.sax.SAXException;
 
+import com.amazonaws.samples.DeployCode.S3;
+
 import version2.prototype.Config;
 import version2.prototype.DataDate;
 import version2.prototype.ErrorLog;
@@ -79,7 +81,9 @@ public class IndicesWorker extends ProcessWorker{
         String outputFolder  =
                 FileSystem.GetProcessOutputDirectoryPath(projectInfoFile.GetFullPath(), pluginName, ProcessName.INDICES);
         Statement stmt = null;
-
+        //System.out.println(" outputFolder---------------1 "+outputFolder);
+        //outputFolder = outputFolder.replaceAll("/", "\\");
+        //System.out.println(" outputFolder---------------2 "+outputFolder);
 
         try {
             stmt = con.createStatement();
@@ -123,6 +127,7 @@ public class IndicesWorker extends ProcessWorker{
         //        ArrayList<String> indicesNames  = iMetaData.indicesNames;
         ArrayList<String> indicesNames  = pluginInfo.GetIndices();
         boolean exists;
+        //boolean IsAccumulative = false;
         for(String index : indicesNames)
         {
             exists = false;
@@ -131,6 +136,10 @@ public class IndicesWorker extends ProcessWorker{
                 if(index.equals(knownIdx)) {
                     exists = true;
                 }
+                /* System.out.println(pluginMetaData.AccumulativeIndex);
+                if (index.equals(pluginMetaData.AccumulativeIndex)){
+                    IsAccumulative = true;
+                }*/
             }
             if(!exists) {
                 ErrorLog.add(process, "Problem encountered while caching data for IndicesWorker.", new Exception("Specified index, " + index + " is not part of plugin indices list."));
@@ -190,12 +199,21 @@ public class IndicesWorker extends ProcessWorker{
                     Constructor<?> ctorIndices = clazzIndices.getConstructor(List.class, File.class, Integer.class);
 
                     String outFile = outputPath + File.separator + indices + ".tif";
-                    Object indexCalculator = ctorIndices.newInstance(Arrays.asList(inputFiles.clone()), new File(outFile), pluginMetaData.NoDataValue);
+                    File f = new File(outFile);
+                    Object indexCalculator = ctorIndices.newInstance(Arrays.asList(inputFiles.clone()),f, pluginMetaData.NoDataValue);
+
+
 
                     Method method = indexCalculator.getClass().getMethod("calculate");
                     method.invoke(indexCalculator);
 
                     output.add(new DataFileMetaData(outFile, Schemas.getDateGroupID(configInstance.getGlobalSchema(), thisDay.getLocalDate(), stmt), thisDay.getYear(), thisDay.getDayOfYear(), indices));
+
+                    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+pluginMetaData.IsAccumulative);
+                    if(pluginMetaData.IsAccumulative){
+                        WriteDownloadFilesToS3(f.getName(),f.getPath());
+                        //System.out.println("indices#################################### "+f.getName()+"#################### "+f.getPath());
+                    }
                 } catch(Exception e) {
                     ErrorLog.add(process, "Problem setting up IndexCalculator object for day " + thisDay.toString() + ". Number of input files " + inputFiles.length + ". Output file " + outputPath + File.separator + indices + ".tif.", e);
                 }
@@ -256,5 +274,14 @@ public class IndicesWorker extends ProcessWorker{
         }
 
         return allGood;
+    }
+
+    public static void WriteDownloadFilesToS3(String FileName, String Filepath) {
+        S3 s3 = new S3();
+        String folderName = "Projects";
+        s3.init();
+        //S3.createFolder(folderName);
+        S3.WriteDownloadFilesToFolder(folderName, Filepath, FileName);
+        System.out.println("Write indices file to S3 for acumulative index: "+FileName);
     }
 }

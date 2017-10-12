@@ -458,7 +458,7 @@ public class ProgressUpdater {
     {
         int currentCount = 0;
         String progressQuery = "SELECT Count(\"ProcessorCacheID\") AS \"ProcessorCacheIDCount\" FROM \"" + mSchemaName + "\".\"ProcessorCache\" ";
-        progressQuery += generateDatesFilter(startDate, endDate, "DataFilePath");
+        //progressQuery += generateDatesFilter(startDate, endDate, "DataFilePath");
         progressQuery += ";";
         ResultSet rs = stmt.executeQuery(progressQuery);
         if(rs != null)
@@ -484,7 +484,7 @@ public class ProgressUpdater {
         //        }
 
         String progressQuery = "SELECT Count(Distinct \"DateGroupID\") \"DateGroupIDCount\" FROM \"" + mSchemaName + "\".\"DownloadCache\" ";
-        progressQuery += generateDatesFilter(startDate, endDate, "DataFilePath");
+        //progressQuery += generateDatesFilter(startDate, endDate, "DataFilePath");
         progressQuery += ";";
         int daysDownloadFor = 0;
         ResultSet rs = stmt.executeQuery(progressQuery);
@@ -501,7 +501,7 @@ public class ProgressUpdater {
     protected int calculateIndicesCurrentCount(String mSchemaName, Statement stmt, LocalDate startDate, LocalDate endDate) throws SQLException
     {
         String progressQuery = "SELECT Count(\"IndicesCacheID\") AS \"IndicesCacheIDCount\" FROM \"" + mSchemaName + "\".\"IndicesCache\" ";
-        progressQuery += generateDatesFilter(startDate, endDate, "DataFilePath");
+        //progressQuery += generateDatesFilter(startDate, endDate, "DataFilePath");
         progressQuery += ";";
         int currentCount = 0;
         ResultSet rs = stmt.executeQuery(progressQuery);
@@ -530,7 +530,7 @@ public class ProgressUpdater {
         }
         int dateGroups = 0;
         String progressQuery = "SELECT Count(Distinct \"DateGroupID\") \"DateGroupIDCount\" FROM \"" + mSchemaName + "\".\"ProcessorCache\" ";
-        progressQuery += generateDatesFilter(startDate, endDate, "DataFilePath");
+        //progressQuery += generateDatesFilter(startDate, endDate, "DataFilePath");
         progressQuery += ";";
         ResultSet rs = stmt.executeQuery(progressQuery);
         if(rs != null) {
@@ -550,12 +550,12 @@ public class ProgressUpdater {
         String progressQuery = "SELECT \"IndexID\", Count(DISTINCT \"DateGroupID\") AS \"DateGroupIDCount\" " +
                 "FROM \"" + mSchemaName + "\".\"ZonalStat\" " +
                 "WHERE \"ProjectSummaryID\"=" + projectSummaryID;
-        temp = generateDatesFilter(startDate, endDate, "DataFilePath");
-        temp = temp.replaceFirst("WHERE", "AND");
-        progressQuery += temp;
+        //temp = generateDatesFilter(startDate, endDate, "FilePath");
+        //temp = temp.replaceFirst("WHERE", "AND");
+        //progressQuery += temp;
         progressQuery += " GROUP BY \"IndexID\", \"ProjectSummaryID\";";
-        javax.swing.JOptionPane.showMessageDialog(null, temp);
-        javax.swing.JOptionPane.showMessageDialog(null, progressQuery);
+        //javax.swing.JOptionPane.showMessageDialog(null, temp);
+        //javax.swing.JOptionPane.showMessageDialog(null, progressQuery);
         ResultSet rs = stmt.executeQuery(progressQuery);
         if(rs != null)
         {

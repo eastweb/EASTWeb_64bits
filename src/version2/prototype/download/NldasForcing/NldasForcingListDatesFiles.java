@@ -302,8 +302,51 @@ public class NldasForcingListDatesFiles extends ListDatesFiles {
 
                                                 List<String> availableFiles = Arrays.asList(fileFolderOutStream.toString().split("[\\r\\n]+"));
                                                 ArrayList<String> fileList = new ArrayList<String>();
+                                                ArrayList<String> hourly = new ArrayList<String>();
 
-                                                for(String paramF : availableFiles)
+                                                for (String paramF:availableFiles)
+                                                {
+
+                                                    if(paramF.contains(".grb") && !paramF.contains(".xml"))
+                                                    {
+                                                        hourly.add(paramF);
+                                                    }
+                                                }
+                                                if(hourly.size() < 24)
+                                                {
+                                                    break;
+                                                }
+
+                                                for(String paramF : hourly)
+                                                {
+
+                                                    Pattern patternF = Pattern.compile("NLDAS_FORA0125_H\\.A(\\d{4})(\\d{2})(\\d{2}).(\\d{2})00\\.002\\.grb");
+                                                    Matcher matcherF = patternF.matcher(paramF);
+
+                                                    if(matcherF.find())
+                                                    {
+                                                        String fileDate = matcherF.group(1) + matcherF.group(2) + matcherF.group(3);
+
+                                                        if(fileDate.compareTo(startDateStr) >= 0)
+                                                        {
+
+
+                                                            fileList.add(matcherF.group());
+
+                                                            String[] strings = matcherF.group().split("[.]");
+
+                                                            final int month = Integer.parseInt(strings[1].substring(5, 7));
+                                                            final int d = Integer.parseInt(strings[1].substring(7, 9));
+                                                            final int hour = Integer.parseInt(strings[2]);
+                                                            DataDate dataDate = new DataDate(hour, d, month, year);
+
+                                                            tempMapDatesToFiles.put(dataDate, fileList);
+
+
+                                                        }
+                                                    }
+
+                                                    /* for(String paramF : availableFiles)
                                                 {
                                                     if(availableFiles.size() < 94)
                                                     {
@@ -334,7 +377,7 @@ public class NldasForcingListDatesFiles extends ListDatesFiles {
 
 
                                                         }
-                                                    }
+                                                    }*/
                                                 }
                                             }
                                         }

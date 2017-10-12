@@ -2,6 +2,7 @@ package version2.prototype.Scheduler;
 
 import java.util.concurrent.Callable;
 
+import version2.prototype.EASTWebManager;
 import version2.prototype.ProcessWorker;
 import version2.prototype.ProcessWorkerReturn;
 import version2.prototype.TaskState;
@@ -13,7 +14,7 @@ import version2.prototype.util.GeneralUIEventObject;
  * @author michael.devos
  */
 public class SchedulerWorker implements Callable<ProcessWorkerReturn> {
-    private final ProcessWorker worker;
+    public final ProcessWorker worker;
     private final SchedulerStatusContainer statusContainer;
     private final Scheduler scheduler;
 
@@ -85,6 +86,11 @@ public class SchedulerWorker implements Callable<ProcessWorkerReturn> {
                 if(worker.verifyResults() == false)
                 {
                     scheduler.AttemptUpdate();
+                }
+                else{
+                    //Transform local DataBase onto RDB
+                    EASTWebManager.StopExistingScheduler(scheduler.GetID(), false);
+                    //EASTWebManager.StopAndShutdown();
                 }
             }
         }

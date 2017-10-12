@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <config>
-<ErrorLogDir>E:\eastweb</ErrorLogDir>
-<DownloadDir>E:\eastweb\data\Downloads\</DownloadDir>
+<ErrorLogDir>C:\Users\Anas\Desktop\BigDataMode\EASTWeb_64bits\eastweb</ErrorLogDir>
+<DownloadDir>C:\Users\Anas\Desktop\BigDataMode\EASTWeb_64bits\eastweb\data\Downloads</DownloadDir>
 <Database>
 <GlobalSchema>EASTWeb</GlobalSchema>
 <HostName>localhost</HostName>
 <Port>5432</Port>
-<DatabaseName>eastweb</DatabaseName>
+<DatabaseName>postgres</DatabaseName>
 <UserName>postgres</UserName>
 <PassWord>eastweb</PassWord>
 <MaxNumOfConnectionsPerInstance>50</MaxNumOfConnectionsPerInstance>

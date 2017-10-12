@@ -30,7 +30,7 @@ import version2.prototype.ZonalSummary;
     private static DateTimeFormatter datesFormatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz uuuu");
     private DocumentBuilderFactory domFactory;
     private DocumentBuilder builder;
-    private Document doc;
+    public Document doc;
 
     /**
      * XML filepath of the file that was parsed to create this ProjectInfoFile object. Null if this object is custom made instead of from a parsed xml file.
@@ -406,7 +406,13 @@ import version2.prototype.ZonalSummary;
             return workingDir.replace('\\', '/')+"/Projects/"+parentName;
         }
         else{
-            return workingDir.replace('\\', '/')+"/Projects/"+projectName;
+            /* if(workingDir.endsWith("\\") || workingDir.endsWith("/")){
+                String temp = workingDir.substring(0, workingDir.length()-1);
+                return temp.replace('\\', '/')+"/Projects/"+projectName;
+            } else {*/
+            //return workingDir.replace('\\', '/')+"/Projects/"+projectName;
+            return workingDir+"\\Projects\\"+projectName;
+            // }
         }
     }
 
