@@ -165,7 +165,8 @@ public class ZonalSummaryCalculator {
 
     private void writeTable(LayerFileData layerData, Map<Integer, Double> countMap) throws IllegalArgumentException, UnsupportedOperationException, IOException {
         // Write the table
-        String directory = mTableFile.getCanonicalPath().substring(0, mTableFile.getCanonicalPath().lastIndexOf("\\"));
+        //String directory = mTableFile.getCanonicalPath().substring(0, mTableFile.getCanonicalPath().lastIndexOf("\\"));
+        String directory = mTableFile.getCanonicalPath().substring(0, mTableFile.getCanonicalPath().lastIndexOf(File.separator));
         new File(directory).mkdirs();
         PrintWriter writer = new PrintWriter(mTableFile);
 
@@ -204,7 +205,7 @@ public class ZonalSummaryCalculator {
 
     private void uploadResultsToDb(File mTableFile, LayerFileData layerData, Map<Integer, Double> countMap, String areaCodeField, String areaNameField, String indexNm, ProjectInfoSummary summary,
             TemporalSummaryRasterFileStore fileStore, SummariesCollection summariesCollection, int year, int day, Process process) throws IllegalArgumentException, UnsupportedOperationException,
-            IOException, ClassNotFoundException, ParserConfigurationException, SAXException, SQLException {
+    IOException, ClassNotFoundException, ParserConfigurationException, SAXException, SQLException {
         Statement stmt = con.createStatement();
         ArrayList<SummaryResult> newResults = new ArrayList<SummaryResult>();
         ArrayList<SummaryNameResultPair> results = summariesCollection.getResults();

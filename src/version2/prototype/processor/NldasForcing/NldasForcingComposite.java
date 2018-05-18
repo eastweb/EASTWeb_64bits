@@ -84,7 +84,8 @@ public class NldasForcingComposite extends Composite
 
                     for(String prefix : prefixList)
                     {
-                        File temp = new File(outputFolder + "\\" + prefix + ".tif");
+                        //File temp = new File(outputFolder + "\\" + prefix + ".tif");
+                        File temp = new File(outputFolder + File.separator + prefix + ".tif");
                         try {
                             temp.createNewFile();
                         } catch (IOException e) {

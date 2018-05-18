@@ -51,7 +51,8 @@ public class PluginMetaDataCollection {
     public static PluginMetaDataCollection getInstance() throws PatternSyntaxException, DOMException, ParserConfigurationException, SAXException, IOException
     {
         if(instance == null) {
-            File fileDir = new File(System.getProperty("user.dir") + "\\plugins\\");
+            //File fileDir = new File(System.getProperty("user.dir") + "\\plugins\\");
+            File fileDir = new File(System.getProperty("user.dir") + File.separator +"plugins" + File.separator);
             instance = new PluginMetaDataCollection(getXMLFiles(fileDir));
         }
         return instance;

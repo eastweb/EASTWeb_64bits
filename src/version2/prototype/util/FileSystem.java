@@ -32,7 +32,8 @@ public final class FileSystem {
     {
         String path = data.GetWorkingDir();
         if(!path.endsWith("/") && path.endsWith("\\")) {
-            path += "\\";
+            //path += "\\";
+            path += File.separator;
         }
         new File(path).mkdirs();
         return path;
@@ -97,7 +98,8 @@ public final class FileSystem {
      */
     public static String GetProjectDirectoryPath(String workingDir, String projectName)
     {
-        String path = CheckDirPath(CheckDirPath(workingDir) + "Projects\\" + StandardizeName(projectName) + "\\");
+        //String path = CheckDirPath(CheckDirPath(workingDir) + "Projects\\" + StandardizeName(projectName) + "\\");
+        String path = CheckDirPath(CheckDirPath(workingDir) + "Projects" + File.separator + StandardizeName(projectName) + File.separator);
         new File(path).mkdirs();
         return path;
     }
@@ -113,7 +115,8 @@ public final class FileSystem {
      */
     public static String GetProcessDirectoryPath(String workingDir, String projectName, String pluginName, ProcessName processName)
     {
-        String path = CheckDirPath(GetProjectDirectoryPath(workingDir, projectName) + StandardizeName(pluginName) + "\\" + GetProcessDirectoryName(processName) + "\\");
+        //String path = CheckDirPath(GetProjectDirectoryPath(workingDir, projectName) + StandardizeName(pluginName) + "\\" + GetProcessDirectoryName(processName) + "\\");
+        String path = CheckDirPath(GetProjectDirectoryPath(workingDir, projectName) + StandardizeName(pluginName) + File.separator + GetProcessDirectoryName(processName) + File.separator);
         new File(path).mkdirs();
         return path;
     }
@@ -129,7 +132,8 @@ public final class FileSystem {
      */
     public static String GetProcessOutputDirectoryPath(String workingDir, String projectName, String pluginName, ProcessName processName)
     {
-        String path = CheckDirPath(GetProcessDirectoryPath(workingDir, projectName, pluginName, processName) + "Output\\");
+        //String path = CheckDirPath(GetProcessDirectoryPath(workingDir, projectName, pluginName, processName) + "Output\\");
+        String path = CheckDirPath(GetProcessDirectoryPath(workingDir, projectName, pluginName, processName) + "Output" + File.separator);
         new File(path).mkdirs();
         return path;
     }
@@ -145,7 +149,8 @@ public final class FileSystem {
      */
     public static String GetProcessWorkerTempDirectoryPath(String workingDir, String projectName, String pluginName, ProcessName processName)
     {
-        String path = CheckDirPath(GetProcessDirectoryPath(workingDir, projectName, pluginName, processName) + "Temp\\");
+        //String path = CheckDirPath(GetProcessDirectoryPath(workingDir, projectName, pluginName, processName) + "Temp\\");
+        String path = CheckDirPath(GetProcessDirectoryPath(workingDir, projectName, pluginName, processName) + "Temp" + File.separator);
         new File(path).mkdirs();
         return path;
     }
@@ -161,7 +166,8 @@ public final class FileSystem {
      */
     public static String GetGlobalDownloadDirectory(Config configInstance, String pluginName, String dataName) throws ConfigReadException
     {
-        String path = CheckDirPath(CheckDirPath(configInstance.getDownloadDir()) + StandardizeName(pluginName) + "\\" + StandardizeName(dataName) + "\\");
+        //String path = CheckDirPath(CheckDirPath(configInstance.getDownloadDir()) + StandardizeName(pluginName) + "\\" + StandardizeName(dataName) + "\\");
+        String path = CheckDirPath(CheckDirPath(configInstance.getDownloadDir()) + StandardizeName(pluginName) + File.separator + StandardizeName(dataName) + File.separator);
         new File(path).mkdirs();
         return path;
     }
@@ -196,7 +202,8 @@ public final class FileSystem {
     public static String CheckDirPath(String dirPath)
     {
         if(!dirPath.endsWith("/") && !dirPath.endsWith("\\")) {
-            dirPath += "\\";
+            //dirPath += "\\";
+            dirPath += File.separator;
         }
         return dirPath;
     }

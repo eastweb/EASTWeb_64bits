@@ -43,7 +43,8 @@ public class ProjectInfoCollection {
             //if(projects == null)
             // {
             projects = new ArrayList<ProjectInfoFile>();
-            File fileDir = new File(System.getProperty("user.dir") + "\\projects\\");
+            //File fileDir = new File(System.getProperty("user.dir") + "\\projects\\");
+            File fileDir = new File(System.getProperty("user.dir") + File.separator +"projects" + File.separator);
             File[] fl = getXMLFiles(fileDir);
             if(fl.length > 0)
             {
@@ -105,7 +106,8 @@ public class ProjectInfoCollection {
 
     public static boolean WriteProjectToFile(Document doc, String projectName)
     {
-        File theDir = new File(System.getProperty("user.dir") + "\\projects\\" + projectName + ".xml" );
+        File theDir = new File(System.getProperty("user.dir") +File.separator +"projects" +File.separator + projectName + ".xml" );
+        //File theDir = new File(System.getProperty("user.dir") + "\\projects\\" + projectName + ".xml" );
 
         // write the content into xml file
         TransformerFactory transformerFactory = TransformerFactory.newInstance();

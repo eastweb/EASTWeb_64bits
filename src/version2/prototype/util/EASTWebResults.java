@@ -333,7 +333,8 @@ public class EASTWebResults {
             return false;
         }
 
-        if(filePath.endsWith("\\")) {
+        //if(filePath.endsWith("\\")) {
+        if(filePath.endsWith("\\")||filePath.endsWith("/")) {
             filePath = filePath + System.currentTimeMillis() + ".csv";
         }
 

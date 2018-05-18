@@ -98,11 +98,15 @@ public class UpdateForMissingSummaries {
         portNo = port;
 
         if(rootDir.endsWith("\\") || rootDir.endsWith("/")) {
-            projectRoot = rootDir + projectName + "\\";
-            downloadDir = rootDir + "\\";
+            //projectRoot = rootDir + projectName + "\\";
+            //downloadDir = rootDir + "\\";
+            projectRoot = rootDir + projectName + File.separator;
+            downloadDir = rootDir + File.separator;
         } else {
-            projectRoot = rootDir + "\\" + projectName + "\\";
-            downloadDir = rootDir + "\\";
+            //projectRoot = rootDir + "\\" + projectName + "\\";
+            //downloadDir = rootDir + "\\";
+            projectRoot = rootDir + File.separator + projectName + File.separator;
+            downloadDir = rootDir + File.separator;
         }
         String[] plugins = new File(projectRoot).list(new FilenameFilter(){
             @Override
@@ -256,7 +260,8 @@ public class UpdateForMissingSummaries {
 
         for (String plugin : plugins)
         {
-            String outputRoot = projectRoot + plugin + "\\Summary\\Output\\";
+            //String outputRoot = projectRoot + plugin + "\\Summary\\Output\\";
+            String outputRoot = projectRoot + plugin + File.separator +"Summary"+File.separator +"Output" + File.separator;
             String[] indices = new File(outputRoot).list(new FilenameFilter(){
                 @Override
                 public boolean accept(File dir, String name) {
@@ -266,7 +271,8 @@ public class UpdateForMissingSummaries {
 
             for(String index : indices)
             {
-                String indexRoot = outputRoot + index + "\\";
+                //String indexRoot = outputRoot + index + "\\";
+                String indexRoot = outputRoot + index + File.separator;
 
                 /* Summaries must be looped through outside of class because each summary will
                  * have a different outDayCount and will cause incorrect missing dates to be
@@ -280,7 +286,8 @@ public class UpdateForMissingSummaries {
                 //                }
                 //            });
 
-                String summaryRoot = indexRoot + summaryName + "\\";
+                //String summaryRoot = indexRoot + summaryName + "\\";
+                String summaryRoot = indexRoot + summaryName + File.separator;
                 String[] years = new File(summaryRoot).list(new FilenameFilter(){
                     @Override
                     public boolean accept(File dir, String name) {
@@ -308,7 +315,8 @@ public class UpdateForMissingSummaries {
                     {
                         System.out.println("Current Year Missing...");
                         // If execution reaches here then current year is missing
-                        String yearRoot = summaryRoot + year + "\\";
+                        //String yearRoot = summaryRoot + year + "\\";
+                        String yearRoot = summaryRoot + year + File.separator;
                         for(Integer day : validDays.get(year))
                         {
                             missingDates.addDate(plugin, index, summaryName, year, day);
@@ -323,7 +331,8 @@ public class UpdateForMissingSummaries {
                 // Check existing year directories for any day files that are missing.
                 for(String year : years)
                 {
-                    String yearRoot = summaryRoot + year + "\\";
+                    //String yearRoot = summaryRoot + year + "\\";
+                    String yearRoot = summaryRoot + year + File.separator;
                     //                    String[] days = new File(yearRoot).list(new FilenameFilter(){
                     //                        @Override
                     //                        public boolean accept(File dir, String name) {
@@ -331,7 +340,8 @@ public class UpdateForMissingSummaries {
                     //                        }
                     //                    });
 
-                    String downloadRoot = downloadDir.replace("\\Projects\\", "\\Downloads\\") + plugin + "\\data\\" + year + "\\";
+                    //String downloadRoot = downloadDir.replace("\\Projects\\", "\\Downloads\\") + plugin + "\\data\\" + year + "\\";
+                    String downloadRoot = downloadDir.replace(File.separator+"Projects"+File.separator, File.separator+"Downloads"+File.separator) + plugin + File.separator+ "data"+File.separator + year + File.separator;
                     File[] days = new File(downloadRoot).listFiles();
                     Integer originDate;
 

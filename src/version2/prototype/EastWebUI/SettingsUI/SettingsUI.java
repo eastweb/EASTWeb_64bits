@@ -27,6 +27,7 @@ import version2.prototype.EastWebUI.DocumentBuilderInstance;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Timer;
@@ -282,7 +283,8 @@ public class SettingsUI {
         textAreaPane.setViewportView(textArea);
 
         try {
-            FileReader reader = new FileReader(System.getProperty("user.dir") + "\\config\\" + "c3p0-config.xml");
+            //FileReader reader = new FileReader(System.getProperty("user.dir") + "\\config\\" + "c3p0-config.xml");
+            FileReader reader = new FileReader(System.getProperty("user.dir") + File.separator +"config"+ File.separator + "c3p0-config.xml");
             BufferedReader br = new BufferedReader(reader);
             textArea.read(reader, null);
             br.close();

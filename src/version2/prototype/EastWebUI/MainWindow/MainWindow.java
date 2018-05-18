@@ -420,7 +420,7 @@ public class MainWindow {
     private void openManual() {
         try {
             String dir =  System.getProperty("user.dir");
-            File pdfFile = new File(String.format("%s\\currentManual\\Manual.pdf", dir));
+            File pdfFile = new File(String.format("%s"+File.separator+"currentManual"+File.separator+"Manual.pdf", dir));
 
             if (pdfFile.exists()) {
                 if (Desktop.isDesktopSupported()) {

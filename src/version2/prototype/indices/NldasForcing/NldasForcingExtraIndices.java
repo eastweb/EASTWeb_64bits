@@ -72,9 +72,11 @@ public class NldasForcingExtraIndices {
         hdate = MonthDay.of(heating.getMonth(), heating.getDayOfMonth());
 
         if(rootDir.endsWith("\\") || rootDir.endsWith("/")) {
-            projectRoot = rootDir + projectName + "\\";
+            //projectRoot = rootDir + projectName + "\\";
+            projectRoot = rootDir + projectName + File.separator;
         } else {
-            projectRoot = rootDir + "\\" + projectName + "\\";
+            //projectRoot = rootDir + "\\" + projectName + "\\";
+            projectRoot = rootDir + File.separator + projectName + File.separator;
         }
         String[] plugins = new File(projectRoot).list(new FilenameFilter(){
             @Override
@@ -94,7 +96,8 @@ public class NldasForcingExtraIndices {
 
         for (String plugin : plugins)
         {
-            String outputRoot = projectRoot + plugin + "\\Indices\\Output\\";
+            //String outputRoot = projectRoot + plugin + "\\Indices\\Output\\";
+            String outputRoot = projectRoot + plugin + File.separator+"Indices"+File.separator+"Output"+File.separator;
 
             String[] years = new File(outputRoot).list(new FilenameFilter(){
                 @Override
@@ -115,7 +118,8 @@ public class NldasForcingExtraIndices {
 
                 for(String day : days)
                 {
-                    File d = new File(yearRoot + day + "\\");
+                    //File d = new File(yearRoot + day + "\\");
+                    File d = new File(yearRoot + day + File.separator);
                     for(File file : d.listFiles())
                     {
                         if(file.getName().contains("NldasForcingOverwinteringIndex")) {
@@ -271,8 +275,12 @@ public class NldasForcingExtraIndices {
     private static void GetCumulativeDays(String plugin, String prefix, String projectRoot, int year, int day)
     {
 
-        String inputFolder = projectRoot + plugin + "\\Indices\\Output\\" + year + "\\" + String.format("%03d", day);
-        File input = new File (inputFolder + "\\" + prefix + ".tif");
+        //String inputFolder = projectRoot + plugin + "\\Indices\\Output\\" + year + "\\" + String.format("%03d", day);
+        //File input = new File (inputFolder + "\\" + prefix + ".tif");
+
+        String inputFolder = projectRoot + plugin +File.separator +"Indices"+File.separator+"Output"+File.separator + year + File.separator + String.format("%03d", day);
+        File input = new File (inputFolder + File.separator + prefix + ".tif");
+
         Integer noDataValue = 9999;
 
         System.out.println(prefix);

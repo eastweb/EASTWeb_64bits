@@ -1,5 +1,6 @@
 package version2.prototype.download;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -320,7 +321,8 @@ public abstract class GlobalDownloader extends Observable implements Runnable{
      */
     protected void AddDownloadFile(Statement stmt, int year, int dayOfYear, String filePath) throws ClassNotFoundException, SQLException, ParserConfigurationException, SAXException, IOException, RegistrationException {
         final LocalDate lDate = LocalDate.ofYearDay(year, dayOfYear);
-        final String fileName = filePath.substring((filePath.lastIndexOf("/") > -1 ? filePath.lastIndexOf("/") + 1 : filePath.lastIndexOf("\\") + 1));
+        //final String fileName = filePath.substring((filePath.lastIndexOf("/") > -1 ? filePath.lastIndexOf("/") + 1 : filePath.lastIndexOf("\\") + 1));
+        final String fileName = filePath.substring((filePath.lastIndexOf("/") > -1 ? filePath.lastIndexOf("/") + 1 : filePath.lastIndexOf(File.separator) + 1));
 
         if(!isRegistered) {
             RegisterGlobalDownloader();

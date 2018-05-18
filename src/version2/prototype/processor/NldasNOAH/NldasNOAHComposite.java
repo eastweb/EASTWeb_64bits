@@ -86,7 +86,8 @@ public class NldasNOAHComposite extends Composite{
                     tempArray.get(i)[j] /= inputFiles.length;
                 }
 
-                File outputFile = new File(outputFolder + "\\Band" + dataBands[i] + ".tif");
+                //File outputFile = new File(outputFolder + "\\Band" + dataBands[i] + ".tif");
+                File outputFile = new File(outputFolder +File.separator +"Band" + dataBands[i] + ".tif");
                 try {
                     outputFile.createNewFile();
                 } catch (IOException e) {

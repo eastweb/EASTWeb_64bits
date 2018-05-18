@@ -17,8 +17,8 @@ import edu.sdstate.eastweb.prototype.Projection.*;
 import edu.sdstate.eastweb.prototype.util.*;
 
 public class Config {
-    private static final String PROJECTS_DIR = ".\\projects";
-    private static final String CONFIG_FILENAME = ".\\config.xml";
+    private static final String PROJECTS_DIR = "."+File.separator+"projects";
+    private static final String CONFIG_FILENAME = "."+File.separator+"config.xml";
 
     private static final String ROOT_DIRECTORY_KEY = "ROOT_DIRECTORY";
     private static final String TEMP_DIRECTORY_KEY = "TEMP_DIRECTORY";

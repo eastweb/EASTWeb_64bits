@@ -29,7 +29,7 @@
 <ReSampling>BILINEAR</ReSampling>
 <PixelSize>500</PixelSize>
 <Summaries>
-<Summary ID="1">AreaNameField: woreda; Shape File Path: /home/wmmm6262/Documents/EASTWeb_64bits-new/shapefile/woreda_epidemia_20170207/woreda_epidemia_20170207.shp; AreaCodeField: wid; Temporal Summary: GregorianDailyStrategy</Summary>
-<Summary ID="2">AreaNameField: woreda; Shape File Path: /home/wmmm6262/Documents/EASTWeb_64bits-new/shapefile/woreda_epidemia_20170207/woreda_epidemia_20170207.shp; AreaCodeField: wid; Temporal Summary: WHOWeeklyStrategy</Summary>
+<Summary ID="1">AreaNameField: woreda; Shape File Path: /home/wmmm6262/Documents/shapefile/woreda_epidemia_20170207/woreda_epidemia_20170207.shp; AreaCodeField: wid; Temporal Summary: GregorianDailyStrategy</Summary>
+<Summary ID="2">AreaNameField: woreda; Shape File Path: /home/wmmm6262/Documents/shapefile/woreda_epidemia_20170207/woreda_epidemia_20170207.shp; AreaCodeField: wid; Temporal Summary: WHOWeeklyStrategy</Summary>
 </Summaries>
 </ProjectInfo>
