@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <config>
-<ErrorLogDir>d:\EASTWeb\</ErrorLogDir>
-<DownloadDir>d:\EASTWeb\data\Downloads\</DownloadDir>
+<ErrorLogDir>/home/wmmm6262/git</ErrorLogDir>
+<DownloadDir>/home/wmmm6262/git/data/downloads</DownloadDir>
 <Database>
 <GlobalSchema>EASTWeb</GlobalSchema>
 <HostName>localhost</HostName>

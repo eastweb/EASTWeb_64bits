@@ -29,7 +29,8 @@ import version2.prototype.util.FileSystem;
  *
  */
 @Immutable public class Config {
-    private static final String CONFIG_FILENAME = ".//config//config.xml";
+    private static final String CONFIG_FILENAME = "."+File.separator + "config"+ File.separator +"config.xml";
+    //private static final String CONFIG_FILENAME = ".//config//config.xml";
     private static final String ERROR_LOG_DIR_KEY = "ErrorLogDir";
     // Download section
     private static final String DOWNLOAD_DIR_KEY = "DownloadDir";
@@ -267,7 +268,8 @@ import version2.prototype.util.FileSystem;
 
     public boolean WriteConfigFile(Document doc)
     {
-        File theDir = new File(System.getProperty("user.dir") + "\\config\\" + "config.xml" );
+        //File theDir = new File(System.getProperty("user.dir") + "\\config\\" + "config.xml" );
+        File theDir = new File(System.getProperty("user.dir") + File.separator +"config" + File.separator + "config.xml" );
         //File theDir = new File("C:\\Users\\sufi\\OneDrive\\config.xml" );
 
         // write the content into xml file
@@ -301,7 +303,8 @@ import version2.prototype.util.FileSystem;
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(doc);
 
-            StreamResult result =  new StreamResult(new File(System.getProperty("user.dir") + "\\config\\" + "c3p0-config.xml" ));
+            StreamResult result =  new StreamResult(new File(System.getProperty("user.dir") + File.separator +"config"+ File.separator + "c3p0-config.xml" ));
+            //StreamResult result =  new StreamResult(new File(System.getProperty("user.dir") + "\\config\\" + "c3p0-config.xml" ));
             //StreamResult result =  new StreamResult(new File("C:\\Users\\sufi\\OneDrive\\c3p0-config.xml" ));
             transformer.transform(source, result);
 
