@@ -17,7 +17,7 @@ old_library='libgdalalljni.a'
 inherited_linker_flags=''
 
 # Libraries that this one depends upon.
-dependency_libs=' /home/wmmm6262/git/gdal-2.3.0/libgdal.la -L/usr/local/lib /usr/local/lib/libproj.la -lgeos_c -lpthread -lrt -ldl'
+dependency_libs=' /home/wmmm6262/git/gdal-2.3.0/libgdal.la -L/usr/local/lib /usr/local/lib/libproj.la -lpthread -lrt -ldl'
 
 # Names of additional weak libraries provided by this library
 weak_library_names=''
