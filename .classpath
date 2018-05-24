@@ -33,6 +33,10 @@
 	<classpathentry kind="lib" path="lib/HDF/netcdf.jar"/>
 	<classpathentry kind="lib" path="lib/HDF/slf4j-api-1.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/HDF/slf4j-nop-1.7.5.jar"/>
-	<classpathentry kind="lib" path="lib/gdal/lib/gdal.jar"/>
+	<classpathentry kind="lib" path="lib/gdal/lib/gdal.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="home-prototype/lib/gdal/lib"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
