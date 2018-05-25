@@ -120,6 +120,8 @@ public abstract class Mozaic {
             {
                 // call the gdalinfo to list the HDF info including the sdsNames
                 String command = "./lib/gdal/gdalinfo " + filenames[i].getAbsolutePath();
+
+                //String command = "/home/wmmm6262/git/gdal-2.3.0/apps/gdalinfo " + filenames[i].getAbsolutePath();
                 p = Runtime.getRuntime().exec(command);
                 BufferedReader reader =
                         new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -160,6 +162,8 @@ public abstract class Mozaic {
                 // call the gdalinfo to list the HDF info including the sdsNames
                 String command = "./lib/gdal/gdalwarp --config GDAL_CACHEMAX 1000 -wm 1000 "
                         + bandNames[i] + " " +outputFile;
+                //String command = "/home/wmmm6262/git/gdal-2.3.0/apps/gdalwarp --config GDAL_CACHEMAX 1000 -wm 1000 "
+                //        + bandNames[i] + " " +outputFile;
                 p = Runtime.getRuntime().exec(command);
                 p.waitFor();
             }
