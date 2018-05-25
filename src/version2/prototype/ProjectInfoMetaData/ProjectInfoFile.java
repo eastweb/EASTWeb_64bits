@@ -378,7 +378,7 @@ import version2.prototype.ZonalSummary;
         ArrayList<String> values = GetNodeListValues(nodes, "Missing master shape file.");
         if(values.size() > 0) {
             String temp = values.get(0);
-            if(temp.startsWith("\\") || temp.startsWith("/"))
+            if(temp.startsWith("\\"))
             {
                 temp = System.getProperty("user.dir") + temp;
             }
