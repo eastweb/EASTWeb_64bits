@@ -58,11 +58,18 @@ public class ModisNBARV6Filter extends Filter{
             String qcPath = Paths.get(qcFiles[0].getAbsolutePath()).getParent().toString();
 
             for (int i = 0;  i < 7; i++)
-            {
+            {/*
                 dataDS = gdal.Open(String.format
                         ("%s" + File.separator + "%s", dPath, "Band"+dataBands[i]+".tif"));
+
                 qcDS = gdal.Open(String.format
-                        ("%s" + File.separator + "%s", qcPath, "Band"+qcBands[i]+".tif"));
+                        ("%s" + File.separator + "%s", qcPath, "Band"+qcBands[i]+".tif")); */
+
+                dataDS = gdal.Open(String.format
+                        ("%s" + File.separator + "%s", dPath, "band"+dataBands[i]+".tif"));
+
+                qcDS = gdal.Open(String.format
+                        ("%s" + File.separator + "%s", qcPath, "band"+qcBands[i]+".tif"));
 
                 Band dataBand = dataDS.GetRasterBand(1);
                 Band qcBand = qcDS.GetRasterBand(1);
