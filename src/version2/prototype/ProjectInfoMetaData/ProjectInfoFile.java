@@ -353,7 +353,8 @@ import version2.prototype.ZonalSummary;
         ArrayList<String> values = GetNodeListValuesIgnoreIfEmpty(nodes, "Missing masking file.");
         if(values.size() > 0) {
             String temp = values.get(0);
-            if(temp.startsWith("\\") || temp.startsWith("/"))
+            //if(temp.startsWith("\\") || temp.startsWith("/"))
+            if(temp.startsWith("\\"))
             {
                 temp = System.getProperty("user.dir") + temp;
             }
@@ -512,7 +513,8 @@ import version2.prototype.ZonalSummary;
                         summary.indexOf(";"));
                 shapefile = summary.substring(summary.indexOf(ProjectInfoSummary.SHAPE_FILE_TAG + ": ") + String.valueOf(ProjectInfoSummary.SHAPE_FILE_TAG + ": ").length(), summary.indexOf(";",
                         summary.indexOf(ProjectInfoSummary.SHAPE_FILE_TAG + ": ")));
-                if(shapefile.startsWith("\\") || shapefile.startsWith("/"))
+                //if(shapefile.startsWith("\\") || shapefile.startsWith("/"))
+                if(shapefile.startsWith("\\"))
                 {
                     shapefile = System.getProperty("user.dir") + shapefile;
                 }
