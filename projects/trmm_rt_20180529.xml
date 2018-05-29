@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ProjectInfo>
+<Plugins>
+<Plugin name="TRMM3B42RT_New">
+<Indicies>TRMM3B42RT_NewIndex</Indicies>
+<QC>  null</QC>
+</Plugin>
+</Plugins>
+<StartDate>Mon May 21 12:53:26 CST 2018</StartDate>
+<ProjectName>trmm_rt_20180529</ProjectName>
+<WorkingDir>/home/wmmm6262/git/data</WorkingDir>
+<Masking>
+<File>/home/wmmm6262/Documents/watermask/Ethiopia_watermask_500.tif</File>
+<Resolution>500</Resolution>
+</Masking>
+<MasterShapeFile>/home/wmmm6262/Documents/shapefile/woreda_epidemia_20170207/woreda_epidemia_20170207.shp</MasterShapeFile>
+<TimeZone>(GMT+0:00) Africa/Abidjan</TimeZone>
+<Clipping>true</Clipping>
+<FreezingDate>Thu Jan 01 00:00:00 CST 1970</FreezingDate>
+<CoolingDegree>0</CoolingDegree>
+<HeatingDate>Thu Jan 01 00:00:00 CST 1970</HeatingDate>
+<HeatingDegree>0</HeatingDegree>
+<ReSampling>BILINEAR</ReSampling>
+<PixelSize>500</PixelSize>
+<Summaries>
+<Summary ID="1">AreaNameField: woreda; Shape File Path: /home/wmmm6262/Documents/shapefile/woreda_epidemia_20170207/woreda_epidemia_20170207.shp; AreaCodeField: wid; Temporal Summary: GregorianDailyStrategy</Summary>
+</Summaries>
+</ProjectInfo>
