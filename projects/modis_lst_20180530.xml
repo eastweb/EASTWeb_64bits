@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<ProjectInfo>
+<Plugins>
+<Plugin name="ModisLSTV6">
+<Indicies>ModisLSTV6Day</Indicies>
+<Indicies>ModisLSTV6Night</Indicies>
+<Indicies>ModisLSTV6Mean</Indicies>
+<ModisTile> h21v07</ModisTile>
+<ModisTile> h21v08</ModisTile>
+<QC> LOW</QC>
+</Plugin>
+</Plugins>
+<StartDate>Thu Mar 01 17:16:47 CDT 2018</StartDate>
+<ProjectName>modis_lst_20180530</ProjectName>
+<WorkingDir>/home/wmmm6262/git/data</WorkingDir>
+<Masking>
+<File>/home/wmmm6262/Documents/watermask/Ethiopia_watermask.tif</File>
+<Resolution>1000</Resolution>
+</Masking>
+<MasterShapeFile>/home/wmmm6262/Documents/shapefile/woreda_epidemia_20170207/woreda_epidemia_20170207.shp</MasterShapeFile>
+<TimeZone>(GMT+0:00) Africa/Abidjan</TimeZone>
+<Clipping>true</Clipping>
+<FreezingDate>Sun Mar 01 17:22:56 CST 1970</FreezingDate>
+<CoolingDegree>0</CoolingDegree>
+<HeatingDate>Sun Mar 01 17:23:22 CST 1970</HeatingDate>
+<HeatingDegree>0</HeatingDegree>
+<ReSampling>NEAREST_NEIGHBOR</ReSampling>
+<PixelSize>1000</PixelSize>
+<Summaries>
+<Summary ID="1">AreaNameField: woreda; Shape File Path: /home/wmmm6262/Documents/shapefile/woreda_epidemia_20170207/woreda_epidemia_20170207.shp; AreaCodeField: wid; Temporal Summary: CompositeOf8Days</Summary>
+</Summaries>
+</ProjectInfo>
