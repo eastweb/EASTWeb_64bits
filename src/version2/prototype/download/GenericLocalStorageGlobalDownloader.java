@@ -4,6 +4,7 @@
 package version2.prototype.download;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -85,6 +86,7 @@ public class GenericLocalStorageGlobalDownloader extends GlobalDownloader {
 
             // Step 1: Get all downloads from ListDatesFiles
             Map<DataDate, ArrayList<String>> filesTemp = listDatesFiles.CloneListDatesFiles();
+
             Map<DataDate, ArrayList<String>> datesFiles = new TreeMap<DataDate, ArrayList<String>>(filesTemp);
 
             // Remove from downloads list any which are before the current start date
@@ -114,26 +116,55 @@ public class GenericLocalStorageGlobalDownloader extends GlobalDownloader {
                 // get the year and dayOfyear from each downloaded file
                 DataDate thisDate = new DataDate(downloaded.day, downloaded.year);
 
-                // get the files associated with the date in the ListDatesFiles
-                files = datesFiles.get(thisDate);
+                /*
+                 * Added on 6/9/2018 by YL to fix the multiple version issue with the online archive IMERG, IMERG_RT
+                 * if only one file of a particular day is downloaded already,
+                 *     downloader will not download new version of the file for that date
+                 * filesPerDay from it's base class's attribute - DownloadMetaData
+                 *
+                 * However, as for the data products such as MODIS that contains multiple files per day,
+                 * this solution does not cover the case if new version is out online for a date on which the files are already downloaded.
+                 * a solution would be in the plugin's download module,
+                 *       (1)write a pluginLocalStorageGlobalDownloader that extends GlobalDownloader so that the specific constraints are addressed
+                 *       (2)write a pluginLocalStorageDownloadFactory that uses pluginLocalStorageGlobalDownloader
+                 *       (3)in the localFactory's CreateDownloaderFactory(), return new pluginLocalStorageDownloadFactory
+                 */
 
-                fIter = files.iterator();
+                /*
+                 *  if this date is not found in the ListDates, skip it.
+                 *  It is to address the case that the previously available dates/files are no longer available on website
+                 *  added on 6/9/18
+                 */
+                if (datesFiles.containsKey(thisDate)) {
 
-                String fileTemp;
-                while (fIter.hasNext())
-                {
-                    String strPath = downloaded.dataFilePath;
-                    //                    System.out.println(strPath);
-                    strPath = strPath.substring(strPath.lastIndexOf(File.separator)+1, strPath.lastIndexOf("."));
-                    // remove the file if it is found in the downloaded list
-                    fileTemp = fIter.next();
-                    if ((fileTemp.toLowerCase()).contains((strPath.toLowerCase())))
-                    {
-                        fIter.remove();
+                    if (metaData.filesPerDay == 1) {
+                        datesFiles.remove(thisDate);
+                    }
+                    else {// multiple files per day
+
+                        // get the files associated with the date in the ListDatesFiles
+                        files = datesFiles.get(thisDate);
+
+                        fIter = files.iterator();
+
+                        String fileTemp;
+                        while (fIter.hasNext())
+                        {
+                            String strPath = downloaded.dataFilePath;
+                            // System.out.println(strPath);
+                            strPath = strPath.substring(strPath.lastIndexOf(File.separator)+1, strPath.lastIndexOf("."));
+                            // remove the file if it is found in the downloaded list
+                            fileTemp = fIter.next();
+                            if ((fileTemp.toLowerCase()).contains((strPath.toLowerCase())))
+                            {
+                                fIter.remove();
+                            }
+                        }
+
+                        datesFiles.put(thisDate, files);
+
                     }
                 }
-
-                datesFiles.put(thisDate, files);
             }
 
             // Step 4: Create downloader and run downloader for all that's left

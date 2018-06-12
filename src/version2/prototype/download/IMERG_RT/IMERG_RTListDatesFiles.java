@@ -1,5 +1,6 @@
 package version2.prototype.download.IMERG_RT;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ConnectException;
@@ -64,6 +65,8 @@ public class IMERG_RTListDatesFiles extends ListDatesFiles{
              * 1. if it is for the current year, search the files in the month directory under
              *            jsimpson.pps.eosdis.nasa.gov/data/imerg/gis
              * 2. if it is for the previous years, search the files in the yyyy/mm directory
+             *
+             * 3. added on 6/9/18:  the whole folder of Oct 2017 is misplaced in a subfolder V04 under the expected folder
              */
             int currentYear = Calendar.getInstance().get(Calendar.YEAR);
             int currentMonth = Calendar.getInstance().get(Calendar.MONTH)+ 1;
@@ -96,6 +99,7 @@ public class IMERG_RTListDatesFiles extends ListDatesFiles{
                     for (int month = monthS; month <= monthEnd; month++)
                     {
                         String monthDir = String.format("%s/%02d", rootDir, month);
+                        //System.out.println("file: "+ monthDir);
                         AddFiles(ftpC, monthDir, month, year);
                     }
                 }
@@ -128,7 +132,23 @@ public class IMERG_RTListDatesFiles extends ListDatesFiles{
             throw new IOException("Couldn't navigate to directory: " + monthDir);
         }
 
-        for (FTPFile file : ftpC.listFiles())
+        FTPFile[] fFiles = ftpC.listFiles();
+
+        /*
+         *  6/9/18 by YL: to fix the folder problem of Oct 2017 as described as 3 above
+         */
+        while (fFiles.length < 2) {
+            monthDir += "/" + fFiles[0].getName();
+            if (!ftpC.changeWorkingDirectory(monthDir))
+            {
+                throw new IOException("Couldn't navigate to directory: " + monthDir);
+            }
+
+            fFiles = ftpC.listFiles();
+        }
+
+
+        for (FTPFile file : fFiles)
         {
             if(Thread.currentThread().isInterrupted()) {
                 break;
@@ -139,13 +159,12 @@ public class IMERG_RTListDatesFiles extends ListDatesFiles{
             //filename pattern:
             //3B-HHR-L\.MS\.MRG\.3IMERG\.(\d{8})-S233000-E235959\.1410\.V(\d{2})[A-Z]\.1day\.tif((\.gz)?)
             /*  if (file.isFile() &&
-                    mData.fileNamePattern.matcher(file.getName()).matches())
+                        mData.fileNamePattern.matcher(file.getName()).matches())
              */
-            //System.out.println(Pattern.compile(fileNamePatternStr).matcher(file.getName()).matches());
-            if (file.isFile() &&
-                    Pattern.compile(fileNamePatternStr).matcher(file.getName()).matches())
+            // modified on 6/8/18 since the most recent files listed online failed from isFile() check
+            if (Pattern.compile(fileNamePatternStr).matcher(file.getName()).matches())
             {
-                // System.out.println(file.getName());
+                //System.out.println(file.getName());
                 fileNames.add(file.getName());
 
                 String[] str = file.getName().split("[.]");

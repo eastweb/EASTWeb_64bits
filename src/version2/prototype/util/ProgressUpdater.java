@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeMap;
 
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
+
 import version2.prototype.Config;
 import version2.prototype.ErrorLog;
 import version2.prototype.PluginMetaData.PluginMetaDataCollection;
@@ -233,6 +236,7 @@ public class ProgressUpdater {
     {
         int storedExpectedCount = getStoredDownloadExpectedTotalOutput(projectMetaData.GetProjectName(), pluginName, dataName, stmt);
         int calculatedExpectedCount = calculateDownloadExpectedCount(listDatesFiles, modisTileNames);
+
         if(storedExpectedCount != calculatedExpectedCount)
         {
             String updateQuery = "UPDATE \"" + configInstance.getGlobalSchema() + "\".\"DownloadExpectedTotalOutput\" SET \"ExpectedNumOfOutputs\" = " + calculatedExpectedCount + " WHERE " +
@@ -391,8 +395,41 @@ public class ProgressUpdater {
     {
         int expectedCount = 0;
 
-        long daysSinceStart = ChronoUnit.DAYS.between(startDate, LocalDate.now());
-        int adjustedDaysSinceStart = (int)(daysSinceStart / pluginMetaData.Download.DaysPerInputData);
+        //long daysSinceStart = ChronoUnit.DAYS.between(startDate, LocalDate.now());
+
+        /* modified on 6/9/18 by YL..
+         * the first data of a year starts on each year.
+         * the leftover days of a year do not carry to the next year
+         */
+        int daysPerInput = pluginMetaData.Download.DaysPerInputData;
+
+        LocalDate endD = LocalDate.now();
+        int adjustedDaysSinceStart = (int)ChronoUnit.DAYS.between(startDate, endD);   // default by daily data
+
+        /* make the count more accurate for the case daysPerInput > 1
+         * YL on 6/10/18
+         */
+        if (daysPerInput > 1){
+
+            double dayPerInput = pluginMetaData.Download.DaysPerInputData;
+
+            int startY = startDate.getYear();
+            int endY = endD.getYear();
+
+            if (startY == endY){
+                adjustedDaysSinceStart = (int) Math.ceil(ChronoUnit.DAYS.between(startDate, endD)/dayPerInput);
+            }
+            else{
+                adjustedDaysSinceStart =
+                        (int) Math.ceil((startDate.lengthOfYear() - startDate.getDayOfYear())/ dayPerInput);
+
+                adjustedDaysSinceStart += (int)Math.ceil(endD.getDayOfYear()/8.0);
+
+                if ((endY - startY) > 1) {
+                    adjustedDaysSinceStart += (int) Math.ceil(365/8.0) * (endY - startY -1);
+                }
+            }
+        }
 
         if(modisTileNames != null && modisTileNames.size() > 1) {
             expectedCount = adjustedDaysSinceStart * modisTileNames.size();
